@@ -1,0 +1,27 @@
+{
+  "name": "chartjs-card",
+  "version": "0.0.1",
+  "description": "Chart.js card to Home Assistant",
+  "main": "src/index.js",
+  "keywords": [
+    "chartjs",
+    "homeassistant",
+    "home-assistant"
+  ],
+  "dependencies": {
+    "chart.js": "^3.0.0-alpha",
+    "custom-card-helpers": "^1.6.4",
+    "lit-element": "^2.3.1",
+    "lit-html": "^1.1.2",
+    "rollup": "^2.15.0",
+    "rollup-plugin-node-resolve": "^5.2.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm run rollup",
+    "rollup": "rollup -c"
+  },
+  "author": "Ricardo Reis",
+  "license": "ISC"
+}
