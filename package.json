@@ -9,11 +9,12 @@
     "home-assistant"
   ],
   "dependencies": {
-    "chart.js": "^3.0.0-alpha",
+    "chart.js": "2.9.3",
     "custom-card-helpers": "^1.6.4",
     "lit-element": "^2.3.1",
     "lit-html": "^1.1.2",
     "rollup": "^2.15.0",
+    "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-node-resolve": "^5.2.0"
   },
   "devDependencies": {},

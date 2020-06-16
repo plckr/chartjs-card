@@ -1,23 +1,55 @@
 import Chart from 'chart.js';
 // import Chart from 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.2/Chart.min.js';
-import {LitElement, html, css} from 'lit-element';
+import { LitElement, html, css } from 'lit-element';
 
 class ChartjsCard extends LitElement {
+  
   static get properties() {
     return {
-      hass: {},
+      _hass: { type: Object },
       config: { type: Object },
-      chart: { type: Object }
+      chart: { type: Object },
+      canvas: { type: Object },
+      chartProp: { type: Object }
     };
   }
 
   constructor() {
     super();
   }
+  
+  set hass(hass) {
+    this._hass = hass;
+  }
 
   firstUpdated() {
-    const type = this.config.chart;
+    const ctx = this.renderRoot.querySelector('canvas').getContext('2d');
+
+    this.chart = new Chart(ctx, {
+        type: this.chartProp.type,
+        data: this.chartProp.data,
+        options: this.chartProp.options
+    });
+  }
+
+  render() {
+    return html`
+      <ha-card>
+        <canvas width="90%" height="90%"></canvas>
+      </ha-card>
+    `;
+  }
+
+  setConfig(config) {
+    const availableTypes = ['line', 'radar', 'bar', 'horizontalBar', 'pie', 'doughnut', 'polarArea', 'bubble', 'scatter'];
     
+    if (!config.chart) {
+      throw new Error("You need to define type of chart");
+    } else if ( !availableTypes.includes(config.chart) ) {
+      throw new Error("Invalid config for 'chart'. Available options are: "+availableTypes.join(", "));
+    }
+    
+    const type = config.chart;
     const data = {
       labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
       datasets: [{
@@ -42,35 +74,20 @@ class ChartjsCard extends LitElement {
           borderWidth: 1
       }]
     }
-    
-    const options = {}
-    
-    const ctx = this.renderRoot.querySelector('canvas').getContext('2d');
-    console.log('CTX: ');
-    console.log(ctx);
-
-    this.chart = new Chart(ctx, {
-        type: type,
-        data: data,
-        options: options
-    });
-  }
-
-  render() {
-    return html`
-      <ha-chart-base></ha-chart-base>
-      <ha-card>
-        <canvas width="90%" height="90%"></canvas>
-      </ha-card>
-    `;
-  }
-
-  setConfig(config) {
-    if (!config.chart) {
-      throw new Error("You need to define type of chart");
-    } else if ( !['line', 'radar', 'bar', 'horizontalBar', 'pie', 'doughnut', 'polarArea', 'bubble', 'scatter'].includes(config.chart) ) {
-      throw new Error("Invalid config for 'chart'. Available options are: line, bar, horizontalBar, radar, pie, doughnut, polarArea, bubble, scatter");
+    const options = {
+      scales: {
+          yAxes: [{
+              ticks: {
+                  beginAtZero: true
+              }
+          }]
+      }
     }
+    this.chartProp = {
+      type: type,
+      data: data,
+      options: options
+    };
     
     this.config = config;
   }
