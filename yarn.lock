@@ -91,6 +91,11 @@ custom-card-helpers@^1.6.4:
     superstruct "^0.8.3"
     typescript "^3.8.3"
 
+deep-clone-simple@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/deep-clone-simple/-/deep-clone-simple-1.1.1.tgz#0ec358dfcce062928dbf58f0dfa484b4b5425d59"
+  integrity sha1-DsNY38zgYpKNv1jw36SEtLVCXVk=
+
 emojis-list@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/emojis-list/-/emojis-list-3.0.0.tgz#5570662046ad29e2e916e71aae260abdff4f6a78"
@@ -164,6 +169,11 @@ lit-html@^1.1.1, lit-html@^1.1.2:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/lit-html/-/lit-html-1.2.1.tgz#1fb933dc1e2ddc095f60b8086277d4fcd9d62cc8"
   integrity sha512-GSJHHXMGLZDzTRq59IUfL9FCdAlGfqNp/dEa7k7aBaaWD+JKaCjsAk9KYm2V12ItonVaYx2dprN66Zdm1AuBTQ==
+
+lodash@^4.17.15:
+  version "4.17.15"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.15.tgz#b447f6670a0455bbfeedd11392eff330ea097548"
+  integrity sha512-8xOcRHvCjnocdS5cpwXQXVzmmh5e5+saE2QGoeQmbKmRS6J3VQppPOIt0MnmE+4xlZoumy0GPG0D0MVIQbNA1A==
 
 magic-string@^0.25.2:
   version "0.25.7"
