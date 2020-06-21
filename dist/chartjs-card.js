@@ -41386,25 +41386,17 @@
 	    this.chart = new Chart(ctx, this.chartProp);
 	  }
 	  
-	  _evaluateCssVariable(variable) {
-	    var r = lodash.words(variable, /var[(](--[^-].+)[)]/)[1];
-	    
-	    if (!r) {
-	      return variable;
-	    }
-	    
-	    return getComputedStyle(document.documentElement).getPropertyValue(r);
-	  }
-	  
 	  _setChartConfig(){
-	    var chartconfig = {};
-	    chartconfig.data = this._evaluateTemplate(deepcopy(this._config.data));
+	    let chartconfig = {};
+	    chartconfig.data = this._checkConfig(deepcopy(this._config.data));
 	    chartconfig.options = deepcopy(this._config.options);
 	    
 	    // chartconfig.options.scales.yAxes[0].gridLines.color = 
 	    // chartconfig.options.scales.xAxes[0].gridLines.color = this._evaluateCssVariable('var(--secondary-background-color)');
 	    
 	    Chart.defaults.global.defaultFontColor = this._evaluateCssVariable('var(--primary-text-color)');
+	    lodash.set(Chart.defaults.global, 'title.fontSize', '14');
+	    lodash.set(Chart.defaults.global, 'title.fontStyle', 'normal');
 	    
 	    const availableTypes = ['line', 'radar', 'bar', 'horizontalBar', 'pie', 'doughnut', 'polarArea', 'bubble', 'scatter'];
 	    if (!this._config.chart) {
@@ -41412,6 +41404,9 @@
 	    } else if ( !availableTypes.includes(this._config.chart) ) {
 	      throw new Error("Invalid config for 'chart'. Available options are: "+availableTypes.join(", "));
 	    } else {
+	      if (this._config.chart == 'pie'){
+	        console.log(Chart.defaults.global);
+	      }
 	      chartconfig.type = this._config.chart;
 	    }
 	      
@@ -41466,47 +41461,85 @@
 	    this.chartProp = chartconfig;
 	  }
 	  
-	  _evaluateTemplate(template) {
-	    const user = this.hass ? this.hass.user : undefined;
-	    const states = this.hass ? this.hass.states : undefined;
-	  
-	    if (typeof template === 'object') {
-	      var newObj = lodash.cloneDeepWith(template, function(v) {
-	      	let regexTemplate = /^\${([^}]+)}$/g;
+	  _checkConfig(config) {
+	    
+	    // Only allow Object as input
+	    if (typeof config === 'object') {
+	      var newObj = lodash.cloneDeepWith(config, (v) => {
 	        if(!lodash.isObject(v)) {
-	          if (lodash.includes(v, '${') && v.trim().match(regexTemplate)) {
-	            let result = '';
-	          	result = eval(v.trim().substring(2, v.length - 1));
-	          	
-	            if (result.match(/^\[[^\]]+\]$/g)) {
-	              try {
-	                return eval(result);
-	              } catch(e) {
-	                return result;
-	              }
-	              
-	            }
-	            return result;
+	          if (this._evaluateTemplate(v) !== v) {
+	            return this._evaluateTemplate(v);
 	          }
+	          if (this._evaluateCssVariable(v) !== v) {
+	            return this._evaluateCssVariable(v);
+	          }
+	        	return v;
 	        }
 	      });
 	      return newObj;
+	    } else {
+	      return config;
+	    }
+	  }
+	  
+	  _evaluateCssVariable(variable) {
+	    let regexCssVar = /var[(](--[^-].+)[)]/;
+	    var r = lodash.words(variable, regexCssVar)[1];
+	    
+	    if (!r) {
+	      return variable;
 	    }
 	    
-	    if (typeof template === 'string') {
-	      if (!template.includes('${')) {
-	        return template;
-	      }
+	    return getComputedStyle(document.documentElement).getPropertyValue(r);
+	  }
 	  
-	      if (this._config) {
-	        for (const v in this._config.variables) {
-	          const newV = eval(this._config.variables[v]);
-	          vars.push(newV);
+	  _evaluateTemplate(template) {
+	    if (typeof template === 'string') {
+	      var user = this.hass ? this.hass.user : undefined;
+	      var states = this.hass ? this.hass.states : undefined;
+	      
+	      let regexTemplate = /^\${([^}]+)}$/g;
+	      template = template.trim();
+	      if (lodash.includes(template, '${') && template.match(regexTemplate)) {
+	        
+	    	  template = eval(template.substring(2, template.length - 1));
+	    	  
+	    	  let regexArray = /^\[[^\]]+\]$/g;
+	        if (typeof template === 'string' && template.match(regexArray)) {
+	          try {
+	            return eval(template);
+	          } catch(e) {
+	            return template;
+	          }
 	        }
 	      }
-	  
-	      return eval(template.substring(2, template.length - 1));
+	      return template;
+	      
 	    }
+	    return template;
+	  
+	    // if (typeof template === 'object') {
+	    //   var newObj = _.cloneDeepWith(template, function(v) {
+	    //   	let regexTemplate = /^\${([^}]+)}$/g;
+	    //     if(!_.isObject(v)) {
+	    //       if (_.includes(v, '${') && v.trim().match(regexTemplate)) {
+	    //         let result = '';
+	    //       	result = eval(v.trim().substring(2, v.length - 1));
+	          	
+	    //         if (result.match(/^\[[^\]]+\]$/g)) {
+	    //           try {
+	    //             return eval(result);
+	    //           } catch(e) {
+	    //             return result;
+	    //           }
+	              
+	    //         }
+	    //         return result;
+	    //       }
+	    //     }
+	    //   });
+	    //   return newObj;
+	    // }
 	  }
 	  
 	  setConfig(config) {
@@ -41514,7 +41547,7 @@
 	  }
 
 	  getCardSize() {
-	    return 2;
+	    return 3;
 	  }
 
 	  render() {
@@ -41527,9 +41560,7 @@
 
 	  static get styles() {
 	    return css`
-      ha-card {
-        box-shadow: none;
-      }
+      
     `;
 	  }
 	}
