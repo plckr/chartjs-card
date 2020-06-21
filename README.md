@@ -15,7 +15,7 @@ Chart.js card for Home Assistant
 [Chart.js documentation](https://www.chartjs.org/docs/latest/)
 
 ### example
-![](./img/example1.png)
+![](./img/example1.jpg)
 ```yaml
 type: 'custom:chartjs-card'
 chart: bar # Supports: ['line', 'radar', 'bar', 'horizontalBar', 'pie', 'doughnut', 'polarArea', 'bubble', 'scatter']
