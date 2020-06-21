@@ -3,6 +3,11 @@ Chart.js card for Home Assistant
 
 ![](./card.png)
 
+## Instalation through HACS
+This card isn't in HACS, but you can add it manually through `Custom repositories`
+
+To do that just follow these steps: **HACS -> Frontend -> 3 dots (upper right corner) -> Custom repositories -> (Paste this github page url)**
+
 ## Config
 | Name           | Type     | Default     | Description |
 | -------------- | -------- | ----------- |------------ |
