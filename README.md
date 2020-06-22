@@ -12,7 +12,7 @@ To do that just follow these steps: **HACS -> Frontend -> 3 dots (upper right co
 | Name           | Type     | Default     | Description |
 | -------------- | -------- | ----------- |------------ |
 | chart          | string   |             | chart type  |
-| data           |          |             | just like chart.js documentation |
+| data           |          |             | just like chart.js documentation, accepts Templates for all fields |
 | options        |          |             | just like chart.js documentation |
 | entitiy_row    | boolean  | false       | if is entity row or not |
 | custom_options | object   |             | TODO |
@@ -42,4 +42,35 @@ options: # Same applies here like data above
     yAxes:
       - ticks:
           beginAtZero: true
+```
+
+### example 2
+![./img/example2.jpg]
+```yaml
+chart: doughnut
+data:
+  datasets:
+    - data:
+        - '${states["sensor.energy_daily_fridge"].state}'
+        - '${states["sensor.energy_daily_dishwasher"].state}'
+        - '${states["sensor.energy_daily_washing_machine"].state}'
+        - '${states["sensor.energy_daily_drying_machine"].state}'
+      backgroundColor:
+        - '#32a852'
+        - '#3271a8'
+        - '#9044db'
+        - '#dbbd44'
+  labels:
+    - Frigorifico
+    - Máq. lavar loiça
+    - Máq. lavar roupa
+    - Máq. secar roupa
+options:
+  legend:
+    position: left
+  title:
+    display: true
+    text: Consumo energético (hoje)
+type: 'custom:chartjs-card'
+
 ```
