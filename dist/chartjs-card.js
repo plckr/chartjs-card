@@ -41389,7 +41389,7 @@
 	  _setChartConfig(){
 	    let chartconfig = {};
 	    chartconfig.data = this._checkConfig(deepcopy(this._config.data));
-	    chartconfig.options = deepcopy(this._config.options);
+	    chartconfig.options = this._checkConfig(deepcopy(this._config.options));
 	    
 	    // chartconfig.options.scales.yAxes[0].gridLines.color = 
 	    // chartconfig.options.scales.xAxes[0].gridLines.color = this._evaluateCssVariable('var(--secondary-background-color)');
