@@ -19,7 +19,7 @@ To do that just follow these steps: **HACS -> Frontend -> 3 dots (upper right co
 
 [Chart.js documentation](https://www.chartjs.org/docs/latest/)
 
-### example
+### example 1
 ![](./img/example1.jpg)
 ```yaml
 type: 'custom:chartjs-card'
@@ -45,7 +45,7 @@ options: # Same applies here like data above
 ```
 
 ### example 2
-![./img/example2.jpg]
+![](./img/example2.jpg)
 ```yaml
 chart: doughnut
 data:
