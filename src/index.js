@@ -1,5 +1,6 @@
 import Chart from 'chart.js';
 import { LitElement, html, css, TemplateResult } from 'lit-element';
+import { HomeAssistant, hasConfigOrEntityChanged } from 'custom-card-helpers';
 import deepcopy from 'deep-clone-simple';
 import _ from 'lodash';
 
@@ -10,12 +11,57 @@ class ChartjsCard extends LitElement {
       hass: { type: Object},
       _config: { type: Object },
       chart: { type: Object },
-      chartProp: { type: Object }
+      chartProp: { type: Object },
+      _updateFromEntities: { type: Array },
+      _initialized: { type: Boolean }
     };
   }
 
   constructor() {
     super();
+    this._updateFromEntities = [];
+    this._initialized = false;
+  }
+  
+  _initialize() {
+    if (this.hass === undefined) return;
+    if (this._config === undefined) return;
+    // if (this._helpers === undefined) return;
+    this._initialized = true;
+  }
+  
+  shouldUpdate(changedProps) {
+    if (!this._initialized) {
+      this._initialize();
+    }
+
+    if (changedProps.has('_config')) {
+      return true;
+    }
+
+    if (this._config) {
+      const oldHass = changedProps.get('hass') || undefined;
+
+      if (oldHass) {
+        let changed = false;
+        this._updateFromEntities.forEach(entity => {
+          changed =
+            changed ||
+            Boolean(
+              this.hass &&
+                oldHass.states[entity] !== this.hass.states[entity],
+            );
+        });
+        
+        if (changed) {
+          this._updateChart();
+        }
+        
+        return changed;
+      }
+    }
+
+    return true;
   }
 
   firstUpdated() {
@@ -26,29 +72,24 @@ class ChartjsCard extends LitElement {
     this.chart = new Chart(ctx, this.chartProp);
   }
   
-  _setChartConfig(){
-    let chartconfig = {};
-    chartconfig.data = this._checkConfig(deepcopy(this._config.data));
-    chartconfig.options = this._checkConfig(deepcopy(this._config.options));
-    
-    // chartconfig.options.scales.yAxes[0].gridLines.color = 
-    // chartconfig.options.scales.xAxes[0].gridLines.color = this._evaluateCssVariable('var(--secondary-background-color)');
-    
+  _updateChart() {
+    this._updateFromEntities = [];
+    this.chartProp.data = this._evaluateConfig(deepcopy(this._config.data));
+    this.chartProp.options = this._evaluateConfig(deepcopy(this._config.options));
+    this.chart.update({duration: 0, easing: 'linear'});
+  }
+  
+  _setChartDefaults() {
     Chart.defaults.global.defaultFontColor = this._evaluateCssVariable('var(--primary-text-color)');
     _.set(Chart.defaults.global, 'title.fontSize', '14');
     _.set(Chart.defaults.global, 'title.fontStyle', 'normal');
-    
-    const availableTypes = ['line', 'radar', 'bar', 'horizontalBar', 'pie', 'doughnut', 'polarArea', 'bubble', 'scatter'];
-    if (!this._config.chart) {
-      throw new Error("You need to define type of chart");
-    } else if ( !availableTypes.includes(this._config.chart) ) {
-      throw new Error("Invalid config for 'chart'. Available options are: "+availableTypes.join(", "));
-    } else {
-      if (this._config.chart == 'pie'){
-        console.log(Chart.defaults.global);
-      }
-      chartconfig.type = this._config.chart;
-    }
+  }
+  
+  _setChartConfig(){
+    let chartconfig = {};
+    chartconfig.type = this._config.chart;
+    chartconfig.data = this._evaluateConfig(deepcopy(this._config.data));
+    chartconfig.options = this._evaluateConfig(deepcopy(this._config.options));
       
     if (typeof this._config.custom_options.showLegend === "boolean") {
       // chartconfig.options.legend.display = this._config.options.showLegend; // Defaults to True
@@ -56,58 +97,26 @@ class ChartjsCard extends LitElement {
       _.set(chartconfig, 'options.legend.display', this._config.custom_options.showLegend);
     }
     
-    // Entity row
-    if (typeof this._config.entity_row === "undefined") {
-      this._config.entity_row = false;
-    } else if (typeof this._config.entity_row !== "boolean") {
-      throw new Error("entity_row must be true or false")
-    }
-    
-    // const type = config.chart;
-    // const data = {
-    //   labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
-    //   datasets: [{
-    //       label: '# of Votes',
-    //       data: [12, 19, 3, 5, 2, 3],
-    //       backgroundColor: [
-    //           'rgba(255, 99, 132, 0.2)',
-    //           'rgba(54, 162, 235, 0.2)',
-    //           'rgba(255, 206, 86, 0.2)',
-    //           'rgba(75, 192, 192, 0.2)',
-    //           'rgba(153, 102, 255, 0.2)',
-    //           'rgba(255, 159, 64, 0.2)'
-    //       ],
-    //       borderColor: [
-    //           'rgba(255,99,132,1)',
-    //           'rgba(54, 162, 235, 1)',
-    //           'rgba(255, 206, 86, 1)',
-    //           'rgba(75, 192, 192, 1)',
-    //           'rgba(153, 102, 255, 1)',
-    //           'rgba(255, 159, 64, 1)'
-    //       ],
-    //       borderWidth: 1
-    //   }]
-    // }
-    // const options = {
-    //   scales: {
-    //       yAxes: [{
-    //           ticks: {
-    //               beginAtZero: true
-    //           }
-    //       }]
-    //   }
-    // }
-    
     this.chartProp = chartconfig;
   }
   
-  _checkConfig(config) {
+  _evaluateConfig(config) {
     
     // Only allow Object as input
     if (typeof config === 'object') {
-      var newObj = _.cloneDeepWith(config, (v) => {
+      let newObj = _.cloneDeepWith(config, (v) => {
         if(!_.isObject(v)) {
           if (this._evaluateTemplate(v) !== v) {
+            
+            // Search for entities inputs
+            let regexEntity = /states\[["|'](.+?)["|']\]/g;
+            let matches = v.trim().matchAll(regexEntity);
+            for (const match of matches) {
+              if (!this._updateFromEntities.includes(match[1])) {
+                this._updateFromEntities.push(match[1]);
+              }
+            }
+            
             return this._evaluateTemplate(v);
           }
           if (this._evaluateCssVariable(v) !== v) {
@@ -186,10 +195,25 @@ class ChartjsCard extends LitElement {
   
   setConfig(config) {
     this._config = deepcopy(config);
+    this._setChartDefaults();
+    
+    const availableTypes = ['line', 'radar', 'bar', 'horizontalBar', 'pie', 'doughnut', 'polarArea', 'bubble', 'scatter'];
+    if (!this._config.chart) {
+      throw new Error("You need to define type of chart");
+    } else if ( !availableTypes.includes(this._config.chart) ) {
+      throw new Error("Invalid config for 'chart'. Available options are: "+availableTypes.join(", "));
+    }
+    
+    // Entity row
+    if (typeof this._config.entity_row === "undefined") {
+      this._config.entity_row = false;
+    } else if (typeof this._config.entity_row !== "boolean") {
+      throw new Error("entity_row must be true or false")
+    }
   }
 
   getCardSize() {
-    return 3;
+    return 4;
   }
 
   render() {
@@ -201,9 +225,7 @@ class ChartjsCard extends LitElement {
   }
 
   static get styles() {
-    return css`
-      
-    `;
+    return css``;
   }
 }
 customElements.define("chartjs-card", ChartjsCard);
