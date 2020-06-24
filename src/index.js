@@ -1,6 +1,6 @@
 import Chart from 'chart.js';
 import { LitElement, html, css, TemplateResult } from 'lit-element';
-import { HomeAssistant, hasConfigOrEntityChanged } from 'custom-card-helpers';
+import { HomeAssistant } from 'custom-card-helpers';
 import deepcopy from 'deep-clone-simple';
 import _ from 'lodash';
 
@@ -65,6 +65,7 @@ class ChartjsCard extends LitElement {
   }
 
   firstUpdated() {
+    this._fetchRecent(); // TESTES
     this._setChartConfig();
     
     const ctx = this.renderRoot.querySelector('canvas').getContext('2d');
@@ -90,11 +91,13 @@ class ChartjsCard extends LitElement {
     chartconfig.type = this._config.chart;
     chartconfig.data = this._evaluateConfig(deepcopy(this._config.data));
     chartconfig.options = this._evaluateConfig(deepcopy(this._config.options));
-      
-    if (typeof this._config.custom_options.showLegend === "boolean") {
-      // chartconfig.options.legend.display = this._config.options.showLegend; // Defaults to True
-      var teste = deepcopy(this._config);
-      _.set(chartconfig, 'options.legend.display', this._config.custom_options.showLegend);
+    
+    if (typeof this._config.custom_options === "object") {
+      if (typeof this._config.custom_options.showLegend === "boolean") {
+        // chartconfig.options.legend.display = this._config.options.showLegend; // Defaults to True
+        var teste = deepcopy(this._config);
+        _.set(chartconfig, 'options.legend.display', this._config.custom_options.showLegend);
+      }
     }
     
     this.chartProp = chartconfig;
@@ -129,6 +132,43 @@ class ChartjsCard extends LitElement {
     } else {
       return config;
     }
+  }
+  
+  async _fetchRecent() {
+    // function fetchRecent(entityId, start, end, skipInitialState) {
+    //   let url = 'history/period';
+    //   if (start) url += `/${start.toISOString()}`;
+    //   url += `?filter_entity_id=${entityId}`;
+    //   if (end) url += `&end_time=${end.toISOString()}`;
+    //   if (skipInitialState) url += '&skip_initial_state';
+    //   return this.hass.callApi('GET', url);
+    // }
+    
+    let start = new Date;
+    start.setDate(start.getDate() - 1);
+    let end = new Date;
+    
+    let stateHistory = [];
+    let newStateHistory  = await this.hass.callApi("GET", `history/period/${start.toISOString()}?filter_entity_id=sensor.speedtest_download&end=${end.toISOString()}`);
+    
+    newStateHistory = newStateHistory[0].filter(item => !Number.isNaN(parseFloat(item.state)));
+    newStateHistory = newStateHistory.map(item => ({
+      last_changed: item.last_changed,
+      state: item.state,
+    }));
+    stateHistory = [...stateHistory, ...newStateHistory];
+    
+    // fetchRcent(sensor.speedtest_download, 24, 1);
+    
+    // function fetchR(entityId, start, end) {
+    //   let url = 'history/period';
+    //   if (start) url += `/${start.toISOString()}`;
+    //   url += `?filter_entity_id=${entityId}`;
+    //   if (end) url += `&end_time=${end.toISOString()}`;
+    //   // if (skipInitialState) url += '&skip_initial_state';
+    //   return this.hass.callApi('GET', url);
+    // }
+    console.log(newStateHistory);
   }
   
   _evaluateCssVariable(variable) {
