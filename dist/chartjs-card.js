@@ -41809,7 +41809,7 @@
 	  }
 
 	  firstUpdated() {
-	    this._fetchRecent(); // TESTES
+	    // this._fetchRecent(); // TESTES
 	    this._setChartConfig();
 	    
 	    const ctx = this.renderRoot.querySelector('canvas').getContext('2d');
