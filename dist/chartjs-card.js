@@ -41817,6 +41817,20 @@
 	    this.chart = new Chart(ctx, this.chartProp);
 	  }
 	  
+	  _hetToRgba(hex) {
+	  	let c;
+	    
+	    if(/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)){
+	      c = hex.substring(1).split('');
+	      if(c.length== 3){
+	        c= [c[0], c[0], c[1], c[1], c[2], c[2]];
+	      }
+	      c= '0x'+c.join('');
+	      return 'rgba('+[(c>>16)&255, (c>>8)&255, c&255].join(',')+',1)';
+	    }
+	    throw new Error('Bad Hex');
+	  }
+	  
 	  _updateChart() {
 	    this._updateFromEntities = [];
 	    this.chartProp.data = this._evaluateConfig(deepcopy(this._config.data));
@@ -41998,7 +42012,7 @@
 	  render() {
 	    return html`
       <ha-card style="padding: ${this._config.entity_row ? '0px; box-shadow: none;' : '16px;'}">
-        <canvas></canvas>
+        <canvas>Your browser does not support the canvas element.</canvas>
       </ha-card>
     `;
 	  }
