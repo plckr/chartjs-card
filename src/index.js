@@ -73,7 +73,7 @@ class ChartjsCard extends LitElement {
     this.chart = new Chart(ctx, this.chartProp);
   }
   
-  _hetToRgba(hex) {
+  _hexToRgba(hex) {
   	let c;
     
     if(/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)){
