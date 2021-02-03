@@ -41817,7 +41817,7 @@
 	    this.chart = new Chart(ctx, this.chartProp);
 	  }
 	  
-	  _hetToRgba(hex) {
+	  _hexToRgba(hex) {
 	  	let c;
 	    
 	    if(/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)){
@@ -41942,10 +41942,10 @@
 	      var user = this.hass ? this.hass.user : undefined;
 	      var states = this.hass ? this.hass.states : undefined;
 	      
-	      let regexTemplate = /^\${([^}]+)}$/g;
+	      let regexTemplate = /^\${(.+)}$/g;
 	      template = template.trim();
 	      if (lodash.includes(template, '${') && template.match(regexTemplate)) {
-	        
+
 	    	  template = eval(template.substring(2, template.length - 1));
 	    	  
 	    	  let regexArray = /^\[[^\]]+\]$/g;

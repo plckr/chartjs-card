@@ -203,10 +203,10 @@ class ChartjsCard extends LitElement {
       
       "use strict";
       
-      let regexTemplate = /^\${([^}]+)}$/g;
+      let regexTemplate = /^\${(.+)}$/g;
       template = template.trim();
       if (_.includes(template, '${') && template.match(regexTemplate)) {
-        
+
     	  template = eval(template.substring(2, template.length - 1));
     	  
     	  let regexArray = /^\[[^\]]+\]$/g;
