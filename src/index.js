@@ -91,6 +91,7 @@ class ChartjsCard extends LitElement {
     this._updateFromEntities = [];
     this.chartProp.data = this._evaluateConfig(deepcopy(this._config.data));
     this.chartProp.options = this._evaluateConfig(deepcopy(this._config.options));
+    this.chartProp.plugins = this._evaluateConfig(deepcopy(this._config.plugins));
     this.chart.update({duration: 0, easing: 'linear'});
   }
   
@@ -105,6 +106,7 @@ class ChartjsCard extends LitElement {
     chartconfig.type = this._config.chart;
     chartconfig.data = this._evaluateConfig(deepcopy(this._config.data));
     chartconfig.options = this._evaluateConfig(deepcopy(this._config.options));
+    chartconfig.plugins = this._evaluateConfig(deepcopy(this._config.plugins));
     
     if (typeof this._config.custom_options === "object") {
       if (typeof this._config.custom_options.showLegend === "boolean") {
