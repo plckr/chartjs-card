@@ -9,7 +9,7 @@
     "home-assistant"
   ],
   "dependencies": {
-    "chart.js": "2.9.3",
+    "chart.js": "2.9.4",
     "custom-card-helpers": "^1.6.4",
     "deep-clone-simple": "^1.1.1",
     "lit-element": "^2.3.1",
