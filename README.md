@@ -1,6 +1,9 @@
 # chartjs-card
 Chart.js card for Home Assistant
 
+## [Chart.js documentation](https://www.chartjs.org/docs/2.9.3/)
+### **IMPORTANT** This card uses chart.js 2.9.3, when looking for the documentation, view the right version
+
 ![](./card.png)
 
 ## Instalation through HACS
@@ -17,7 +20,8 @@ To do that just follow these steps: **HACS -> Frontend -> 3 dots (upper right co
 | entitiy_row    | boolean  | false       | if is entity row or not |
 | custom_options | object   |             | TODO |
 
-[Chart.js documentation](https://www.chartjs.org/docs/latest/)
+[Chart.js documentation](https://www.chartjs.org/docs/2.9.3/)
+**IMPORTANT** This card uses chart.js 2.9.3, when looking for the documentation, view the right version
 
 ### example 1
 ![](./img/example1.jpg)
