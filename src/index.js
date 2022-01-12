@@ -51,16 +51,8 @@ class Card extends LitElement {
     return false
   }
 
-  _initialize() {
-    if (this._initialized) this.chart.destroy()
-    this.chartConfig = this._generateChartConfig(this._config)
-    const ctx = this.renderRoot.querySelector('canvas').getContext('2d')
-    this.chart = new Chart(ctx, this.chartConfig)
-  }
-
   firstUpdated() {
     this._initialize()
-    this._initialized = true
   }
 
   updated(changedProps) {
@@ -72,6 +64,14 @@ class Card extends LitElement {
     }
 
     this.chart.update('none')
+  }
+
+  _initialize() {
+    if (this._initialized) this.chart.destroy()
+    this.chartConfig = this._generateChartConfig(this._config)
+    const ctx = this.renderRoot.querySelector('canvas').getContext('2d')
+    this.chart = new Chart(ctx, this.chartConfig)
+    this._initialized = true
   }
 
   _generateChartConfig(config) {
