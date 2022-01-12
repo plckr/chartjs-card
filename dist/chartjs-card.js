@@ -4,7 +4,7 @@
 })((function () { 'use strict';
 
   const name = "chartjs-card";
-  const version$1 = "1.0.0";
+  const version$1 = "1.0.1";
   const description = "Chart.js card to Home Assistant";
   const main = "src/index.js";
   const keywords = [
@@ -30419,11 +30419,6 @@
             changed = changed || Boolean(this.hass && oldHass.states[entity] !== this.hass.states[entity]);
           });
 
-          if (changed) {
-            this._updateFromEntities = [];
-            return true
-          }
-
           return changed
         }
       }
@@ -30443,7 +30438,7 @@
         return
       }
 
-      this.chart.update('none');
+      this._updateChart();
     }
 
     _initialize() {
@@ -30454,7 +30449,19 @@
       this._initialized = true;
     }
 
+    _updateChart() {
+      if (!this._initialized) return
+      const chartConfig = this._generateChartConfig(this._config);
+      this.chart.data = chartConfig.data;
+      this.chart.options = chartConfig.options;
+      this.chart.plugins = chartConfig.plugins;
+      this.chart.update('none');
+    }
+
     _generateChartConfig(config) {
+      // Reset dependency entities
+      this._updateFromEntities = [];
+
       let chartconfig = {
         type: config.chart,
         data: this._evaluateConfig(config.data),

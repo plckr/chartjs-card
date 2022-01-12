@@ -1,6 +1,6 @@
 {
   "name": "chartjs-card",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Chart.js card to Home Assistant",
   "main": "src/index.js",
   "keywords": [
