@@ -129,6 +129,8 @@ class Card extends LitElement {
   }
 
   _evaluateCssVariable(variable) {
+    if (typeof variable !== 'string') return variable
+
     const regexCssVar = /var[(](--[^-].+)[)]/
     var r = _.words(variable, regexCssVar)[1]
 
@@ -141,29 +143,32 @@ class Card extends LitElement {
 
   _evaluateTemplate(template) {
     if (typeof template === 'string') {
-      ;('use strict')
-
-      const user = this.hass?.user
-      const states = this.hass?.states
-
-      // Workaround to avoid rollup to remove above variables
-      if (!user || !states) console.log('this never executes')
-
       const regexTemplate = /^\${(.+)}$/g
-      template = template.trim()
       if (_.includes(template, '${') && template.match(regexTemplate)) {
-        template = eval(template.substring(2, template.length - 1))
+        ;('use strict')
+
+        const user = this.hass?.user
+        const states = this.hass?.states
+
+        // Workaround to avoid rollup to remove above variables
+        if (!user || !states) console.log('this never executes')
+
+        const evaluated = eval(template.trim().substring(2, template.length - 1))
+
+        if (Array.isArray(evaluated)) {
+          return evaluated.map((r) => this._evaluateCssVariable(r))
+        }
 
         const regexArray = /^\[[^\]]+\]$/g
-        if (typeof template === 'string' && template.match(regexArray)) {
+        if (typeof evaluated === 'string' && evaluated.match(regexArray)) {
           try {
-            return eval(template)
+            return eval(evaluated).map((r) => this._evaluateCssVariable(r))
           } catch (e) {
-            return template
+            return evaluated
           }
         }
+        return evaluated
       }
-      return template
     }
     return template
   }
