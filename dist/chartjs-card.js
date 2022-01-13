@@ -30400,9 +30400,10 @@
 
       // Set chart defaults
       Chart.defaults.color = this._evaluateCssVariable('var(--primary-text-color)');
-      if (!Chart.defaults.title) Chart.defaults.title = {};
-      Chart.defaults.title.fontSize = 14;
-      Chart.defaults.title.fontStyle = 'normal';
+      Chart.defaults.title = {
+        fontSize: 14,
+        fontStyle: 'normal',
+      };
     }
 
     shouldUpdate(changedProps) {
