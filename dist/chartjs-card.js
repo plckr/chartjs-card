@@ -30529,9 +30529,10 @@
 
           const user = this.hass?.user;
           const states = this.hass?.states;
+          const hass = this.hass;
 
           // Workaround to avoid rollup to remove above variables
-          if (!user || !states) console.log('this never executes');
+          if (!user || !states || !hass) console.log('this never executes');
 
           const evaluated = eval(template.trim().substring(2, template.length - 1));
 
