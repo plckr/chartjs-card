@@ -1,5 +1,6 @@
 import pkg from '../package.json'
 import Chart from 'chart.js/auto'
+import zoomPlugin from 'chartjs-plugin-zoom'
 import { LitElement, html } from 'lit-element'
 import _ from 'lodash'
 
@@ -63,6 +64,14 @@ class Card extends LitElement {
   }
 
   _initialize() {
+    // Register zoom plugin
+    if (Array.isArray(this._config.register_plugins)) {
+      if (this._config.register_plugins.includes('zoom')) {
+        console.log('Registering plugin zoomPlugin')
+        Chart.register(zoomPlugin)
+      }
+    }
+
     if (this._initialized) this.chart.destroy()
     this.chartConfig = this._generateChartConfig(this._config)
     const ctx = this.renderRoot.querySelector('canvas').getContext('2d')
