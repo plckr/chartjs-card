@@ -1,8 +1,10 @@
 import pkg from '../package.json'
 import Chart from 'chart.js/auto'
-import zoomPlugin from 'chartjs-plugin-zoom'
 import { LitElement, html } from 'lit-element'
 import _ from 'lodash'
+
+import zoomPlugin from 'chartjs-plugin-zoom'
+import annotationPlugin from 'chartjs-plugin-annotation'
 
 class Card extends LitElement {
   static get properties() {
@@ -67,8 +69,10 @@ class Card extends LitElement {
     // Register zoom plugin
     if (Array.isArray(this._config.register_plugins)) {
       if (this._config.register_plugins.includes('zoom')) {
-        console.log('Registering plugin zoomPlugin')
         Chart.register(zoomPlugin)
+      }
+      if (this._config.register_plugins.includes('annotation')) {
+        Chart.register(annotationPlugin)
       }
     }
 

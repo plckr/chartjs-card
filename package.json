@@ -10,6 +10,7 @@
   ],
   "dependencies": {
     "chart.js": "^3.7.0",
+    "chartjs-plugin-annotation": "^1.2.2",
     "chartjs-plugin-zoom": "^1.2.0",
     "lit": "^2.1.1",
     "lodash": "^4.17.15"
