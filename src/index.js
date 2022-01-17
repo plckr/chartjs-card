@@ -3,6 +3,9 @@ import Chart from 'chart.js/auto'
 import { LitElement, html } from 'lit-element'
 import _ from 'lodash'
 
+import zoomPlugin from 'chartjs-plugin-zoom'
+import annotationPlugin from 'chartjs-plugin-annotation'
+
 class Card extends LitElement {
   static get properties() {
     return {
@@ -63,6 +66,16 @@ class Card extends LitElement {
   }
 
   _initialize() {
+    // Register zoom plugin
+    if (Array.isArray(this._config.register_plugins)) {
+      if (this._config.register_plugins.includes('zoom')) {
+        Chart.register(zoomPlugin)
+      }
+      if (this._config.register_plugins.includes('annotation')) {
+        Chart.register(annotationPlugin)
+      }
+    }
+
     if (this._initialized) this.chart.destroy()
     this.chartConfig = this._generateChartConfig(this._config)
     const ctx = this.renderRoot.querySelector('canvas').getContext('2d')

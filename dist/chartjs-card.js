@@ -4,7 +4,7 @@
 })((function () { 'use strict';
 
   const name = "chartjs-card";
-  const version$1 = "1.0.3";
+  const version$3 = "1.0.3";
   const description = "Chart.js card to Home Assistant";
   const main = "src/index.js";
   const keywords = [
@@ -14,6 +14,8 @@
   ];
   const dependencies = {
   	"chart.js": "^3.7.0",
+  	"chartjs-plugin-annotation": "^1.2.2",
+  	"chartjs-plugin-zoom": "^1.2.0",
   	lit: "^2.1.1",
   	lodash: "^4.17.15"
   };
@@ -35,7 +37,7 @@
   const license = "ISC";
   var pkg = {
   	name: name,
-  	version: version$1,
+  	version: version$3,
   	description: description,
   	main: main,
   	keywords: keywords,
@@ -75,7 +77,7 @@
       }
     };
   }
-  function debounce(fn, delay) {
+  function debounce$1(fn, delay) {
     let timeout;
     return function(...args) {
       if (delay) {
@@ -277,14 +279,14 @@
     return e.type === 'mouseup' || e.type === 'click' || e.type === 'contextmenu';
   }
 
-  const PI = Math.PI;
-  const TAU = 2 * PI;
-  const PITAU = TAU + PI;
+  const PI$1 = Math.PI;
+  const TAU = 2 * PI$1;
+  const PITAU = TAU + PI$1;
   const INFINITY = Number.POSITIVE_INFINITY;
-  const RAD_PER_DEG = PI / 180;
-  const HALF_PI = PI / 2;
-  const QUARTER_PI = PI / 4;
-  const TWO_THIRDS_PI = PI * 2 / 3;
+  const RAD_PER_DEG = PI$1 / 180;
+  const HALF_PI = PI$1 / 2;
+  const QUARTER_PI = PI$1 / 4;
+  const TWO_THIRDS_PI = PI$1 * 2 / 3;
   const log10 = Math.log10;
   const sign = Math.sign;
   function niceNum(range) {
@@ -332,10 +334,10 @@
     }
   }
   function toRadians(degrees) {
-    return degrees * (PI / 180);
+    return degrees * (PI$1 / 180);
   }
   function toDegrees(radians) {
-    return radians * (180 / PI);
+    return radians * (180 / PI$1);
   }
   function _decimalPlaces(x) {
     if (!isNumberFinite(x)) {
@@ -354,7 +356,7 @@
     const distanceFromYCenter = anglePoint.y - centrePoint.y;
     const radialDistanceFromCenter = Math.sqrt(distanceFromXCenter * distanceFromXCenter + distanceFromYCenter * distanceFromYCenter);
     let angle = Math.atan2(distanceFromYCenter, distanceFromXCenter);
-    if (angle < (-0.5 * PI)) {
+    if (angle < (-0.5 * PI$1)) {
       angle += TAU;
     }
     return {
@@ -366,7 +368,7 @@
     return Math.sqrt(Math.pow(pt2.x - pt1.x, 2) + Math.pow(pt2.y - pt1.y, 2));
   }
   function _angleDiff(a, b) {
-    return (a - b + PITAU) % TAU - PI;
+    return (a - b + PITAU) % TAU - PI$1;
   }
   function _normalizeAngle(a) {
     return (a % TAU + TAU) % TAU;
@@ -419,7 +421,7 @@
       : 0.5 * ((t -= 2) * t * t * t * t + 2),
     easeInSine: t => -Math.cos(t * HALF_PI) + 1,
     easeOutSine: t => Math.sin(t * HALF_PI),
-    easeInOutSine: t => -0.5 * (Math.cos(PI * t) - 1),
+    easeInOutSine: t => -0.5 * (Math.cos(PI$1 * t) - 1),
     easeInExpo: t => (t === 0) ? 0 : Math.pow(2, 10 * (t - 1)),
     easeOutExpo: t => (t === 1) ? 1 : -Math.pow(2, -10 * t) + 1,
     easeInOutExpo: t => atEdge(t) ? t : t < 0.5
@@ -1261,10 +1263,10 @@
       size = radius - cornerRadius;
       xOffset = Math.cos(rad + QUARTER_PI) * size;
       yOffset = Math.sin(rad + QUARTER_PI) * size;
-      ctx.arc(x - xOffset, y - yOffset, cornerRadius, rad - PI, rad - HALF_PI);
+      ctx.arc(x - xOffset, y - yOffset, cornerRadius, rad - PI$1, rad - HALF_PI);
       ctx.arc(x + yOffset, y - xOffset, cornerRadius, rad - HALF_PI, rad);
       ctx.arc(x + xOffset, y + yOffset, cornerRadius, rad, rad + HALF_PI);
-      ctx.arc(x - yOffset, y + xOffset, cornerRadius, rad + HALF_PI, rad + PI);
+      ctx.arc(x - yOffset, y + xOffset, cornerRadius, rad + HALF_PI, rad + PI$1);
       ctx.closePath();
       break;
     case 'rect':
@@ -1424,9 +1426,9 @@
   }
   function addRoundedRectPath(ctx, rect) {
     const {x, y, w, h, radius} = rect;
-    ctx.arc(x + radius.topLeft, y + radius.topLeft, radius.topLeft, -HALF_PI, PI, true);
+    ctx.arc(x + radius.topLeft, y + radius.topLeft, radius.topLeft, -HALF_PI, PI$1, true);
     ctx.lineTo(x, y + h - radius.bottomLeft);
-    ctx.arc(x + radius.bottomLeft, y + h - radius.bottomLeft, radius.bottomLeft, PI, HALF_PI, true);
+    ctx.arc(x + radius.bottomLeft, y + h - radius.bottomLeft, radius.bottomLeft, PI$1, HALF_PI, true);
     ctx.lineTo(x + w - radius.bottomRight, y + h);
     ctx.arc(x + w - radius.bottomRight, y + h - radius.bottomRight, radius.bottomRight, HALF_PI, 0, true);
     ctx.lineTo(x + w, y + radius.topRight);
@@ -2088,7 +2090,7 @@
     }
     return {x, y, box};
   }
-  function getRelativePosition$1(evt, chart) {
+  function getRelativePosition$2(evt, chart) {
     const {canvas, currentDevicePixelRatio} = chart;
     const style = getComputedStyle$1(canvas);
     const borderBox = style.boxSizing === 'border-box';
@@ -4279,8 +4281,8 @@
       const calcMin = (angle, a, b) => _angleBetween(angle, startAngle, endAngle, true) ? -1 : Math.min(a, a * cutout, b, b * cutout);
       const maxX = calcMax(0, startX, endX);
       const maxY = calcMax(HALF_PI, startY, endY);
-      const minX = calcMin(PI, startX, endX);
-      const minY = calcMin(PI + HALF_PI, startY, endY);
+      const minX = calcMin(PI$1, startX, endX);
+      const minY = calcMin(PI$1 + HALF_PI, startY, endY);
       ratioX = (maxX - minX) / 2;
       ratioY = (maxY - minY) / 2;
       offsetX = -(maxX + minX) / 2;
@@ -4753,7 +4755,7 @@
       const scale = this._cachedMeta.rScale;
       const centerX = scale.xCenter;
       const centerY = scale.yCenter;
-      const datasetStartAngle = scale.getIndexAngle(0) - 0.5 * PI;
+      const datasetStartAngle = scale.getIndexAngle(0) - 0.5 * PI$1;
       let angle = datasetStartAngle;
       let i;
       const defaultAngle = 360 / this.countVisibleElements();
@@ -5041,14 +5043,14 @@
     _date: DateAdapter
   };
 
-  function getRelativePosition(e, chart) {
+  function getRelativePosition$1(e, chart) {
     if ('native' in e) {
       return {
         x: e.x,
         y: e.y
       };
     }
-    return getRelativePosition$1(e, chart);
+    return getRelativePosition$2(e, chart);
   }
   function evaluateAllVisibleItems(chart, handler) {
     const metasets = chart.getSortedVisibleDatasetMetas();
@@ -5164,7 +5166,7 @@
       : getNearestCartesianItems(chart, position, axis, intersect, useFinalPosition);
   }
   function getAxisItems(chart, e, options, useFinalPosition) {
-    const position = getRelativePosition(e, chart);
+    const position = getRelativePosition$1(e, chart);
     const items = [];
     const axis = options.axis;
     const rangeMethod = axis === 'x' ? 'inXRange' : 'inYRange';
@@ -5185,7 +5187,7 @@
   var Interaction = {
     modes: {
       index(chart, e, options, useFinalPosition) {
-        const position = getRelativePosition(e, chart);
+        const position = getRelativePosition$1(e, chart);
         const axis = options.axis || 'x';
         const items = options.intersect
           ? getIntersectItems(chart, position, axis, useFinalPosition)
@@ -5204,7 +5206,7 @@
         return elements;
       },
       dataset(chart, e, options, useFinalPosition) {
-        const position = getRelativePosition(e, chart);
+        const position = getRelativePosition$1(e, chart);
         const axis = options.axis || 'xy';
         let items = options.intersect
           ? getIntersectItems(chart, position, axis, useFinalPosition) :
@@ -5220,12 +5222,12 @@
         return items;
       },
       point(chart, e, options, useFinalPosition) {
-        const position = getRelativePosition(e, chart);
+        const position = getRelativePosition$1(e, chart);
         const axis = options.axis || 'xy';
         return getIntersectItems(chart, position, axis, useFinalPosition);
       },
       nearest(chart, e, options, useFinalPosition) {
-        const position = getRelativePosition(e, chart);
+        const position = getRelativePosition$1(e, chart);
         const axis = options.axis || 'xy';
         return getNearestItems(chart, position, axis, options.intersect, useFinalPosition);
       },
@@ -5640,7 +5642,7 @@
   }
   function fromNativeEvent(event, chart) {
     const type = EVENT_TYPES[event.type] || event.type;
-    const {x, y} = getRelativePosition$1(event, chart);
+    const {x, y} = getRelativePosition$2(event, chart);
     return {
       type,
       chart,
@@ -7822,7 +7824,7 @@
     return false;
   }
 
-  var version = "3.7.0";
+  var version$2 = "3.7.0";
 
   const KNOWN_POSITIONS = ['top', 'bottom', 'left', 'right', 'chartArea'];
   function positionIsHorizontal(position, axis) {
@@ -7927,7 +7929,7 @@
       this.attached = false;
       this._animationsDisabled = undefined;
       this.$context = undefined;
-      this._doResize = debounce(mode => this.update(mode), options.resizeDelay || 0);
+      this._doResize = debounce$1(mode => this.update(mode), options.resizeDelay || 0);
       this._dataChanges = [];
       instances[this.id] = this;
       if (!context || !canvas) {
@@ -8669,7 +8671,7 @@
     },
     version: {
       enumerable,
-      value: version
+      value: version$2
     },
     getChart: {
       enumerable,
@@ -8742,7 +8744,7 @@
       const adjustedAngle = avNogSpacingRadius !== 0 ? (alpha * avNogSpacingRadius) / (avNogSpacingRadius + spacing) : alpha;
       spacingOffset = (alpha - adjustedAngle) / 2;
     }
-    const beta = Math.max(0.001, alpha * outerRadius - offset / PI) / outerRadius;
+    const beta = Math.max(0.001, alpha * outerRadius - offset / PI$1) / outerRadius;
     const angleOffset = (alpha - beta) / 2;
     const startAngle = start + angleOffset + spacingOffset;
     const endAngle = end - angleOffset - spacingOffset;
@@ -8908,7 +8910,7 @@
         radiusOffset = offset / 2;
         const halfAngle = (this.startAngle + this.endAngle) / 2;
         ctx.translate(Math.cos(halfAngle) * radiusOffset, Math.sin(halfAngle) * radiusOffset);
-        if (this.circumference >= PI) {
+        if (this.circumference >= PI$1) {
           radiusOffset = offset;
         }
       }
@@ -9076,7 +9078,7 @@
     }
   }
   const usePath2D = typeof Path2D === 'function';
-  function draw(ctx, line, start, count) {
+  function draw$1(ctx, line, start, count) {
     if (usePath2D && !line.options.segment) {
       strokePathWithCache(ctx, line, start, count);
     } else {
@@ -9178,7 +9180,7 @@
       const points = this.points || [];
       if (points.length && options.borderWidth) {
         ctx.save();
-        draw(ctx, this, start, count);
+        draw$1(ctx, this, start, count);
         ctx.restore();
       }
       if (this.animated) {
@@ -10663,11 +10665,11 @@
         if (options.position === 'left') {
           titleX = left + offset;
           titleY = _alignStartEnd(align, bottom, top);
-          rotation = PI * -0.5;
+          rotation = PI$1 * -0.5;
         } else {
           titleX = right - offset;
           titleY = _alignStartEnd(align, top, bottom);
-          rotation = PI * 0.5;
+          rotation = PI$1 * 0.5;
         }
         maxWidth = bottom - top;
       }
@@ -12242,7 +12244,7 @@
     }
     return 0;
   }
-  function measureLabelSize(ctx, font, label) {
+  function measureLabelSize$1(ctx, font, label) {
     label = isArray(label) ? label : [label];
     return {
       w: _longestText(ctx, font.string, label),
@@ -12278,19 +12280,19 @@
     const padding = [];
     const valueCount = scale._pointLabels.length;
     const pointLabelOpts = scale.options.pointLabels;
-    const additionalAngle = pointLabelOpts.centerPointLabels ? PI / valueCount : 0;
+    const additionalAngle = pointLabelOpts.centerPointLabels ? PI$1 / valueCount : 0;
     for (let i = 0; i < valueCount; i++) {
       const opts = pointLabelOpts.setContext(scale.getPointLabelContext(i));
       padding[i] = opts.padding;
       const pointPosition = scale.getPointPosition(i, scale.drawingArea + padding[i], additionalAngle);
       const plFont = toFont(opts.font);
-      const textSize = measureLabelSize(scale.ctx, plFont, scale._pointLabels[i]);
+      const textSize = measureLabelSize$1(scale.ctx, plFont, scale._pointLabels[i]);
       labelSizes[i] = textSize;
       const angleRadians = _normalizeAngle(scale.getIndexAngle(i) + additionalAngle);
       const angle = Math.round(toDegrees(angleRadians));
       const hLimits = determineLimits(angle, pointPosition.x, textSize.w, 0, 180);
       const vLimits = determineLimits(angle, pointPosition.y, textSize.h, 90, 270);
-      updateLimits(limits, orig, angleRadians, hLimits, vLimits);
+      updateLimits$1(limits, orig, angleRadians, hLimits, vLimits);
     }
     scale.setCenterPoint(
       orig.l - limits.l,
@@ -12300,7 +12302,7 @@
     );
     scale._pointLabelItems = buildPointLabelItems(scale, labelSizes, padding);
   }
-  function updateLimits(limits, orig, angle, hLimits, vLimits) {
+  function updateLimits$1(limits, orig, angle, hLimits, vLimits) {
     const sin = Math.abs(Math.sin(angle));
     const cos = Math.abs(Math.cos(angle));
     let x = 0;
@@ -12326,7 +12328,7 @@
     const opts = scale.options;
     const extra = getTickBackdropHeight(opts) / 2;
     const outerDistance = scale.drawingArea;
-    const additionalAngle = opts.pointLabels.centerPointLabels ? PI / valueCount : 0;
+    const additionalAngle = opts.pointLabels.centerPointLabels ? PI$1 / valueCount : 0;
     for (let i = 0; i < valueCount; i++) {
       const pointLabelPosition = scale.getPointPosition(i, outerDistance + extra + padding[i], additionalAngle);
       const angle = Math.round(toDegrees(_normalizeAngle(pointLabelPosition.angle + HALF_PI)));
@@ -30383,6 +30385,5315 @@
 
   var _ = lodash.exports;
 
+  var hammer = {exports: {}};
+
+  /*! Hammer.JS - v2.0.7 - 2016-04-22
+   * http://hammerjs.github.io/
+   *
+   * Copyright (c) 2016 Jorik Tangelder;
+   * Licensed under the MIT license */
+
+  (function (module) {
+  (function(window, document, exportName, undefined$1) {
+
+  var VENDOR_PREFIXES = ['', 'webkit', 'Moz', 'MS', 'ms', 'o'];
+  var TEST_ELEMENT = document.createElement('div');
+
+  var TYPE_FUNCTION = 'function';
+
+  var round = Math.round;
+  var abs = Math.abs;
+  var now = Date.now;
+
+  /**
+   * set a timeout with a given scope
+   * @param {Function} fn
+   * @param {Number} timeout
+   * @param {Object} context
+   * @returns {number}
+   */
+  function setTimeoutContext(fn, timeout, context) {
+      return setTimeout(bindFn(fn, context), timeout);
+  }
+
+  /**
+   * if the argument is an array, we want to execute the fn on each entry
+   * if it aint an array we don't want to do a thing.
+   * this is used by all the methods that accept a single and array argument.
+   * @param {*|Array} arg
+   * @param {String} fn
+   * @param {Object} [context]
+   * @returns {Boolean}
+   */
+  function invokeArrayArg(arg, fn, context) {
+      if (Array.isArray(arg)) {
+          each(arg, context[fn], context);
+          return true;
+      }
+      return false;
+  }
+
+  /**
+   * walk objects and arrays
+   * @param {Object} obj
+   * @param {Function} iterator
+   * @param {Object} context
+   */
+  function each(obj, iterator, context) {
+      var i;
+
+      if (!obj) {
+          return;
+      }
+
+      if (obj.forEach) {
+          obj.forEach(iterator, context);
+      } else if (obj.length !== undefined$1) {
+          i = 0;
+          while (i < obj.length) {
+              iterator.call(context, obj[i], i, obj);
+              i++;
+          }
+      } else {
+          for (i in obj) {
+              obj.hasOwnProperty(i) && iterator.call(context, obj[i], i, obj);
+          }
+      }
+  }
+
+  /**
+   * wrap a method with a deprecation warning and stack trace
+   * @param {Function} method
+   * @param {String} name
+   * @param {String} message
+   * @returns {Function} A new function wrapping the supplied method.
+   */
+  function deprecate(method, name, message) {
+      var deprecationMessage = 'DEPRECATED METHOD: ' + name + '\n' + message + ' AT \n';
+      return function() {
+          var e = new Error('get-stack-trace');
+          var stack = e && e.stack ? e.stack.replace(/^[^\(]+?[\n$]/gm, '')
+              .replace(/^\s+at\s+/gm, '')
+              .replace(/^Object.<anonymous>\s*\(/gm, '{anonymous}()@') : 'Unknown Stack Trace';
+
+          var log = window.console && (window.console.warn || window.console.log);
+          if (log) {
+              log.call(window.console, deprecationMessage, stack);
+          }
+          return method.apply(this, arguments);
+      };
+  }
+
+  /**
+   * extend object.
+   * means that properties in dest will be overwritten by the ones in src.
+   * @param {Object} target
+   * @param {...Object} objects_to_assign
+   * @returns {Object} target
+   */
+  var assign;
+  if (typeof Object.assign !== 'function') {
+      assign = function assign(target) {
+          if (target === undefined$1 || target === null) {
+              throw new TypeError('Cannot convert undefined or null to object');
+          }
+
+          var output = Object(target);
+          for (var index = 1; index < arguments.length; index++) {
+              var source = arguments[index];
+              if (source !== undefined$1 && source !== null) {
+                  for (var nextKey in source) {
+                      if (source.hasOwnProperty(nextKey)) {
+                          output[nextKey] = source[nextKey];
+                      }
+                  }
+              }
+          }
+          return output;
+      };
+  } else {
+      assign = Object.assign;
+  }
+
+  /**
+   * extend object.
+   * means that properties in dest will be overwritten by the ones in src.
+   * @param {Object} dest
+   * @param {Object} src
+   * @param {Boolean} [merge=false]
+   * @returns {Object} dest
+   */
+  var extend = deprecate(function extend(dest, src, merge) {
+      var keys = Object.keys(src);
+      var i = 0;
+      while (i < keys.length) {
+          if (!merge || (merge && dest[keys[i]] === undefined$1)) {
+              dest[keys[i]] = src[keys[i]];
+          }
+          i++;
+      }
+      return dest;
+  }, 'extend', 'Use `assign`.');
+
+  /**
+   * merge the values from src in the dest.
+   * means that properties that exist in dest will not be overwritten by src
+   * @param {Object} dest
+   * @param {Object} src
+   * @returns {Object} dest
+   */
+  var merge = deprecate(function merge(dest, src) {
+      return extend(dest, src, true);
+  }, 'merge', 'Use `assign`.');
+
+  /**
+   * simple class inheritance
+   * @param {Function} child
+   * @param {Function} base
+   * @param {Object} [properties]
+   */
+  function inherit(child, base, properties) {
+      var baseP = base.prototype,
+          childP;
+
+      childP = child.prototype = Object.create(baseP);
+      childP.constructor = child;
+      childP._super = baseP;
+
+      if (properties) {
+          assign(childP, properties);
+      }
+  }
+
+  /**
+   * simple function bind
+   * @param {Function} fn
+   * @param {Object} context
+   * @returns {Function}
+   */
+  function bindFn(fn, context) {
+      return function boundFn() {
+          return fn.apply(context, arguments);
+      };
+  }
+
+  /**
+   * let a boolean value also be a function that must return a boolean
+   * this first item in args will be used as the context
+   * @param {Boolean|Function} val
+   * @param {Array} [args]
+   * @returns {Boolean}
+   */
+  function boolOrFn(val, args) {
+      if (typeof val == TYPE_FUNCTION) {
+          return val.apply(args ? args[0] || undefined$1 : undefined$1, args);
+      }
+      return val;
+  }
+
+  /**
+   * use the val2 when val1 is undefined
+   * @param {*} val1
+   * @param {*} val2
+   * @returns {*}
+   */
+  function ifUndefined(val1, val2) {
+      return (val1 === undefined$1) ? val2 : val1;
+  }
+
+  /**
+   * addEventListener with multiple events at once
+   * @param {EventTarget} target
+   * @param {String} types
+   * @param {Function} handler
+   */
+  function addEventListeners(target, types, handler) {
+      each(splitStr(types), function(type) {
+          target.addEventListener(type, handler, false);
+      });
+  }
+
+  /**
+   * removeEventListener with multiple events at once
+   * @param {EventTarget} target
+   * @param {String} types
+   * @param {Function} handler
+   */
+  function removeEventListeners(target, types, handler) {
+      each(splitStr(types), function(type) {
+          target.removeEventListener(type, handler, false);
+      });
+  }
+
+  /**
+   * find if a node is in the given parent
+   * @method hasParent
+   * @param {HTMLElement} node
+   * @param {HTMLElement} parent
+   * @return {Boolean} found
+   */
+  function hasParent(node, parent) {
+      while (node) {
+          if (node == parent) {
+              return true;
+          }
+          node = node.parentNode;
+      }
+      return false;
+  }
+
+  /**
+   * small indexOf wrapper
+   * @param {String} str
+   * @param {String} find
+   * @returns {Boolean} found
+   */
+  function inStr(str, find) {
+      return str.indexOf(find) > -1;
+  }
+
+  /**
+   * split string on whitespace
+   * @param {String} str
+   * @returns {Array} words
+   */
+  function splitStr(str) {
+      return str.trim().split(/\s+/g);
+  }
+
+  /**
+   * find if a array contains the object using indexOf or a simple polyFill
+   * @param {Array} src
+   * @param {String} find
+   * @param {String} [findByKey]
+   * @return {Boolean|Number} false when not found, or the index
+   */
+  function inArray(src, find, findByKey) {
+      if (src.indexOf && !findByKey) {
+          return src.indexOf(find);
+      } else {
+          var i = 0;
+          while (i < src.length) {
+              if ((findByKey && src[i][findByKey] == find) || (!findByKey && src[i] === find)) {
+                  return i;
+              }
+              i++;
+          }
+          return -1;
+      }
+  }
+
+  /**
+   * convert array-like objects to real arrays
+   * @param {Object} obj
+   * @returns {Array}
+   */
+  function toArray(obj) {
+      return Array.prototype.slice.call(obj, 0);
+  }
+
+  /**
+   * unique array with objects based on a key (like 'id') or just by the array's value
+   * @param {Array} src [{id:1},{id:2},{id:1}]
+   * @param {String} [key]
+   * @param {Boolean} [sort=False]
+   * @returns {Array} [{id:1},{id:2}]
+   */
+  function uniqueArray(src, key, sort) {
+      var results = [];
+      var values = [];
+      var i = 0;
+
+      while (i < src.length) {
+          var val = key ? src[i][key] : src[i];
+          if (inArray(values, val) < 0) {
+              results.push(src[i]);
+          }
+          values[i] = val;
+          i++;
+      }
+
+      if (sort) {
+          if (!key) {
+              results = results.sort();
+          } else {
+              results = results.sort(function sortUniqueArray(a, b) {
+                  return a[key] > b[key];
+              });
+          }
+      }
+
+      return results;
+  }
+
+  /**
+   * get the prefixed property
+   * @param {Object} obj
+   * @param {String} property
+   * @returns {String|Undefined} prefixed
+   */
+  function prefixed(obj, property) {
+      var prefix, prop;
+      var camelProp = property[0].toUpperCase() + property.slice(1);
+
+      var i = 0;
+      while (i < VENDOR_PREFIXES.length) {
+          prefix = VENDOR_PREFIXES[i];
+          prop = (prefix) ? prefix + camelProp : property;
+
+          if (prop in obj) {
+              return prop;
+          }
+          i++;
+      }
+      return undefined$1;
+  }
+
+  /**
+   * get a unique id
+   * @returns {number} uniqueId
+   */
+  var _uniqueId = 1;
+  function uniqueId() {
+      return _uniqueId++;
+  }
+
+  /**
+   * get the window object of an element
+   * @param {HTMLElement} element
+   * @returns {DocumentView|Window}
+   */
+  function getWindowForElement(element) {
+      var doc = element.ownerDocument || element;
+      return (doc.defaultView || doc.parentWindow || window);
+  }
+
+  var MOBILE_REGEX = /mobile|tablet|ip(ad|hone|od)|android/i;
+
+  var SUPPORT_TOUCH = ('ontouchstart' in window);
+  var SUPPORT_POINTER_EVENTS = prefixed(window, 'PointerEvent') !== undefined$1;
+  var SUPPORT_ONLY_TOUCH = SUPPORT_TOUCH && MOBILE_REGEX.test(navigator.userAgent);
+
+  var INPUT_TYPE_TOUCH = 'touch';
+  var INPUT_TYPE_PEN = 'pen';
+  var INPUT_TYPE_MOUSE = 'mouse';
+  var INPUT_TYPE_KINECT = 'kinect';
+
+  var COMPUTE_INTERVAL = 25;
+
+  var INPUT_START = 1;
+  var INPUT_MOVE = 2;
+  var INPUT_END = 4;
+  var INPUT_CANCEL = 8;
+
+  var DIRECTION_NONE = 1;
+  var DIRECTION_LEFT = 2;
+  var DIRECTION_RIGHT = 4;
+  var DIRECTION_UP = 8;
+  var DIRECTION_DOWN = 16;
+
+  var DIRECTION_HORIZONTAL = DIRECTION_LEFT | DIRECTION_RIGHT;
+  var DIRECTION_VERTICAL = DIRECTION_UP | DIRECTION_DOWN;
+  var DIRECTION_ALL = DIRECTION_HORIZONTAL | DIRECTION_VERTICAL;
+
+  var PROPS_XY = ['x', 'y'];
+  var PROPS_CLIENT_XY = ['clientX', 'clientY'];
+
+  /**
+   * create new input type manager
+   * @param {Manager} manager
+   * @param {Function} callback
+   * @returns {Input}
+   * @constructor
+   */
+  function Input(manager, callback) {
+      var self = this;
+      this.manager = manager;
+      this.callback = callback;
+      this.element = manager.element;
+      this.target = manager.options.inputTarget;
+
+      // smaller wrapper around the handler, for the scope and the enabled state of the manager,
+      // so when disabled the input events are completely bypassed.
+      this.domHandler = function(ev) {
+          if (boolOrFn(manager.options.enable, [manager])) {
+              self.handler(ev);
+          }
+      };
+
+      this.init();
+
+  }
+
+  Input.prototype = {
+      /**
+       * should handle the inputEvent data and trigger the callback
+       * @virtual
+       */
+      handler: function() { },
+
+      /**
+       * bind the events
+       */
+      init: function() {
+          this.evEl && addEventListeners(this.element, this.evEl, this.domHandler);
+          this.evTarget && addEventListeners(this.target, this.evTarget, this.domHandler);
+          this.evWin && addEventListeners(getWindowForElement(this.element), this.evWin, this.domHandler);
+      },
+
+      /**
+       * unbind the events
+       */
+      destroy: function() {
+          this.evEl && removeEventListeners(this.element, this.evEl, this.domHandler);
+          this.evTarget && removeEventListeners(this.target, this.evTarget, this.domHandler);
+          this.evWin && removeEventListeners(getWindowForElement(this.element), this.evWin, this.domHandler);
+      }
+  };
+
+  /**
+   * create new input type manager
+   * called by the Manager constructor
+   * @param {Hammer} manager
+   * @returns {Input}
+   */
+  function createInputInstance(manager) {
+      var Type;
+      var inputClass = manager.options.inputClass;
+
+      if (inputClass) {
+          Type = inputClass;
+      } else if (SUPPORT_POINTER_EVENTS) {
+          Type = PointerEventInput;
+      } else if (SUPPORT_ONLY_TOUCH) {
+          Type = TouchInput;
+      } else if (!SUPPORT_TOUCH) {
+          Type = MouseInput;
+      } else {
+          Type = TouchMouseInput;
+      }
+      return new (Type)(manager, inputHandler);
+  }
+
+  /**
+   * handle input events
+   * @param {Manager} manager
+   * @param {String} eventType
+   * @param {Object} input
+   */
+  function inputHandler(manager, eventType, input) {
+      var pointersLen = input.pointers.length;
+      var changedPointersLen = input.changedPointers.length;
+      var isFirst = (eventType & INPUT_START && (pointersLen - changedPointersLen === 0));
+      var isFinal = (eventType & (INPUT_END | INPUT_CANCEL) && (pointersLen - changedPointersLen === 0));
+
+      input.isFirst = !!isFirst;
+      input.isFinal = !!isFinal;
+
+      if (isFirst) {
+          manager.session = {};
+      }
+
+      // source event is the normalized value of the domEvents
+      // like 'touchstart, mouseup, pointerdown'
+      input.eventType = eventType;
+
+      // compute scale, rotation etc
+      computeInputData(manager, input);
+
+      // emit secret event
+      manager.emit('hammer.input', input);
+
+      manager.recognize(input);
+      manager.session.prevInput = input;
+  }
+
+  /**
+   * extend the data with some usable properties like scale, rotate, velocity etc
+   * @param {Object} manager
+   * @param {Object} input
+   */
+  function computeInputData(manager, input) {
+      var session = manager.session;
+      var pointers = input.pointers;
+      var pointersLength = pointers.length;
+
+      // store the first input to calculate the distance and direction
+      if (!session.firstInput) {
+          session.firstInput = simpleCloneInputData(input);
+      }
+
+      // to compute scale and rotation we need to store the multiple touches
+      if (pointersLength > 1 && !session.firstMultiple) {
+          session.firstMultiple = simpleCloneInputData(input);
+      } else if (pointersLength === 1) {
+          session.firstMultiple = false;
+      }
+
+      var firstInput = session.firstInput;
+      var firstMultiple = session.firstMultiple;
+      var offsetCenter = firstMultiple ? firstMultiple.center : firstInput.center;
+
+      var center = input.center = getCenter(pointers);
+      input.timeStamp = now();
+      input.deltaTime = input.timeStamp - firstInput.timeStamp;
+
+      input.angle = getAngle(offsetCenter, center);
+      input.distance = getDistance(offsetCenter, center);
+
+      computeDeltaXY(session, input);
+      input.offsetDirection = getDirection(input.deltaX, input.deltaY);
+
+      var overallVelocity = getVelocity(input.deltaTime, input.deltaX, input.deltaY);
+      input.overallVelocityX = overallVelocity.x;
+      input.overallVelocityY = overallVelocity.y;
+      input.overallVelocity = (abs(overallVelocity.x) > abs(overallVelocity.y)) ? overallVelocity.x : overallVelocity.y;
+
+      input.scale = firstMultiple ? getScale(firstMultiple.pointers, pointers) : 1;
+      input.rotation = firstMultiple ? getRotation(firstMultiple.pointers, pointers) : 0;
+
+      input.maxPointers = !session.prevInput ? input.pointers.length : ((input.pointers.length >
+          session.prevInput.maxPointers) ? input.pointers.length : session.prevInput.maxPointers);
+
+      computeIntervalInputData(session, input);
+
+      // find the correct target
+      var target = manager.element;
+      if (hasParent(input.srcEvent.target, target)) {
+          target = input.srcEvent.target;
+      }
+      input.target = target;
+  }
+
+  function computeDeltaXY(session, input) {
+      var center = input.center;
+      var offset = session.offsetDelta || {};
+      var prevDelta = session.prevDelta || {};
+      var prevInput = session.prevInput || {};
+
+      if (input.eventType === INPUT_START || prevInput.eventType === INPUT_END) {
+          prevDelta = session.prevDelta = {
+              x: prevInput.deltaX || 0,
+              y: prevInput.deltaY || 0
+          };
+
+          offset = session.offsetDelta = {
+              x: center.x,
+              y: center.y
+          };
+      }
+
+      input.deltaX = prevDelta.x + (center.x - offset.x);
+      input.deltaY = prevDelta.y + (center.y - offset.y);
+  }
+
+  /**
+   * velocity is calculated every x ms
+   * @param {Object} session
+   * @param {Object} input
+   */
+  function computeIntervalInputData(session, input) {
+      var last = session.lastInterval || input,
+          deltaTime = input.timeStamp - last.timeStamp,
+          velocity, velocityX, velocityY, direction;
+
+      if (input.eventType != INPUT_CANCEL && (deltaTime > COMPUTE_INTERVAL || last.velocity === undefined$1)) {
+          var deltaX = input.deltaX - last.deltaX;
+          var deltaY = input.deltaY - last.deltaY;
+
+          var v = getVelocity(deltaTime, deltaX, deltaY);
+          velocityX = v.x;
+          velocityY = v.y;
+          velocity = (abs(v.x) > abs(v.y)) ? v.x : v.y;
+          direction = getDirection(deltaX, deltaY);
+
+          session.lastInterval = input;
+      } else {
+          // use latest velocity info if it doesn't overtake a minimum period
+          velocity = last.velocity;
+          velocityX = last.velocityX;
+          velocityY = last.velocityY;
+          direction = last.direction;
+      }
+
+      input.velocity = velocity;
+      input.velocityX = velocityX;
+      input.velocityY = velocityY;
+      input.direction = direction;
+  }
+
+  /**
+   * create a simple clone from the input used for storage of firstInput and firstMultiple
+   * @param {Object} input
+   * @returns {Object} clonedInputData
+   */
+  function simpleCloneInputData(input) {
+      // make a simple copy of the pointers because we will get a reference if we don't
+      // we only need clientXY for the calculations
+      var pointers = [];
+      var i = 0;
+      while (i < input.pointers.length) {
+          pointers[i] = {
+              clientX: round(input.pointers[i].clientX),
+              clientY: round(input.pointers[i].clientY)
+          };
+          i++;
+      }
+
+      return {
+          timeStamp: now(),
+          pointers: pointers,
+          center: getCenter(pointers),
+          deltaX: input.deltaX,
+          deltaY: input.deltaY
+      };
+  }
+
+  /**
+   * get the center of all the pointers
+   * @param {Array} pointers
+   * @return {Object} center contains `x` and `y` properties
+   */
+  function getCenter(pointers) {
+      var pointersLength = pointers.length;
+
+      // no need to loop when only one touch
+      if (pointersLength === 1) {
+          return {
+              x: round(pointers[0].clientX),
+              y: round(pointers[0].clientY)
+          };
+      }
+
+      var x = 0, y = 0, i = 0;
+      while (i < pointersLength) {
+          x += pointers[i].clientX;
+          y += pointers[i].clientY;
+          i++;
+      }
+
+      return {
+          x: round(x / pointersLength),
+          y: round(y / pointersLength)
+      };
+  }
+
+  /**
+   * calculate the velocity between two points. unit is in px per ms.
+   * @param {Number} deltaTime
+   * @param {Number} x
+   * @param {Number} y
+   * @return {Object} velocity `x` and `y`
+   */
+  function getVelocity(deltaTime, x, y) {
+      return {
+          x: x / deltaTime || 0,
+          y: y / deltaTime || 0
+      };
+  }
+
+  /**
+   * get the direction between two points
+   * @param {Number} x
+   * @param {Number} y
+   * @return {Number} direction
+   */
+  function getDirection(x, y) {
+      if (x === y) {
+          return DIRECTION_NONE;
+      }
+
+      if (abs(x) >= abs(y)) {
+          return x < 0 ? DIRECTION_LEFT : DIRECTION_RIGHT;
+      }
+      return y < 0 ? DIRECTION_UP : DIRECTION_DOWN;
+  }
+
+  /**
+   * calculate the absolute distance between two points
+   * @param {Object} p1 {x, y}
+   * @param {Object} p2 {x, y}
+   * @param {Array} [props] containing x and y keys
+   * @return {Number} distance
+   */
+  function getDistance(p1, p2, props) {
+      if (!props) {
+          props = PROPS_XY;
+      }
+      var x = p2[props[0]] - p1[props[0]],
+          y = p2[props[1]] - p1[props[1]];
+
+      return Math.sqrt((x * x) + (y * y));
+  }
+
+  /**
+   * calculate the angle between two coordinates
+   * @param {Object} p1
+   * @param {Object} p2
+   * @param {Array} [props] containing x and y keys
+   * @return {Number} angle
+   */
+  function getAngle(p1, p2, props) {
+      if (!props) {
+          props = PROPS_XY;
+      }
+      var x = p2[props[0]] - p1[props[0]],
+          y = p2[props[1]] - p1[props[1]];
+      return Math.atan2(y, x) * 180 / Math.PI;
+  }
+
+  /**
+   * calculate the rotation degrees between two pointersets
+   * @param {Array} start array of pointers
+   * @param {Array} end array of pointers
+   * @return {Number} rotation
+   */
+  function getRotation(start, end) {
+      return getAngle(end[1], end[0], PROPS_CLIENT_XY) + getAngle(start[1], start[0], PROPS_CLIENT_XY);
+  }
+
+  /**
+   * calculate the scale factor between two pointersets
+   * no scale is 1, and goes down to 0 when pinched together, and bigger when pinched out
+   * @param {Array} start array of pointers
+   * @param {Array} end array of pointers
+   * @return {Number} scale
+   */
+  function getScale(start, end) {
+      return getDistance(end[0], end[1], PROPS_CLIENT_XY) / getDistance(start[0], start[1], PROPS_CLIENT_XY);
+  }
+
+  var MOUSE_INPUT_MAP = {
+      mousedown: INPUT_START,
+      mousemove: INPUT_MOVE,
+      mouseup: INPUT_END
+  };
+
+  var MOUSE_ELEMENT_EVENTS = 'mousedown';
+  var MOUSE_WINDOW_EVENTS = 'mousemove mouseup';
+
+  /**
+   * Mouse events input
+   * @constructor
+   * @extends Input
+   */
+  function MouseInput() {
+      this.evEl = MOUSE_ELEMENT_EVENTS;
+      this.evWin = MOUSE_WINDOW_EVENTS;
+
+      this.pressed = false; // mousedown state
+
+      Input.apply(this, arguments);
+  }
+
+  inherit(MouseInput, Input, {
+      /**
+       * handle mouse events
+       * @param {Object} ev
+       */
+      handler: function MEhandler(ev) {
+          var eventType = MOUSE_INPUT_MAP[ev.type];
+
+          // on start we want to have the left mouse button down
+          if (eventType & INPUT_START && ev.button === 0) {
+              this.pressed = true;
+          }
+
+          if (eventType & INPUT_MOVE && ev.which !== 1) {
+              eventType = INPUT_END;
+          }
+
+          // mouse must be down
+          if (!this.pressed) {
+              return;
+          }
+
+          if (eventType & INPUT_END) {
+              this.pressed = false;
+          }
+
+          this.callback(this.manager, eventType, {
+              pointers: [ev],
+              changedPointers: [ev],
+              pointerType: INPUT_TYPE_MOUSE,
+              srcEvent: ev
+          });
+      }
+  });
+
+  var POINTER_INPUT_MAP = {
+      pointerdown: INPUT_START,
+      pointermove: INPUT_MOVE,
+      pointerup: INPUT_END,
+      pointercancel: INPUT_CANCEL,
+      pointerout: INPUT_CANCEL
+  };
+
+  // in IE10 the pointer types is defined as an enum
+  var IE10_POINTER_TYPE_ENUM = {
+      2: INPUT_TYPE_TOUCH,
+      3: INPUT_TYPE_PEN,
+      4: INPUT_TYPE_MOUSE,
+      5: INPUT_TYPE_KINECT // see https://twitter.com/jacobrossi/status/480596438489890816
+  };
+
+  var POINTER_ELEMENT_EVENTS = 'pointerdown';
+  var POINTER_WINDOW_EVENTS = 'pointermove pointerup pointercancel';
+
+  // IE10 has prefixed support, and case-sensitive
+  if (window.MSPointerEvent && !window.PointerEvent) {
+      POINTER_ELEMENT_EVENTS = 'MSPointerDown';
+      POINTER_WINDOW_EVENTS = 'MSPointerMove MSPointerUp MSPointerCancel';
+  }
+
+  /**
+   * Pointer events input
+   * @constructor
+   * @extends Input
+   */
+  function PointerEventInput() {
+      this.evEl = POINTER_ELEMENT_EVENTS;
+      this.evWin = POINTER_WINDOW_EVENTS;
+
+      Input.apply(this, arguments);
+
+      this.store = (this.manager.session.pointerEvents = []);
+  }
+
+  inherit(PointerEventInput, Input, {
+      /**
+       * handle mouse events
+       * @param {Object} ev
+       */
+      handler: function PEhandler(ev) {
+          var store = this.store;
+          var removePointer = false;
+
+          var eventTypeNormalized = ev.type.toLowerCase().replace('ms', '');
+          var eventType = POINTER_INPUT_MAP[eventTypeNormalized];
+          var pointerType = IE10_POINTER_TYPE_ENUM[ev.pointerType] || ev.pointerType;
+
+          var isTouch = (pointerType == INPUT_TYPE_TOUCH);
+
+          // get index of the event in the store
+          var storeIndex = inArray(store, ev.pointerId, 'pointerId');
+
+          // start and mouse must be down
+          if (eventType & INPUT_START && (ev.button === 0 || isTouch)) {
+              if (storeIndex < 0) {
+                  store.push(ev);
+                  storeIndex = store.length - 1;
+              }
+          } else if (eventType & (INPUT_END | INPUT_CANCEL)) {
+              removePointer = true;
+          }
+
+          // it not found, so the pointer hasn't been down (so it's probably a hover)
+          if (storeIndex < 0) {
+              return;
+          }
+
+          // update the event in the store
+          store[storeIndex] = ev;
+
+          this.callback(this.manager, eventType, {
+              pointers: store,
+              changedPointers: [ev],
+              pointerType: pointerType,
+              srcEvent: ev
+          });
+
+          if (removePointer) {
+              // remove from the store
+              store.splice(storeIndex, 1);
+          }
+      }
+  });
+
+  var SINGLE_TOUCH_INPUT_MAP = {
+      touchstart: INPUT_START,
+      touchmove: INPUT_MOVE,
+      touchend: INPUT_END,
+      touchcancel: INPUT_CANCEL
+  };
+
+  var SINGLE_TOUCH_TARGET_EVENTS = 'touchstart';
+  var SINGLE_TOUCH_WINDOW_EVENTS = 'touchstart touchmove touchend touchcancel';
+
+  /**
+   * Touch events input
+   * @constructor
+   * @extends Input
+   */
+  function SingleTouchInput() {
+      this.evTarget = SINGLE_TOUCH_TARGET_EVENTS;
+      this.evWin = SINGLE_TOUCH_WINDOW_EVENTS;
+      this.started = false;
+
+      Input.apply(this, arguments);
+  }
+
+  inherit(SingleTouchInput, Input, {
+      handler: function TEhandler(ev) {
+          var type = SINGLE_TOUCH_INPUT_MAP[ev.type];
+
+          // should we handle the touch events?
+          if (type === INPUT_START) {
+              this.started = true;
+          }
+
+          if (!this.started) {
+              return;
+          }
+
+          var touches = normalizeSingleTouches.call(this, ev, type);
+
+          // when done, reset the started state
+          if (type & (INPUT_END | INPUT_CANCEL) && touches[0].length - touches[1].length === 0) {
+              this.started = false;
+          }
+
+          this.callback(this.manager, type, {
+              pointers: touches[0],
+              changedPointers: touches[1],
+              pointerType: INPUT_TYPE_TOUCH,
+              srcEvent: ev
+          });
+      }
+  });
+
+  /**
+   * @this {TouchInput}
+   * @param {Object} ev
+   * @param {Number} type flag
+   * @returns {undefined|Array} [all, changed]
+   */
+  function normalizeSingleTouches(ev, type) {
+      var all = toArray(ev.touches);
+      var changed = toArray(ev.changedTouches);
+
+      if (type & (INPUT_END | INPUT_CANCEL)) {
+          all = uniqueArray(all.concat(changed), 'identifier', true);
+      }
+
+      return [all, changed];
+  }
+
+  var TOUCH_INPUT_MAP = {
+      touchstart: INPUT_START,
+      touchmove: INPUT_MOVE,
+      touchend: INPUT_END,
+      touchcancel: INPUT_CANCEL
+  };
+
+  var TOUCH_TARGET_EVENTS = 'touchstart touchmove touchend touchcancel';
+
+  /**
+   * Multi-user touch events input
+   * @constructor
+   * @extends Input
+   */
+  function TouchInput() {
+      this.evTarget = TOUCH_TARGET_EVENTS;
+      this.targetIds = {};
+
+      Input.apply(this, arguments);
+  }
+
+  inherit(TouchInput, Input, {
+      handler: function MTEhandler(ev) {
+          var type = TOUCH_INPUT_MAP[ev.type];
+          var touches = getTouches.call(this, ev, type);
+          if (!touches) {
+              return;
+          }
+
+          this.callback(this.manager, type, {
+              pointers: touches[0],
+              changedPointers: touches[1],
+              pointerType: INPUT_TYPE_TOUCH,
+              srcEvent: ev
+          });
+      }
+  });
+
+  /**
+   * @this {TouchInput}
+   * @param {Object} ev
+   * @param {Number} type flag
+   * @returns {undefined|Array} [all, changed]
+   */
+  function getTouches(ev, type) {
+      var allTouches = toArray(ev.touches);
+      var targetIds = this.targetIds;
+
+      // when there is only one touch, the process can be simplified
+      if (type & (INPUT_START | INPUT_MOVE) && allTouches.length === 1) {
+          targetIds[allTouches[0].identifier] = true;
+          return [allTouches, allTouches];
+      }
+
+      var i,
+          targetTouches,
+          changedTouches = toArray(ev.changedTouches),
+          changedTargetTouches = [],
+          target = this.target;
+
+      // get target touches from touches
+      targetTouches = allTouches.filter(function(touch) {
+          return hasParent(touch.target, target);
+      });
+
+      // collect touches
+      if (type === INPUT_START) {
+          i = 0;
+          while (i < targetTouches.length) {
+              targetIds[targetTouches[i].identifier] = true;
+              i++;
+          }
+      }
+
+      // filter changed touches to only contain touches that exist in the collected target ids
+      i = 0;
+      while (i < changedTouches.length) {
+          if (targetIds[changedTouches[i].identifier]) {
+              changedTargetTouches.push(changedTouches[i]);
+          }
+
+          // cleanup removed touches
+          if (type & (INPUT_END | INPUT_CANCEL)) {
+              delete targetIds[changedTouches[i].identifier];
+          }
+          i++;
+      }
+
+      if (!changedTargetTouches.length) {
+          return;
+      }
+
+      return [
+          // merge targetTouches with changedTargetTouches so it contains ALL touches, including 'end' and 'cancel'
+          uniqueArray(targetTouches.concat(changedTargetTouches), 'identifier', true),
+          changedTargetTouches
+      ];
+  }
+
+  /**
+   * Combined touch and mouse input
+   *
+   * Touch has a higher priority then mouse, and while touching no mouse events are allowed.
+   * This because touch devices also emit mouse events while doing a touch.
+   *
+   * @constructor
+   * @extends Input
+   */
+
+  var DEDUP_TIMEOUT = 2500;
+  var DEDUP_DISTANCE = 25;
+
+  function TouchMouseInput() {
+      Input.apply(this, arguments);
+
+      var handler = bindFn(this.handler, this);
+      this.touch = new TouchInput(this.manager, handler);
+      this.mouse = new MouseInput(this.manager, handler);
+
+      this.primaryTouch = null;
+      this.lastTouches = [];
+  }
+
+  inherit(TouchMouseInput, Input, {
+      /**
+       * handle mouse and touch events
+       * @param {Hammer} manager
+       * @param {String} inputEvent
+       * @param {Object} inputData
+       */
+      handler: function TMEhandler(manager, inputEvent, inputData) {
+          var isTouch = (inputData.pointerType == INPUT_TYPE_TOUCH),
+              isMouse = (inputData.pointerType == INPUT_TYPE_MOUSE);
+
+          if (isMouse && inputData.sourceCapabilities && inputData.sourceCapabilities.firesTouchEvents) {
+              return;
+          }
+
+          // when we're in a touch event, record touches to  de-dupe synthetic mouse event
+          if (isTouch) {
+              recordTouches.call(this, inputEvent, inputData);
+          } else if (isMouse && isSyntheticEvent.call(this, inputData)) {
+              return;
+          }
+
+          this.callback(manager, inputEvent, inputData);
+      },
+
+      /**
+       * remove the event listeners
+       */
+      destroy: function destroy() {
+          this.touch.destroy();
+          this.mouse.destroy();
+      }
+  });
+
+  function recordTouches(eventType, eventData) {
+      if (eventType & INPUT_START) {
+          this.primaryTouch = eventData.changedPointers[0].identifier;
+          setLastTouch.call(this, eventData);
+      } else if (eventType & (INPUT_END | INPUT_CANCEL)) {
+          setLastTouch.call(this, eventData);
+      }
+  }
+
+  function setLastTouch(eventData) {
+      var touch = eventData.changedPointers[0];
+
+      if (touch.identifier === this.primaryTouch) {
+          var lastTouch = {x: touch.clientX, y: touch.clientY};
+          this.lastTouches.push(lastTouch);
+          var lts = this.lastTouches;
+          var removeLastTouch = function() {
+              var i = lts.indexOf(lastTouch);
+              if (i > -1) {
+                  lts.splice(i, 1);
+              }
+          };
+          setTimeout(removeLastTouch, DEDUP_TIMEOUT);
+      }
+  }
+
+  function isSyntheticEvent(eventData) {
+      var x = eventData.srcEvent.clientX, y = eventData.srcEvent.clientY;
+      for (var i = 0; i < this.lastTouches.length; i++) {
+          var t = this.lastTouches[i];
+          var dx = Math.abs(x - t.x), dy = Math.abs(y - t.y);
+          if (dx <= DEDUP_DISTANCE && dy <= DEDUP_DISTANCE) {
+              return true;
+          }
+      }
+      return false;
+  }
+
+  var PREFIXED_TOUCH_ACTION = prefixed(TEST_ELEMENT.style, 'touchAction');
+  var NATIVE_TOUCH_ACTION = PREFIXED_TOUCH_ACTION !== undefined$1;
+
+  // magical touchAction value
+  var TOUCH_ACTION_COMPUTE = 'compute';
+  var TOUCH_ACTION_AUTO = 'auto';
+  var TOUCH_ACTION_MANIPULATION = 'manipulation'; // not implemented
+  var TOUCH_ACTION_NONE = 'none';
+  var TOUCH_ACTION_PAN_X = 'pan-x';
+  var TOUCH_ACTION_PAN_Y = 'pan-y';
+  var TOUCH_ACTION_MAP = getTouchActionProps();
+
+  /**
+   * Touch Action
+   * sets the touchAction property or uses the js alternative
+   * @param {Manager} manager
+   * @param {String} value
+   * @constructor
+   */
+  function TouchAction(manager, value) {
+      this.manager = manager;
+      this.set(value);
+  }
+
+  TouchAction.prototype = {
+      /**
+       * set the touchAction value on the element or enable the polyfill
+       * @param {String} value
+       */
+      set: function(value) {
+          // find out the touch-action by the event handlers
+          if (value == TOUCH_ACTION_COMPUTE) {
+              value = this.compute();
+          }
+
+          if (NATIVE_TOUCH_ACTION && this.manager.element.style && TOUCH_ACTION_MAP[value]) {
+              this.manager.element.style[PREFIXED_TOUCH_ACTION] = value;
+          }
+          this.actions = value.toLowerCase().trim();
+      },
+
+      /**
+       * just re-set the touchAction value
+       */
+      update: function() {
+          this.set(this.manager.options.touchAction);
+      },
+
+      /**
+       * compute the value for the touchAction property based on the recognizer's settings
+       * @returns {String} value
+       */
+      compute: function() {
+          var actions = [];
+          each(this.manager.recognizers, function(recognizer) {
+              if (boolOrFn(recognizer.options.enable, [recognizer])) {
+                  actions = actions.concat(recognizer.getTouchAction());
+              }
+          });
+          return cleanTouchActions(actions.join(' '));
+      },
+
+      /**
+       * this method is called on each input cycle and provides the preventing of the browser behavior
+       * @param {Object} input
+       */
+      preventDefaults: function(input) {
+          var srcEvent = input.srcEvent;
+          var direction = input.offsetDirection;
+
+          // if the touch action did prevented once this session
+          if (this.manager.session.prevented) {
+              srcEvent.preventDefault();
+              return;
+          }
+
+          var actions = this.actions;
+          var hasNone = inStr(actions, TOUCH_ACTION_NONE) && !TOUCH_ACTION_MAP[TOUCH_ACTION_NONE];
+          var hasPanY = inStr(actions, TOUCH_ACTION_PAN_Y) && !TOUCH_ACTION_MAP[TOUCH_ACTION_PAN_Y];
+          var hasPanX = inStr(actions, TOUCH_ACTION_PAN_X) && !TOUCH_ACTION_MAP[TOUCH_ACTION_PAN_X];
+
+          if (hasNone) {
+              //do not prevent defaults if this is a tap gesture
+
+              var isTapPointer = input.pointers.length === 1;
+              var isTapMovement = input.distance < 2;
+              var isTapTouchTime = input.deltaTime < 250;
+
+              if (isTapPointer && isTapMovement && isTapTouchTime) {
+                  return;
+              }
+          }
+
+          if (hasPanX && hasPanY) {
+              // `pan-x pan-y` means browser handles all scrolling/panning, do not prevent
+              return;
+          }
+
+          if (hasNone ||
+              (hasPanY && direction & DIRECTION_HORIZONTAL) ||
+              (hasPanX && direction & DIRECTION_VERTICAL)) {
+              return this.preventSrc(srcEvent);
+          }
+      },
+
+      /**
+       * call preventDefault to prevent the browser's default behavior (scrolling in most cases)
+       * @param {Object} srcEvent
+       */
+      preventSrc: function(srcEvent) {
+          this.manager.session.prevented = true;
+          srcEvent.preventDefault();
+      }
+  };
+
+  /**
+   * when the touchActions are collected they are not a valid value, so we need to clean things up. *
+   * @param {String} actions
+   * @returns {*}
+   */
+  function cleanTouchActions(actions) {
+      // none
+      if (inStr(actions, TOUCH_ACTION_NONE)) {
+          return TOUCH_ACTION_NONE;
+      }
+
+      var hasPanX = inStr(actions, TOUCH_ACTION_PAN_X);
+      var hasPanY = inStr(actions, TOUCH_ACTION_PAN_Y);
+
+      // if both pan-x and pan-y are set (different recognizers
+      // for different directions, e.g. horizontal pan but vertical swipe?)
+      // we need none (as otherwise with pan-x pan-y combined none of these
+      // recognizers will work, since the browser would handle all panning
+      if (hasPanX && hasPanY) {
+          return TOUCH_ACTION_NONE;
+      }
+
+      // pan-x OR pan-y
+      if (hasPanX || hasPanY) {
+          return hasPanX ? TOUCH_ACTION_PAN_X : TOUCH_ACTION_PAN_Y;
+      }
+
+      // manipulation
+      if (inStr(actions, TOUCH_ACTION_MANIPULATION)) {
+          return TOUCH_ACTION_MANIPULATION;
+      }
+
+      return TOUCH_ACTION_AUTO;
+  }
+
+  function getTouchActionProps() {
+      if (!NATIVE_TOUCH_ACTION) {
+          return false;
+      }
+      var touchMap = {};
+      var cssSupports = window.CSS && window.CSS.supports;
+      ['auto', 'manipulation', 'pan-y', 'pan-x', 'pan-x pan-y', 'none'].forEach(function(val) {
+
+          // If css.supports is not supported but there is native touch-action assume it supports
+          // all values. This is the case for IE 10 and 11.
+          touchMap[val] = cssSupports ? window.CSS.supports('touch-action', val) : true;
+      });
+      return touchMap;
+  }
+
+  /**
+   * Recognizer flow explained; *
+   * All recognizers have the initial state of POSSIBLE when a input session starts.
+   * The definition of a input session is from the first input until the last input, with all it's movement in it. *
+   * Example session for mouse-input: mousedown -> mousemove -> mouseup
+   *
+   * On each recognizing cycle (see Manager.recognize) the .recognize() method is executed
+   * which determines with state it should be.
+   *
+   * If the recognizer has the state FAILED, CANCELLED or RECOGNIZED (equals ENDED), it is reset to
+   * POSSIBLE to give it another change on the next cycle.
+   *
+   *               Possible
+   *                  |
+   *            +-----+---------------+
+   *            |                     |
+   *      +-----+-----+               |
+   *      |           |               |
+   *   Failed      Cancelled          |
+   *                          +-------+------+
+   *                          |              |
+   *                      Recognized       Began
+   *                                         |
+   *                                      Changed
+   *                                         |
+   *                                  Ended/Recognized
+   */
+  var STATE_POSSIBLE = 1;
+  var STATE_BEGAN = 2;
+  var STATE_CHANGED = 4;
+  var STATE_ENDED = 8;
+  var STATE_RECOGNIZED = STATE_ENDED;
+  var STATE_CANCELLED = 16;
+  var STATE_FAILED = 32;
+
+  /**
+   * Recognizer
+   * Every recognizer needs to extend from this class.
+   * @constructor
+   * @param {Object} options
+   */
+  function Recognizer(options) {
+      this.options = assign({}, this.defaults, options || {});
+
+      this.id = uniqueId();
+
+      this.manager = null;
+
+      // default is enable true
+      this.options.enable = ifUndefined(this.options.enable, true);
+
+      this.state = STATE_POSSIBLE;
+
+      this.simultaneous = {};
+      this.requireFail = [];
+  }
+
+  Recognizer.prototype = {
+      /**
+       * @virtual
+       * @type {Object}
+       */
+      defaults: {},
+
+      /**
+       * set options
+       * @param {Object} options
+       * @return {Recognizer}
+       */
+      set: function(options) {
+          assign(this.options, options);
+
+          // also update the touchAction, in case something changed about the directions/enabled state
+          this.manager && this.manager.touchAction.update();
+          return this;
+      },
+
+      /**
+       * recognize simultaneous with an other recognizer.
+       * @param {Recognizer} otherRecognizer
+       * @returns {Recognizer} this
+       */
+      recognizeWith: function(otherRecognizer) {
+          if (invokeArrayArg(otherRecognizer, 'recognizeWith', this)) {
+              return this;
+          }
+
+          var simultaneous = this.simultaneous;
+          otherRecognizer = getRecognizerByNameIfManager(otherRecognizer, this);
+          if (!simultaneous[otherRecognizer.id]) {
+              simultaneous[otherRecognizer.id] = otherRecognizer;
+              otherRecognizer.recognizeWith(this);
+          }
+          return this;
+      },
+
+      /**
+       * drop the simultaneous link. it doesnt remove the link on the other recognizer.
+       * @param {Recognizer} otherRecognizer
+       * @returns {Recognizer} this
+       */
+      dropRecognizeWith: function(otherRecognizer) {
+          if (invokeArrayArg(otherRecognizer, 'dropRecognizeWith', this)) {
+              return this;
+          }
+
+          otherRecognizer = getRecognizerByNameIfManager(otherRecognizer, this);
+          delete this.simultaneous[otherRecognizer.id];
+          return this;
+      },
+
+      /**
+       * recognizer can only run when an other is failing
+       * @param {Recognizer} otherRecognizer
+       * @returns {Recognizer} this
+       */
+      requireFailure: function(otherRecognizer) {
+          if (invokeArrayArg(otherRecognizer, 'requireFailure', this)) {
+              return this;
+          }
+
+          var requireFail = this.requireFail;
+          otherRecognizer = getRecognizerByNameIfManager(otherRecognizer, this);
+          if (inArray(requireFail, otherRecognizer) === -1) {
+              requireFail.push(otherRecognizer);
+              otherRecognizer.requireFailure(this);
+          }
+          return this;
+      },
+
+      /**
+       * drop the requireFailure link. it does not remove the link on the other recognizer.
+       * @param {Recognizer} otherRecognizer
+       * @returns {Recognizer} this
+       */
+      dropRequireFailure: function(otherRecognizer) {
+          if (invokeArrayArg(otherRecognizer, 'dropRequireFailure', this)) {
+              return this;
+          }
+
+          otherRecognizer = getRecognizerByNameIfManager(otherRecognizer, this);
+          var index = inArray(this.requireFail, otherRecognizer);
+          if (index > -1) {
+              this.requireFail.splice(index, 1);
+          }
+          return this;
+      },
+
+      /**
+       * has require failures boolean
+       * @returns {boolean}
+       */
+      hasRequireFailures: function() {
+          return this.requireFail.length > 0;
+      },
+
+      /**
+       * if the recognizer can recognize simultaneous with an other recognizer
+       * @param {Recognizer} otherRecognizer
+       * @returns {Boolean}
+       */
+      canRecognizeWith: function(otherRecognizer) {
+          return !!this.simultaneous[otherRecognizer.id];
+      },
+
+      /**
+       * You should use `tryEmit` instead of `emit` directly to check
+       * that all the needed recognizers has failed before emitting.
+       * @param {Object} input
+       */
+      emit: function(input) {
+          var self = this;
+          var state = this.state;
+
+          function emit(event) {
+              self.manager.emit(event, input);
+          }
+
+          // 'panstart' and 'panmove'
+          if (state < STATE_ENDED) {
+              emit(self.options.event + stateStr(state));
+          }
+
+          emit(self.options.event); // simple 'eventName' events
+
+          if (input.additionalEvent) { // additional event(panleft, panright, pinchin, pinchout...)
+              emit(input.additionalEvent);
+          }
+
+          // panend and pancancel
+          if (state >= STATE_ENDED) {
+              emit(self.options.event + stateStr(state));
+          }
+      },
+
+      /**
+       * Check that all the require failure recognizers has failed,
+       * if true, it emits a gesture event,
+       * otherwise, setup the state to FAILED.
+       * @param {Object} input
+       */
+      tryEmit: function(input) {
+          if (this.canEmit()) {
+              return this.emit(input);
+          }
+          // it's failing anyway
+          this.state = STATE_FAILED;
+      },
+
+      /**
+       * can we emit?
+       * @returns {boolean}
+       */
+      canEmit: function() {
+          var i = 0;
+          while (i < this.requireFail.length) {
+              if (!(this.requireFail[i].state & (STATE_FAILED | STATE_POSSIBLE))) {
+                  return false;
+              }
+              i++;
+          }
+          return true;
+      },
+
+      /**
+       * update the recognizer
+       * @param {Object} inputData
+       */
+      recognize: function(inputData) {
+          // make a new copy of the inputData
+          // so we can change the inputData without messing up the other recognizers
+          var inputDataClone = assign({}, inputData);
+
+          // is is enabled and allow recognizing?
+          if (!boolOrFn(this.options.enable, [this, inputDataClone])) {
+              this.reset();
+              this.state = STATE_FAILED;
+              return;
+          }
+
+          // reset when we've reached the end
+          if (this.state & (STATE_RECOGNIZED | STATE_CANCELLED | STATE_FAILED)) {
+              this.state = STATE_POSSIBLE;
+          }
+
+          this.state = this.process(inputDataClone);
+
+          // the recognizer has recognized a gesture
+          // so trigger an event
+          if (this.state & (STATE_BEGAN | STATE_CHANGED | STATE_ENDED | STATE_CANCELLED)) {
+              this.tryEmit(inputDataClone);
+          }
+      },
+
+      /**
+       * return the state of the recognizer
+       * the actual recognizing happens in this method
+       * @virtual
+       * @param {Object} inputData
+       * @returns {Const} STATE
+       */
+      process: function(inputData) { }, // jshint ignore:line
+
+      /**
+       * return the preferred touch-action
+       * @virtual
+       * @returns {Array}
+       */
+      getTouchAction: function() { },
+
+      /**
+       * called when the gesture isn't allowed to recognize
+       * like when another is being recognized or it is disabled
+       * @virtual
+       */
+      reset: function() { }
+  };
+
+  /**
+   * get a usable string, used as event postfix
+   * @param {Const} state
+   * @returns {String} state
+   */
+  function stateStr(state) {
+      if (state & STATE_CANCELLED) {
+          return 'cancel';
+      } else if (state & STATE_ENDED) {
+          return 'end';
+      } else if (state & STATE_CHANGED) {
+          return 'move';
+      } else if (state & STATE_BEGAN) {
+          return 'start';
+      }
+      return '';
+  }
+
+  /**
+   * direction cons to string
+   * @param {Const} direction
+   * @returns {String}
+   */
+  function directionStr(direction) {
+      if (direction == DIRECTION_DOWN) {
+          return 'down';
+      } else if (direction == DIRECTION_UP) {
+          return 'up';
+      } else if (direction == DIRECTION_LEFT) {
+          return 'left';
+      } else if (direction == DIRECTION_RIGHT) {
+          return 'right';
+      }
+      return '';
+  }
+
+  /**
+   * get a recognizer by name if it is bound to a manager
+   * @param {Recognizer|String} otherRecognizer
+   * @param {Recognizer} recognizer
+   * @returns {Recognizer}
+   */
+  function getRecognizerByNameIfManager(otherRecognizer, recognizer) {
+      var manager = recognizer.manager;
+      if (manager) {
+          return manager.get(otherRecognizer);
+      }
+      return otherRecognizer;
+  }
+
+  /**
+   * This recognizer is just used as a base for the simple attribute recognizers.
+   * @constructor
+   * @extends Recognizer
+   */
+  function AttrRecognizer() {
+      Recognizer.apply(this, arguments);
+  }
+
+  inherit(AttrRecognizer, Recognizer, {
+      /**
+       * @namespace
+       * @memberof AttrRecognizer
+       */
+      defaults: {
+          /**
+           * @type {Number}
+           * @default 1
+           */
+          pointers: 1
+      },
+
+      /**
+       * Used to check if it the recognizer receives valid input, like input.distance > 10.
+       * @memberof AttrRecognizer
+       * @param {Object} input
+       * @returns {Boolean} recognized
+       */
+      attrTest: function(input) {
+          var optionPointers = this.options.pointers;
+          return optionPointers === 0 || input.pointers.length === optionPointers;
+      },
+
+      /**
+       * Process the input and return the state for the recognizer
+       * @memberof AttrRecognizer
+       * @param {Object} input
+       * @returns {*} State
+       */
+      process: function(input) {
+          var state = this.state;
+          var eventType = input.eventType;
+
+          var isRecognized = state & (STATE_BEGAN | STATE_CHANGED);
+          var isValid = this.attrTest(input);
+
+          // on cancel input and we've recognized before, return STATE_CANCELLED
+          if (isRecognized && (eventType & INPUT_CANCEL || !isValid)) {
+              return state | STATE_CANCELLED;
+          } else if (isRecognized || isValid) {
+              if (eventType & INPUT_END) {
+                  return state | STATE_ENDED;
+              } else if (!(state & STATE_BEGAN)) {
+                  return STATE_BEGAN;
+              }
+              return state | STATE_CHANGED;
+          }
+          return STATE_FAILED;
+      }
+  });
+
+  /**
+   * Pan
+   * Recognized when the pointer is down and moved in the allowed direction.
+   * @constructor
+   * @extends AttrRecognizer
+   */
+  function PanRecognizer() {
+      AttrRecognizer.apply(this, arguments);
+
+      this.pX = null;
+      this.pY = null;
+  }
+
+  inherit(PanRecognizer, AttrRecognizer, {
+      /**
+       * @namespace
+       * @memberof PanRecognizer
+       */
+      defaults: {
+          event: 'pan',
+          threshold: 10,
+          pointers: 1,
+          direction: DIRECTION_ALL
+      },
+
+      getTouchAction: function() {
+          var direction = this.options.direction;
+          var actions = [];
+          if (direction & DIRECTION_HORIZONTAL) {
+              actions.push(TOUCH_ACTION_PAN_Y);
+          }
+          if (direction & DIRECTION_VERTICAL) {
+              actions.push(TOUCH_ACTION_PAN_X);
+          }
+          return actions;
+      },
+
+      directionTest: function(input) {
+          var options = this.options;
+          var hasMoved = true;
+          var distance = input.distance;
+          var direction = input.direction;
+          var x = input.deltaX;
+          var y = input.deltaY;
+
+          // lock to axis?
+          if (!(direction & options.direction)) {
+              if (options.direction & DIRECTION_HORIZONTAL) {
+                  direction = (x === 0) ? DIRECTION_NONE : (x < 0) ? DIRECTION_LEFT : DIRECTION_RIGHT;
+                  hasMoved = x != this.pX;
+                  distance = Math.abs(input.deltaX);
+              } else {
+                  direction = (y === 0) ? DIRECTION_NONE : (y < 0) ? DIRECTION_UP : DIRECTION_DOWN;
+                  hasMoved = y != this.pY;
+                  distance = Math.abs(input.deltaY);
+              }
+          }
+          input.direction = direction;
+          return hasMoved && distance > options.threshold && direction & options.direction;
+      },
+
+      attrTest: function(input) {
+          return AttrRecognizer.prototype.attrTest.call(this, input) &&
+              (this.state & STATE_BEGAN || (!(this.state & STATE_BEGAN) && this.directionTest(input)));
+      },
+
+      emit: function(input) {
+
+          this.pX = input.deltaX;
+          this.pY = input.deltaY;
+
+          var direction = directionStr(input.direction);
+
+          if (direction) {
+              input.additionalEvent = this.options.event + direction;
+          }
+          this._super.emit.call(this, input);
+      }
+  });
+
+  /**
+   * Pinch
+   * Recognized when two or more pointers are moving toward (zoom-in) or away from each other (zoom-out).
+   * @constructor
+   * @extends AttrRecognizer
+   */
+  function PinchRecognizer() {
+      AttrRecognizer.apply(this, arguments);
+  }
+
+  inherit(PinchRecognizer, AttrRecognizer, {
+      /**
+       * @namespace
+       * @memberof PinchRecognizer
+       */
+      defaults: {
+          event: 'pinch',
+          threshold: 0,
+          pointers: 2
+      },
+
+      getTouchAction: function() {
+          return [TOUCH_ACTION_NONE];
+      },
+
+      attrTest: function(input) {
+          return this._super.attrTest.call(this, input) &&
+              (Math.abs(input.scale - 1) > this.options.threshold || this.state & STATE_BEGAN);
+      },
+
+      emit: function(input) {
+          if (input.scale !== 1) {
+              var inOut = input.scale < 1 ? 'in' : 'out';
+              input.additionalEvent = this.options.event + inOut;
+          }
+          this._super.emit.call(this, input);
+      }
+  });
+
+  /**
+   * Press
+   * Recognized when the pointer is down for x ms without any movement.
+   * @constructor
+   * @extends Recognizer
+   */
+  function PressRecognizer() {
+      Recognizer.apply(this, arguments);
+
+      this._timer = null;
+      this._input = null;
+  }
+
+  inherit(PressRecognizer, Recognizer, {
+      /**
+       * @namespace
+       * @memberof PressRecognizer
+       */
+      defaults: {
+          event: 'press',
+          pointers: 1,
+          time: 251, // minimal time of the pointer to be pressed
+          threshold: 9 // a minimal movement is ok, but keep it low
+      },
+
+      getTouchAction: function() {
+          return [TOUCH_ACTION_AUTO];
+      },
+
+      process: function(input) {
+          var options = this.options;
+          var validPointers = input.pointers.length === options.pointers;
+          var validMovement = input.distance < options.threshold;
+          var validTime = input.deltaTime > options.time;
+
+          this._input = input;
+
+          // we only allow little movement
+          // and we've reached an end event, so a tap is possible
+          if (!validMovement || !validPointers || (input.eventType & (INPUT_END | INPUT_CANCEL) && !validTime)) {
+              this.reset();
+          } else if (input.eventType & INPUT_START) {
+              this.reset();
+              this._timer = setTimeoutContext(function() {
+                  this.state = STATE_RECOGNIZED;
+                  this.tryEmit();
+              }, options.time, this);
+          } else if (input.eventType & INPUT_END) {
+              return STATE_RECOGNIZED;
+          }
+          return STATE_FAILED;
+      },
+
+      reset: function() {
+          clearTimeout(this._timer);
+      },
+
+      emit: function(input) {
+          if (this.state !== STATE_RECOGNIZED) {
+              return;
+          }
+
+          if (input && (input.eventType & INPUT_END)) {
+              this.manager.emit(this.options.event + 'up', input);
+          } else {
+              this._input.timeStamp = now();
+              this.manager.emit(this.options.event, this._input);
+          }
+      }
+  });
+
+  /**
+   * Rotate
+   * Recognized when two or more pointer are moving in a circular motion.
+   * @constructor
+   * @extends AttrRecognizer
+   */
+  function RotateRecognizer() {
+      AttrRecognizer.apply(this, arguments);
+  }
+
+  inherit(RotateRecognizer, AttrRecognizer, {
+      /**
+       * @namespace
+       * @memberof RotateRecognizer
+       */
+      defaults: {
+          event: 'rotate',
+          threshold: 0,
+          pointers: 2
+      },
+
+      getTouchAction: function() {
+          return [TOUCH_ACTION_NONE];
+      },
+
+      attrTest: function(input) {
+          return this._super.attrTest.call(this, input) &&
+              (Math.abs(input.rotation) > this.options.threshold || this.state & STATE_BEGAN);
+      }
+  });
+
+  /**
+   * Swipe
+   * Recognized when the pointer is moving fast (velocity), with enough distance in the allowed direction.
+   * @constructor
+   * @extends AttrRecognizer
+   */
+  function SwipeRecognizer() {
+      AttrRecognizer.apply(this, arguments);
+  }
+
+  inherit(SwipeRecognizer, AttrRecognizer, {
+      /**
+       * @namespace
+       * @memberof SwipeRecognizer
+       */
+      defaults: {
+          event: 'swipe',
+          threshold: 10,
+          velocity: 0.3,
+          direction: DIRECTION_HORIZONTAL | DIRECTION_VERTICAL,
+          pointers: 1
+      },
+
+      getTouchAction: function() {
+          return PanRecognizer.prototype.getTouchAction.call(this);
+      },
+
+      attrTest: function(input) {
+          var direction = this.options.direction;
+          var velocity;
+
+          if (direction & (DIRECTION_HORIZONTAL | DIRECTION_VERTICAL)) {
+              velocity = input.overallVelocity;
+          } else if (direction & DIRECTION_HORIZONTAL) {
+              velocity = input.overallVelocityX;
+          } else if (direction & DIRECTION_VERTICAL) {
+              velocity = input.overallVelocityY;
+          }
+
+          return this._super.attrTest.call(this, input) &&
+              direction & input.offsetDirection &&
+              input.distance > this.options.threshold &&
+              input.maxPointers == this.options.pointers &&
+              abs(velocity) > this.options.velocity && input.eventType & INPUT_END;
+      },
+
+      emit: function(input) {
+          var direction = directionStr(input.offsetDirection);
+          if (direction) {
+              this.manager.emit(this.options.event + direction, input);
+          }
+
+          this.manager.emit(this.options.event, input);
+      }
+  });
+
+  /**
+   * A tap is ecognized when the pointer is doing a small tap/click. Multiple taps are recognized if they occur
+   * between the given interval and position. The delay option can be used to recognize multi-taps without firing
+   * a single tap.
+   *
+   * The eventData from the emitted event contains the property `tapCount`, which contains the amount of
+   * multi-taps being recognized.
+   * @constructor
+   * @extends Recognizer
+   */
+  function TapRecognizer() {
+      Recognizer.apply(this, arguments);
+
+      // previous time and center,
+      // used for tap counting
+      this.pTime = false;
+      this.pCenter = false;
+
+      this._timer = null;
+      this._input = null;
+      this.count = 0;
+  }
+
+  inherit(TapRecognizer, Recognizer, {
+      /**
+       * @namespace
+       * @memberof PinchRecognizer
+       */
+      defaults: {
+          event: 'tap',
+          pointers: 1,
+          taps: 1,
+          interval: 300, // max time between the multi-tap taps
+          time: 250, // max time of the pointer to be down (like finger on the screen)
+          threshold: 9, // a minimal movement is ok, but keep it low
+          posThreshold: 10 // a multi-tap can be a bit off the initial position
+      },
+
+      getTouchAction: function() {
+          return [TOUCH_ACTION_MANIPULATION];
+      },
+
+      process: function(input) {
+          var options = this.options;
+
+          var validPointers = input.pointers.length === options.pointers;
+          var validMovement = input.distance < options.threshold;
+          var validTouchTime = input.deltaTime < options.time;
+
+          this.reset();
+
+          if ((input.eventType & INPUT_START) && (this.count === 0)) {
+              return this.failTimeout();
+          }
+
+          // we only allow little movement
+          // and we've reached an end event, so a tap is possible
+          if (validMovement && validTouchTime && validPointers) {
+              if (input.eventType != INPUT_END) {
+                  return this.failTimeout();
+              }
+
+              var validInterval = this.pTime ? (input.timeStamp - this.pTime < options.interval) : true;
+              var validMultiTap = !this.pCenter || getDistance(this.pCenter, input.center) < options.posThreshold;
+
+              this.pTime = input.timeStamp;
+              this.pCenter = input.center;
+
+              if (!validMultiTap || !validInterval) {
+                  this.count = 1;
+              } else {
+                  this.count += 1;
+              }
+
+              this._input = input;
+
+              // if tap count matches we have recognized it,
+              // else it has began recognizing...
+              var tapCount = this.count % options.taps;
+              if (tapCount === 0) {
+                  // no failing requirements, immediately trigger the tap event
+                  // or wait as long as the multitap interval to trigger
+                  if (!this.hasRequireFailures()) {
+                      return STATE_RECOGNIZED;
+                  } else {
+                      this._timer = setTimeoutContext(function() {
+                          this.state = STATE_RECOGNIZED;
+                          this.tryEmit();
+                      }, options.interval, this);
+                      return STATE_BEGAN;
+                  }
+              }
+          }
+          return STATE_FAILED;
+      },
+
+      failTimeout: function() {
+          this._timer = setTimeoutContext(function() {
+              this.state = STATE_FAILED;
+          }, this.options.interval, this);
+          return STATE_FAILED;
+      },
+
+      reset: function() {
+          clearTimeout(this._timer);
+      },
+
+      emit: function() {
+          if (this.state == STATE_RECOGNIZED) {
+              this._input.tapCount = this.count;
+              this.manager.emit(this.options.event, this._input);
+          }
+      }
+  });
+
+  /**
+   * Simple way to create a manager with a default set of recognizers.
+   * @param {HTMLElement} element
+   * @param {Object} [options]
+   * @constructor
+   */
+  function Hammer(element, options) {
+      options = options || {};
+      options.recognizers = ifUndefined(options.recognizers, Hammer.defaults.preset);
+      return new Manager(element, options);
+  }
+
+  /**
+   * @const {string}
+   */
+  Hammer.VERSION = '2.0.7';
+
+  /**
+   * default settings
+   * @namespace
+   */
+  Hammer.defaults = {
+      /**
+       * set if DOM events are being triggered.
+       * But this is slower and unused by simple implementations, so disabled by default.
+       * @type {Boolean}
+       * @default false
+       */
+      domEvents: false,
+
+      /**
+       * The value for the touchAction property/fallback.
+       * When set to `compute` it will magically set the correct value based on the added recognizers.
+       * @type {String}
+       * @default compute
+       */
+      touchAction: TOUCH_ACTION_COMPUTE,
+
+      /**
+       * @type {Boolean}
+       * @default true
+       */
+      enable: true,
+
+      /**
+       * EXPERIMENTAL FEATURE -- can be removed/changed
+       * Change the parent input target element.
+       * If Null, then it is being set the to main element.
+       * @type {Null|EventTarget}
+       * @default null
+       */
+      inputTarget: null,
+
+      /**
+       * force an input class
+       * @type {Null|Function}
+       * @default null
+       */
+      inputClass: null,
+
+      /**
+       * Default recognizer setup when calling `Hammer()`
+       * When creating a new Manager these will be skipped.
+       * @type {Array}
+       */
+      preset: [
+          // RecognizerClass, options, [recognizeWith, ...], [requireFailure, ...]
+          [RotateRecognizer, {enable: false}],
+          [PinchRecognizer, {enable: false}, ['rotate']],
+          [SwipeRecognizer, {direction: DIRECTION_HORIZONTAL}],
+          [PanRecognizer, {direction: DIRECTION_HORIZONTAL}, ['swipe']],
+          [TapRecognizer],
+          [TapRecognizer, {event: 'doubletap', taps: 2}, ['tap']],
+          [PressRecognizer]
+      ],
+
+      /**
+       * Some CSS properties can be used to improve the working of Hammer.
+       * Add them to this method and they will be set when creating a new Manager.
+       * @namespace
+       */
+      cssProps: {
+          /**
+           * Disables text selection to improve the dragging gesture. Mainly for desktop browsers.
+           * @type {String}
+           * @default 'none'
+           */
+          userSelect: 'none',
+
+          /**
+           * Disable the Windows Phone grippers when pressing an element.
+           * @type {String}
+           * @default 'none'
+           */
+          touchSelect: 'none',
+
+          /**
+           * Disables the default callout shown when you touch and hold a touch target.
+           * On iOS, when you touch and hold a touch target such as a link, Safari displays
+           * a callout containing information about the link. This property allows you to disable that callout.
+           * @type {String}
+           * @default 'none'
+           */
+          touchCallout: 'none',
+
+          /**
+           * Specifies whether zooming is enabled. Used by IE10>
+           * @type {String}
+           * @default 'none'
+           */
+          contentZooming: 'none',
+
+          /**
+           * Specifies that an entire element should be draggable instead of its contents. Mainly for desktop browsers.
+           * @type {String}
+           * @default 'none'
+           */
+          userDrag: 'none',
+
+          /**
+           * Overrides the highlight color shown when the user taps a link or a JavaScript
+           * clickable element in iOS. This property obeys the alpha value, if specified.
+           * @type {String}
+           * @default 'rgba(0,0,0,0)'
+           */
+          tapHighlightColor: 'rgba(0,0,0,0)'
+      }
+  };
+
+  var STOP = 1;
+  var FORCED_STOP = 2;
+
+  /**
+   * Manager
+   * @param {HTMLElement} element
+   * @param {Object} [options]
+   * @constructor
+   */
+  function Manager(element, options) {
+      this.options = assign({}, Hammer.defaults, options || {});
+
+      this.options.inputTarget = this.options.inputTarget || element;
+
+      this.handlers = {};
+      this.session = {};
+      this.recognizers = [];
+      this.oldCssProps = {};
+
+      this.element = element;
+      this.input = createInputInstance(this);
+      this.touchAction = new TouchAction(this, this.options.touchAction);
+
+      toggleCssProps(this, true);
+
+      each(this.options.recognizers, function(item) {
+          var recognizer = this.add(new (item[0])(item[1]));
+          item[2] && recognizer.recognizeWith(item[2]);
+          item[3] && recognizer.requireFailure(item[3]);
+      }, this);
+  }
+
+  Manager.prototype = {
+      /**
+       * set options
+       * @param {Object} options
+       * @returns {Manager}
+       */
+      set: function(options) {
+          assign(this.options, options);
+
+          // Options that need a little more setup
+          if (options.touchAction) {
+              this.touchAction.update();
+          }
+          if (options.inputTarget) {
+              // Clean up existing event listeners and reinitialize
+              this.input.destroy();
+              this.input.target = options.inputTarget;
+              this.input.init();
+          }
+          return this;
+      },
+
+      /**
+       * stop recognizing for this session.
+       * This session will be discarded, when a new [input]start event is fired.
+       * When forced, the recognizer cycle is stopped immediately.
+       * @param {Boolean} [force]
+       */
+      stop: function(force) {
+          this.session.stopped = force ? FORCED_STOP : STOP;
+      },
+
+      /**
+       * run the recognizers!
+       * called by the inputHandler function on every movement of the pointers (touches)
+       * it walks through all the recognizers and tries to detect the gesture that is being made
+       * @param {Object} inputData
+       */
+      recognize: function(inputData) {
+          var session = this.session;
+          if (session.stopped) {
+              return;
+          }
+
+          // run the touch-action polyfill
+          this.touchAction.preventDefaults(inputData);
+
+          var recognizer;
+          var recognizers = this.recognizers;
+
+          // this holds the recognizer that is being recognized.
+          // so the recognizer's state needs to be BEGAN, CHANGED, ENDED or RECOGNIZED
+          // if no recognizer is detecting a thing, it is set to `null`
+          var curRecognizer = session.curRecognizer;
+
+          // reset when the last recognizer is recognized
+          // or when we're in a new session
+          if (!curRecognizer || (curRecognizer && curRecognizer.state & STATE_RECOGNIZED)) {
+              curRecognizer = session.curRecognizer = null;
+          }
+
+          var i = 0;
+          while (i < recognizers.length) {
+              recognizer = recognizers[i];
+
+              // find out if we are allowed try to recognize the input for this one.
+              // 1.   allow if the session is NOT forced stopped (see the .stop() method)
+              // 2.   allow if we still haven't recognized a gesture in this session, or the this recognizer is the one
+              //      that is being recognized.
+              // 3.   allow if the recognizer is allowed to run simultaneous with the current recognized recognizer.
+              //      this can be setup with the `recognizeWith()` method on the recognizer.
+              if (session.stopped !== FORCED_STOP && ( // 1
+                      !curRecognizer || recognizer == curRecognizer || // 2
+                      recognizer.canRecognizeWith(curRecognizer))) { // 3
+                  recognizer.recognize(inputData);
+              } else {
+                  recognizer.reset();
+              }
+
+              // if the recognizer has been recognizing the input as a valid gesture, we want to store this one as the
+              // current active recognizer. but only if we don't already have an active recognizer
+              if (!curRecognizer && recognizer.state & (STATE_BEGAN | STATE_CHANGED | STATE_ENDED)) {
+                  curRecognizer = session.curRecognizer = recognizer;
+              }
+              i++;
+          }
+      },
+
+      /**
+       * get a recognizer by its event name.
+       * @param {Recognizer|String} recognizer
+       * @returns {Recognizer|Null}
+       */
+      get: function(recognizer) {
+          if (recognizer instanceof Recognizer) {
+              return recognizer;
+          }
+
+          var recognizers = this.recognizers;
+          for (var i = 0; i < recognizers.length; i++) {
+              if (recognizers[i].options.event == recognizer) {
+                  return recognizers[i];
+              }
+          }
+          return null;
+      },
+
+      /**
+       * add a recognizer to the manager
+       * existing recognizers with the same event name will be removed
+       * @param {Recognizer} recognizer
+       * @returns {Recognizer|Manager}
+       */
+      add: function(recognizer) {
+          if (invokeArrayArg(recognizer, 'add', this)) {
+              return this;
+          }
+
+          // remove existing
+          var existing = this.get(recognizer.options.event);
+          if (existing) {
+              this.remove(existing);
+          }
+
+          this.recognizers.push(recognizer);
+          recognizer.manager = this;
+
+          this.touchAction.update();
+          return recognizer;
+      },
+
+      /**
+       * remove a recognizer by name or instance
+       * @param {Recognizer|String} recognizer
+       * @returns {Manager}
+       */
+      remove: function(recognizer) {
+          if (invokeArrayArg(recognizer, 'remove', this)) {
+              return this;
+          }
+
+          recognizer = this.get(recognizer);
+
+          // let's make sure this recognizer exists
+          if (recognizer) {
+              var recognizers = this.recognizers;
+              var index = inArray(recognizers, recognizer);
+
+              if (index !== -1) {
+                  recognizers.splice(index, 1);
+                  this.touchAction.update();
+              }
+          }
+
+          return this;
+      },
+
+      /**
+       * bind event
+       * @param {String} events
+       * @param {Function} handler
+       * @returns {EventEmitter} this
+       */
+      on: function(events, handler) {
+          if (events === undefined$1) {
+              return;
+          }
+          if (handler === undefined$1) {
+              return;
+          }
+
+          var handlers = this.handlers;
+          each(splitStr(events), function(event) {
+              handlers[event] = handlers[event] || [];
+              handlers[event].push(handler);
+          });
+          return this;
+      },
+
+      /**
+       * unbind event, leave emit blank to remove all handlers
+       * @param {String} events
+       * @param {Function} [handler]
+       * @returns {EventEmitter} this
+       */
+      off: function(events, handler) {
+          if (events === undefined$1) {
+              return;
+          }
+
+          var handlers = this.handlers;
+          each(splitStr(events), function(event) {
+              if (!handler) {
+                  delete handlers[event];
+              } else {
+                  handlers[event] && handlers[event].splice(inArray(handlers[event], handler), 1);
+              }
+          });
+          return this;
+      },
+
+      /**
+       * emit event to the listeners
+       * @param {String} event
+       * @param {Object} data
+       */
+      emit: function(event, data) {
+          // we also want to trigger dom events
+          if (this.options.domEvents) {
+              triggerDomEvent(event, data);
+          }
+
+          // no handlers, so skip it all
+          var handlers = this.handlers[event] && this.handlers[event].slice();
+          if (!handlers || !handlers.length) {
+              return;
+          }
+
+          data.type = event;
+          data.preventDefault = function() {
+              data.srcEvent.preventDefault();
+          };
+
+          var i = 0;
+          while (i < handlers.length) {
+              handlers[i](data);
+              i++;
+          }
+      },
+
+      /**
+       * destroy the manager and unbinds all events
+       * it doesn't unbind dom events, that is the user own responsibility
+       */
+      destroy: function() {
+          this.element && toggleCssProps(this, false);
+
+          this.handlers = {};
+          this.session = {};
+          this.input.destroy();
+          this.element = null;
+      }
+  };
+
+  /**
+   * add/remove the css properties as defined in manager.options.cssProps
+   * @param {Manager} manager
+   * @param {Boolean} add
+   */
+  function toggleCssProps(manager, add) {
+      var element = manager.element;
+      if (!element.style) {
+          return;
+      }
+      var prop;
+      each(manager.options.cssProps, function(value, name) {
+          prop = prefixed(element.style, name);
+          if (add) {
+              manager.oldCssProps[prop] = element.style[prop];
+              element.style[prop] = value;
+          } else {
+              element.style[prop] = manager.oldCssProps[prop] || '';
+          }
+      });
+      if (!add) {
+          manager.oldCssProps = {};
+      }
+  }
+
+  /**
+   * trigger dom event
+   * @param {String} event
+   * @param {Object} data
+   */
+  function triggerDomEvent(event, data) {
+      var gestureEvent = document.createEvent('Event');
+      gestureEvent.initEvent(event, true, true);
+      gestureEvent.gesture = data;
+      data.target.dispatchEvent(gestureEvent);
+  }
+
+  assign(Hammer, {
+      INPUT_START: INPUT_START,
+      INPUT_MOVE: INPUT_MOVE,
+      INPUT_END: INPUT_END,
+      INPUT_CANCEL: INPUT_CANCEL,
+
+      STATE_POSSIBLE: STATE_POSSIBLE,
+      STATE_BEGAN: STATE_BEGAN,
+      STATE_CHANGED: STATE_CHANGED,
+      STATE_ENDED: STATE_ENDED,
+      STATE_RECOGNIZED: STATE_RECOGNIZED,
+      STATE_CANCELLED: STATE_CANCELLED,
+      STATE_FAILED: STATE_FAILED,
+
+      DIRECTION_NONE: DIRECTION_NONE,
+      DIRECTION_LEFT: DIRECTION_LEFT,
+      DIRECTION_RIGHT: DIRECTION_RIGHT,
+      DIRECTION_UP: DIRECTION_UP,
+      DIRECTION_DOWN: DIRECTION_DOWN,
+      DIRECTION_HORIZONTAL: DIRECTION_HORIZONTAL,
+      DIRECTION_VERTICAL: DIRECTION_VERTICAL,
+      DIRECTION_ALL: DIRECTION_ALL,
+
+      Manager: Manager,
+      Input: Input,
+      TouchAction: TouchAction,
+
+      TouchInput: TouchInput,
+      MouseInput: MouseInput,
+      PointerEventInput: PointerEventInput,
+      TouchMouseInput: TouchMouseInput,
+      SingleTouchInput: SingleTouchInput,
+
+      Recognizer: Recognizer,
+      AttrRecognizer: AttrRecognizer,
+      Tap: TapRecognizer,
+      Pan: PanRecognizer,
+      Swipe: SwipeRecognizer,
+      Pinch: PinchRecognizer,
+      Rotate: RotateRecognizer,
+      Press: PressRecognizer,
+
+      on: addEventListeners,
+      off: removeEventListeners,
+      each: each,
+      merge: merge,
+      extend: extend,
+      assign: assign,
+      inherit: inherit,
+      bindFn: bindFn,
+      prefixed: prefixed
+  });
+
+  // this prevents errors when Hammer is loaded in the presence of an AMD
+  //  style loader but by script tag, not by the loader.
+  var freeGlobal = (typeof window !== 'undefined' ? window : (typeof self !== 'undefined' ? self : {})); // jshint ignore:line
+  freeGlobal.Hammer = Hammer;
+
+  if (typeof undefined$1 === 'function' && undefined$1.amd) {
+      undefined$1(function() {
+          return Hammer;
+      });
+  } else if (module.exports) {
+      module.exports = Hammer;
+  } else {
+      window[exportName] = Hammer;
+  }
+
+  })(window, document, 'Hammer');
+  }(hammer));
+
+  var Hammer = hammer.exports;
+
+  /*!
+  * chartjs-plugin-zoom v1.2.0
+  * undefined
+   * (c) 2016-2021 chartjs-plugin-zoom Contributors
+   * Released under the MIT License
+   */
+
+  const getModifierKey = opts => opts && opts.enabled && opts.modifierKey;
+  const keyPressed = (key, event) => key && event[key + 'Key'];
+  const keyNotPressed = (key, event) => key && !event[key + 'Key'];
+
+  /**
+   * @param {string|function} mode can be 'x', 'y' or 'xy'
+   * @param {string} dir can be 'x' or 'y'
+   * @param {import('chart.js').Chart} chart instance of the chart in question
+   * @returns {boolean}
+   */
+  function directionEnabled(mode, dir, chart) {
+    if (mode === undefined) {
+      return true;
+    } else if (typeof mode === 'string') {
+      return mode.indexOf(dir) !== -1;
+    } else if (typeof mode === 'function') {
+      return mode({chart}).indexOf(dir) !== -1;
+    }
+
+    return false;
+  }
+
+  /**
+   * Debounces calling `fn` for `delay` ms
+   * @param {function} fn - Function to call. No arguments are passed.
+   * @param {number} delay - Delay in ms. 0 = immediate invocation.
+   * @returns {function}
+   */
+  function debounce(fn, delay) {
+    let timeout;
+    return function() {
+      clearTimeout(timeout);
+      timeout = setTimeout(fn, delay);
+      return delay;
+    };
+  }
+
+  /** This function use for check what axis now under mouse cursor.
+   * @param {{x: number, y: number}} point - the mouse location
+   * @param {import('chart.js').Chart} [chart] instance of the chart in question
+   * @return {import('chart.js').Scale}
+   */
+  function getScaleUnderPoint({x, y}, chart) {
+    const scales = chart.scales;
+    const scaleIds = Object.keys(scales);
+    for (let i = 0; i < scaleIds.length; i++) {
+      const scale = scales[scaleIds[i]];
+      if (y >= scale.top && y <= scale.bottom && x >= scale.left && x <= scale.right) {
+        return scale;
+      }
+    }
+    return null;
+  }
+
+  /** This function return only one scale whose position is under mouse cursor and which direction is enabled.
+   * If under mouse hasn't scale, then return all other scales which 'mode' is diffrent with overScaleMode.
+   * So 'overScaleMode' works as a limiter to scale the user-selected scale (in 'mode') only when the cursor is under the scale,
+   * and other directions in 'mode' works as before.
+   * Example: mode = 'xy', overScaleMode = 'y' -> it's means 'x' - works as before, and 'y' only works for one scale when cursor is under it.
+   * options.overScaleMode can be a function if user want zoom only one scale of many for example.
+   * @param {string} mode - 'xy', 'x' or 'y'
+   * @param {{x: number, y: number}} point - the mouse location
+   * @param {import('chart.js').Chart} [chart] instance of the chart in question
+   * @return {import('chart.js').Scale[]}
+   */
+  function getEnabledScalesByPoint(mode, point, chart) {
+    const scale = getScaleUnderPoint(point, chart);
+
+    if (scale && directionEnabled(mode, scale.axis, chart)) {
+      return [scale];
+    }
+
+    const enabledScales = [];
+    each(chart.scales, function(scaleItem) {
+      if (!directionEnabled(mode, scaleItem.axis, chart)) {
+        enabledScales.push(scaleItem);
+      }
+    });
+    return enabledScales;
+  }
+
+  const chartStates$1 = new WeakMap();
+
+  function getState(chart) {
+    let state = chartStates$1.get(chart);
+    if (!state) {
+      state = {
+        originalScaleLimits: {},
+        updatedScaleLimits: {},
+        handlers: {},
+        panDelta: {}
+      };
+      chartStates$1.set(chart, state);
+    }
+    return state;
+  }
+
+  function removeState(chart) {
+    chartStates$1.delete(chart);
+  }
+
+  function zoomDelta(scale, zoom, center) {
+    const range = scale.max - scale.min;
+    const newRange = range * (zoom - 1);
+
+    const centerPoint = scale.isHorizontal() ? center.x : center.y;
+    // `scale.getValueForPixel()` can return a value less than the `scale.min` or
+    // greater than `scale.max` when `centerPoint` is outside chartArea.
+    const minPercent = Math.max(0, Math.min(1,
+      (scale.getValueForPixel(centerPoint) - scale.min) / range || 0
+    ));
+
+    const maxPercent = 1 - minPercent;
+
+    return {
+      min: newRange * minPercent,
+      max: newRange * maxPercent
+    };
+  }
+
+  function getLimit(state, scale, scaleLimits, prop, fallback) {
+    let limit = scaleLimits[prop];
+    if (limit === 'original') {
+      const original = state.originalScaleLimits[scale.id][prop];
+      limit = valueOrDefault(original.options, original.scale);
+    }
+    return valueOrDefault(limit, fallback);
+  }
+
+  function updateRange(scale, {min, max}, limits, zoom = false) {
+    const state = getState(scale.chart);
+    const {id, axis, options: scaleOpts} = scale;
+
+    const scaleLimits = limits && (limits[id] || limits[axis]) || {};
+    const {minRange = 0} = scaleLimits;
+    const minLimit = getLimit(state, scale, scaleLimits, 'min', -Infinity);
+    const maxLimit = getLimit(state, scale, scaleLimits, 'max', Infinity);
+
+    const cmin = Math.max(min, minLimit);
+    const cmax = Math.min(max, maxLimit);
+    const range = zoom ? Math.max(cmax - cmin, minRange) : scale.max - scale.min;
+    if (cmax - cmin !== range) {
+      if (minLimit > cmax - range) {
+        min = cmin;
+        max = cmin + range;
+      } else if (maxLimit < cmin + range) {
+        max = cmax;
+        min = cmax - range;
+      } else {
+        const offset = (range - cmax + cmin) / 2;
+        min = cmin - offset;
+        max = cmax + offset;
+      }
+    } else {
+      min = cmin;
+      max = cmax;
+    }
+    scaleOpts.min = min;
+    scaleOpts.max = max;
+
+    state.updatedScaleLimits[scale.id] = {min, max};
+
+    // return true if the scale range is changed
+    return scale.parse(min) !== scale.min || scale.parse(max) !== scale.max;
+  }
+
+  function zoomNumericalScale(scale, zoom, center, limits) {
+    const delta = zoomDelta(scale, zoom, center);
+    const newRange = {min: scale.min + delta.min, max: scale.max - delta.max};
+    return updateRange(scale, newRange, limits, true);
+  }
+
+  const integerChange = (v) => v === 0 || isNaN(v) ? 0 : v < 0 ? Math.min(Math.round(v), -1) : Math.max(Math.round(v), 1);
+
+  function existCategoryFromMaxZoom(scale) {
+    const labels = scale.getLabels();
+    const maxIndex = labels.length - 1;
+
+    if (scale.min > 0) {
+      scale.min -= 1;
+    }
+    if (scale.max < maxIndex) {
+      scale.max += 1;
+    }
+  }
+
+  function zoomCategoryScale(scale, zoom, center, limits) {
+    const delta = zoomDelta(scale, zoom, center);
+    if (scale.min === scale.max && zoom < 1) {
+      existCategoryFromMaxZoom(scale);
+    }
+    const newRange = {min: scale.min + integerChange(delta.min), max: scale.max - integerChange(delta.max)};
+    return updateRange(scale, newRange, limits, true);
+  }
+
+  function scaleLength(scale) {
+    return scale.isHorizontal() ? scale.width : scale.height;
+  }
+
+  function panCategoryScale(scale, delta, limits) {
+    const labels = scale.getLabels();
+    const lastLabelIndex = labels.length - 1;
+    let {min, max} = scale;
+    // The visible range. Ticks can be skipped, and thus not reliable.
+    const range = Math.max(max - min, 1);
+    // How many pixels of delta is required before making a step. stepSize, but limited to max 1/10 of the scale length.
+    const stepDelta = Math.round(scaleLength(scale) / Math.max(range, 10));
+    const stepSize = Math.round(Math.abs(delta / stepDelta));
+    let applied;
+    if (delta < -stepDelta) {
+      max = Math.min(max + stepSize, lastLabelIndex);
+      min = range === 1 ? max : max - range;
+      applied = max === lastLabelIndex;
+    } else if (delta > stepDelta) {
+      min = Math.max(0, min - stepSize);
+      max = range === 1 ? min : min + range;
+      applied = min === 0;
+    }
+
+    return updateRange(scale, {min, max}, limits) || applied;
+  }
+
+  const OFFSETS = {
+    second: 500, // 500 ms
+    minute: 30 * 1000, // 30 s
+    hour: 30 * 60 * 1000, // 30 m
+    day: 12 * 60 * 60 * 1000, // 12 h
+    week: 3.5 * 24 * 60 * 60 * 1000, // 3.5 d
+    month: 15 * 24 * 60 * 60 * 1000, // 15 d
+    quarter: 60 * 24 * 60 * 60 * 1000, // 60 d
+    year: 182 * 24 * 60 * 60 * 1000 // 182 d
+  };
+
+  function panNumericalScale(scale, delta, limits, canZoom = false) {
+    const {min: prevStart, max: prevEnd, options} = scale;
+    const round = options.time && options.time.round;
+    const offset = OFFSETS[round] || 0;
+    const newMin = scale.getValueForPixel(scale.getPixelForValue(prevStart + offset) - delta);
+    const newMax = scale.getValueForPixel(scale.getPixelForValue(prevEnd + offset) - delta);
+    const {min: minLimit = -Infinity, max: maxLimit = Infinity} = canZoom && limits && limits[scale.axis] || {};
+    if (isNaN(newMin) || isNaN(newMax) || newMin < minLimit || newMax > maxLimit) {
+      // At limit: No change but return true to indicate no need to store the delta.
+      // NaN can happen for 0-dimension scales (either because they were configured
+      // with min === max or because the chart has 0 plottable area).
+      return true;
+    }
+    return updateRange(scale, {min: newMin, max: newMax}, limits, canZoom);
+  }
+
+  function panNonLinearScale(scale, delta, limits) {
+    return panNumericalScale(scale, delta, limits, true);
+  }
+
+  const zoomFunctions = {
+    category: zoomCategoryScale,
+    default: zoomNumericalScale,
+  };
+
+  const panFunctions = {
+    category: panCategoryScale,
+    default: panNumericalScale,
+    logarithmic: panNonLinearScale,
+    timeseries: panNonLinearScale,
+  };
+
+  function shouldUpdateScaleLimits(scale, originalScaleLimits, updatedScaleLimits) {
+    const {id, options: {min, max}} = scale;
+    if (!originalScaleLimits[id] || !updatedScaleLimits[id]) {
+      return true;
+    }
+    const previous = updatedScaleLimits[id];
+    return previous.min !== min || previous.max !== max;
+  }
+
+  function removeMissingScales(limits, scales) {
+    each(limits, (opt, key) => {
+      if (!scales[key]) {
+        delete limits[key];
+      }
+    });
+  }
+
+  function storeOriginalScaleLimits(chart, state) {
+    const {scales} = chart;
+    const {originalScaleLimits, updatedScaleLimits} = state;
+
+    each(scales, function(scale) {
+      if (shouldUpdateScaleLimits(scale, originalScaleLimits, updatedScaleLimits)) {
+        originalScaleLimits[scale.id] = {
+          min: {scale: scale.min, options: scale.options.min},
+          max: {scale: scale.max, options: scale.options.max},
+        };
+      }
+    });
+
+    removeMissingScales(originalScaleLimits, scales);
+    removeMissingScales(updatedScaleLimits, scales);
+    return originalScaleLimits;
+  }
+
+  function doZoom(scale, amount, center, limits) {
+    const fn = zoomFunctions[scale.type] || zoomFunctions.default;
+    callback(fn, [scale, amount, center, limits]);
+  }
+
+  function getCenter(chart) {
+    const ca = chart.chartArea;
+    return {
+      x: (ca.left + ca.right) / 2,
+      y: (ca.top + ca.bottom) / 2,
+    };
+  }
+
+  /**
+   * @param chart The chart instance
+   * @param {number | {x?: number, y?: number, focalPoint?: {x: number, y: number}}} amount The zoom percentage or percentages and focal point
+   * @param {string} [transition] Which transition mode to use. Defaults to 'none'
+   */
+  function zoom(chart, amount, transition = 'none') {
+    const {x = 1, y = 1, focalPoint = getCenter(chart)} = typeof amount === 'number' ? {x: amount, y: amount} : amount;
+    const state = getState(chart);
+    const {options: {limits, zoom: zoomOptions}} = state;
+    const {mode = 'xy', overScaleMode} = zoomOptions || {};
+
+    storeOriginalScaleLimits(chart, state);
+
+    const xEnabled = x !== 1 && directionEnabled(mode, 'x', chart);
+    const yEnabled = y !== 1 && directionEnabled(mode, 'y', chart);
+    const enabledScales = overScaleMode && getEnabledScalesByPoint(overScaleMode, focalPoint, chart);
+
+    each(enabledScales || chart.scales, function(scale) {
+      if (scale.isHorizontal() && xEnabled) {
+        doZoom(scale, x, focalPoint, limits);
+      } else if (!scale.isHorizontal() && yEnabled) {
+        doZoom(scale, y, focalPoint, limits);
+      }
+    });
+
+    chart.update(transition);
+
+    callback(zoomOptions.onZoom, [{chart}]);
+  }
+
+  function getRange(scale, pixel0, pixel1) {
+    const v0 = scale.getValueForPixel(pixel0);
+    const v1 = scale.getValueForPixel(pixel1);
+    return {
+      min: Math.min(v0, v1),
+      max: Math.max(v0, v1)
+    };
+  }
+
+  function zoomRect(chart, p0, p1, transition = 'none') {
+    const state = getState(chart);
+    const {options: {limits, zoom: zoomOptions}} = state;
+    const {mode = 'xy'} = zoomOptions;
+
+    storeOriginalScaleLimits(chart, state);
+    const xEnabled = directionEnabled(mode, 'x', chart);
+    const yEnabled = directionEnabled(mode, 'y', chart);
+
+    each(chart.scales, function(scale) {
+      if (scale.isHorizontal() && xEnabled) {
+        updateRange(scale, getRange(scale, p0.x, p1.x), limits, true);
+      } else if (!scale.isHorizontal() && yEnabled) {
+        updateRange(scale, getRange(scale, p0.y, p1.y), limits, true);
+      }
+    });
+
+    chart.update(transition);
+
+    callback(zoomOptions.onZoom, [{chart}]);
+  }
+
+  function zoomScale(chart, scaleId, range, transition = 'none') {
+    storeOriginalScaleLimits(chart, getState(chart));
+    const scale = chart.scales[scaleId];
+    updateRange(scale, range, undefined, true);
+    chart.update(transition);
+  }
+
+  function resetZoom(chart, transition = 'default') {
+    const state = getState(chart);
+    const originalScaleLimits = storeOriginalScaleLimits(chart, state);
+
+    each(chart.scales, function(scale) {
+      const scaleOptions = scale.options;
+      if (originalScaleLimits[scale.id]) {
+        scaleOptions.min = originalScaleLimits[scale.id].min.options;
+        scaleOptions.max = originalScaleLimits[scale.id].max.options;
+      } else {
+        delete scaleOptions.min;
+        delete scaleOptions.max;
+      }
+    });
+    chart.update(transition);
+    callback(state.options.zoom.onZoomComplete, [{chart}]);
+  }
+
+  function getOriginalRange(state, scaleId) {
+    const original = state.originalScaleLimits[scaleId];
+    if (!original) {
+      return;
+    }
+    const {min, max} = original;
+    return valueOrDefault(max.options, max.scale) - valueOrDefault(min.options, min.scale);
+  }
+
+  function getZoomLevel(chart) {
+    const state = getState(chart);
+    let min = 1;
+    let max = 1;
+    each(chart.scales, function(scale) {
+      const origRange = getOriginalRange(state, scale.id);
+      if (origRange) {
+        const level = Math.round(origRange / (scale.max - scale.min) * 100) / 100;
+        min = Math.min(min, level);
+        max = Math.max(max, level);
+      }
+    });
+    return min < 1 ? min : max;
+  }
+
+  function panScale(scale, delta, limits, state) {
+    const {panDelta} = state;
+    // Add possible cumulative delta from previous pan attempts where scale did not change
+    const storedDelta = panDelta[scale.id] || 0;
+    if (sign(storedDelta) === sign(delta)) {
+      delta += storedDelta;
+    }
+    const fn = panFunctions[scale.type] || panFunctions.default;
+    if (callback(fn, [scale, delta, limits])) {
+      // The scale changed, reset cumulative delta
+      panDelta[scale.id] = 0;
+    } else {
+      // The scale did not change, store cumulative delta
+      panDelta[scale.id] = delta;
+    }
+  }
+
+  function pan(chart, delta, enabledScales, transition = 'none') {
+    const {x = 0, y = 0} = typeof delta === 'number' ? {x: delta, y: delta} : delta;
+    const state = getState(chart);
+    const {options: {pan: panOptions, limits}} = state;
+    const {mode = 'xy', onPan} = panOptions || {};
+
+    storeOriginalScaleLimits(chart, state);
+
+    const xEnabled = x !== 0 && directionEnabled(mode, 'x', chart);
+    const yEnabled = y !== 0 && directionEnabled(mode, 'y', chart);
+
+    each(enabledScales || chart.scales, function(scale) {
+      if (scale.isHorizontal() && xEnabled) {
+        panScale(scale, x, limits, state);
+      } else if (!scale.isHorizontal() && yEnabled) {
+        panScale(scale, y, limits, state);
+      }
+    });
+
+    chart.update(transition);
+
+    callback(onPan, [{chart}]);
+  }
+
+  function getInitialScaleBounds(chart) {
+    const state = getState(chart);
+    const scaleBounds = {};
+    for (const scaleId of Object.keys(chart.scales)) {
+      const {min, max} = state.originalScaleLimits[scaleId] || {min: {}, max: {}};
+      scaleBounds[scaleId] = {min: min.scale, max: max.scale};
+    }
+
+    return scaleBounds;
+  }
+
+  function isZoomedOrPanned(chart) {
+    const scaleBounds = getInitialScaleBounds(chart);
+    for (const scaleId of Object.keys(chart.scales)) {
+      const {min: originalMin, max: originalMax} = scaleBounds[scaleId];
+
+      if (chart.scales[scaleId].min !== originalMin) {
+        return true;
+      }
+
+      if (chart.scales[scaleId].max !== originalMax) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  function removeHandler(chart, type) {
+    const {handlers} = getState(chart);
+    const handler = handlers[type];
+    if (handler && handler.target) {
+      handler.target.removeEventListener(type, handler);
+      delete handlers[type];
+    }
+  }
+
+  function addHandler(chart, target, type, handler) {
+    const {handlers, options} = getState(chart);
+    removeHandler(chart, type);
+    handlers[type] = (event) => handler(chart, event, options);
+    handlers[type].target = target;
+    target.addEventListener(type, handlers[type]);
+  }
+
+  function mouseMove(chart, event) {
+    const state = getState(chart);
+    if (state.dragStart) {
+      state.dragging = true;
+      state.dragEnd = event;
+      chart.update('none');
+    }
+  }
+
+  function zoomStart(chart, event, zoomOptions) {
+    const {onZoomStart, onZoomRejected} = zoomOptions;
+    if (onZoomStart) {
+      const {left: offsetX, top: offsetY} = event.target.getBoundingClientRect();
+      const point = {
+        x: event.clientX - offsetX,
+        y: event.clientY - offsetY
+      };
+      if (callback(onZoomStart, [{chart, event, point}]) === false) {
+        callback(onZoomRejected, [{chart, event}]);
+        return false;
+      }
+    }
+  }
+
+  function mouseDown(chart, event) {
+    const state = getState(chart);
+    const {pan: panOptions, zoom: zoomOptions = {}} = state.options;
+    if (keyPressed(getModifierKey(panOptions), event) || keyNotPressed(getModifierKey(zoomOptions.drag), event)) {
+      return callback(zoomOptions.onZoomRejected, [{chart, event}]);
+    }
+
+    if (zoomStart(chart, event, zoomOptions) === false) {
+      return;
+    }
+    state.dragStart = event;
+
+    addHandler(chart, chart.canvas, 'mousemove', mouseMove);
+  }
+
+  function computeDragRect(chart, mode, beginPoint, endPoint) {
+    const {left: offsetX, top: offsetY} = beginPoint.target.getBoundingClientRect();
+    const xEnabled = directionEnabled(mode, 'x', chart);
+    const yEnabled = directionEnabled(mode, 'y', chart);
+    let {top, left, right, bottom, width: chartWidth, height: chartHeight} = chart.chartArea;
+
+    if (xEnabled) {
+      left = Math.min(beginPoint.clientX, endPoint.clientX) - offsetX;
+      right = Math.max(beginPoint.clientX, endPoint.clientX) - offsetX;
+    }
+
+    if (yEnabled) {
+      top = Math.min(beginPoint.clientY, endPoint.clientY) - offsetY;
+      bottom = Math.max(beginPoint.clientY, endPoint.clientY) - offsetY;
+    }
+    const width = right - left;
+    const height = bottom - top;
+
+    return {
+      left,
+      top,
+      right,
+      bottom,
+      width,
+      height,
+      zoomX: xEnabled && width ? 1 + ((chartWidth - width) / chartWidth) : 1,
+      zoomY: yEnabled && height ? 1 + ((chartHeight - height) / chartHeight) : 1
+    };
+  }
+
+  function mouseUp(chart, event) {
+    const state = getState(chart);
+    if (!state.dragStart) {
+      return;
+    }
+
+    removeHandler(chart, 'mousemove');
+    const {mode, onZoomComplete, drag: {threshold = 0}} = state.options.zoom;
+    const rect = computeDragRect(chart, mode, state.dragStart, event);
+    const distanceX = directionEnabled(mode, 'x', chart) ? rect.width : 0;
+    const distanceY = directionEnabled(mode, 'y', chart) ? rect.height : 0;
+    const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+
+    // Remove drag start and end before chart update to stop drawing selected area
+    state.dragStart = state.dragEnd = null;
+
+    if (distance <= threshold) {
+      state.dragging = false;
+      chart.update('none');
+      return;
+    }
+
+    zoomRect(chart, {x: rect.left, y: rect.top}, {x: rect.right, y: rect.bottom}, 'zoom');
+
+    setTimeout(() => (state.dragging = false), 500);
+    callback(onZoomComplete, [{chart}]);
+  }
+
+  function wheelPreconditions(chart, event, zoomOptions) {
+    // Before preventDefault, check if the modifier key required and pressed
+    if (keyNotPressed(getModifierKey(zoomOptions.wheel), event)) {
+      callback(zoomOptions.onZoomRejected, [{chart, event}]);
+      return;
+    }
+
+    if (zoomStart(chart, event, zoomOptions) === false) {
+      return;
+    }
+
+    // Prevent the event from triggering the default behavior (eg. Content scrolling).
+    if (event.cancelable) {
+      event.preventDefault();
+    }
+
+    // Firefox always fires the wheel event twice:
+    // First without the delta and right after that once with the delta properties.
+    if (event.deltaY === undefined) {
+      return;
+    }
+    return true;
+  }
+
+  function wheel(chart, event) {
+    const {handlers: {onZoomComplete}, options: {zoom: zoomOptions}} = getState(chart);
+
+    if (!wheelPreconditions(chart, event, zoomOptions)) {
+      return;
+    }
+
+    const rect = event.target.getBoundingClientRect();
+    const speed = 1 + (event.deltaY >= 0 ? -zoomOptions.wheel.speed : zoomOptions.wheel.speed);
+    const amount = {
+      x: speed,
+      y: speed,
+      focalPoint: {
+        x: event.clientX - rect.left,
+        y: event.clientY - rect.top
+      }
+    };
+
+    zoom(chart, amount);
+
+    if (onZoomComplete) {
+      onZoomComplete();
+    }
+  }
+
+  function addDebouncedHandler(chart, name, handler, delay) {
+    if (handler) {
+      getState(chart).handlers[name] = debounce(() => callback(handler, [{chart}]), delay);
+    }
+  }
+
+  function addListeners(chart, options) {
+    const canvas = chart.canvas;
+    const {wheel: wheelOptions, drag: dragOptions, onZoomComplete} = options.zoom;
+
+    // Install listeners. Do this dynamically based on options so that we can turn zoom on and off
+    // We also want to make sure listeners aren't always on. E.g. if you're scrolling down a page
+    // and the mouse goes over a chart you don't want it intercepted unless the plugin is enabled
+    if (wheelOptions.enabled) {
+      addHandler(chart, canvas, 'wheel', wheel);
+      addDebouncedHandler(chart, 'onZoomComplete', onZoomComplete, 250);
+    } else {
+      removeHandler(chart, 'wheel');
+    }
+    if (dragOptions.enabled) {
+      addHandler(chart, canvas, 'mousedown', mouseDown);
+      addHandler(chart, canvas.ownerDocument, 'mouseup', mouseUp);
+    } else {
+      removeHandler(chart, 'mousedown');
+      removeHandler(chart, 'mousemove');
+      removeHandler(chart, 'mouseup');
+    }
+  }
+
+  function removeListeners(chart) {
+    removeHandler(chart, 'mousedown');
+    removeHandler(chart, 'mousemove');
+    removeHandler(chart, 'mouseup');
+    removeHandler(chart, 'wheel');
+    removeHandler(chart, 'click');
+  }
+
+  function createEnabler(chart, state) {
+    return function(recognizer, event) {
+      const {pan: panOptions, zoom: zoomOptions = {}} = state.options;
+      if (!panOptions || !panOptions.enabled) {
+        return false;
+      }
+      const srcEvent = event && event.srcEvent;
+      if (!srcEvent) { // Sometimes Hammer queries this with a null event.
+        return true;
+      }
+      if (!state.panning && event.pointerType === 'mouse' && (
+        keyNotPressed(getModifierKey(panOptions), srcEvent) || keyPressed(getModifierKey(zoomOptions.drag), srcEvent))
+      ) {
+        callback(panOptions.onPanRejected, [{chart, event}]);
+        return false;
+      }
+      return true;
+    };
+  }
+
+  function pinchAxes(p0, p1) {
+    // fingers position difference
+    const pinchX = Math.abs(p0.clientX - p1.clientX);
+    const pinchY = Math.abs(p0.clientY - p1.clientY);
+
+    // diagonal fingers will change both (xy) axes
+    const p = pinchX / pinchY;
+    let x, y;
+    if (p > 0.3 && p < 1.7) {
+      x = y = true;
+    } else if (pinchX > pinchY) {
+      x = true;
+    } else {
+      y = true;
+    }
+    return {x, y};
+  }
+
+  function handlePinch(chart, state, e) {
+    if (state.scale) {
+      const {center, pointers} = e;
+      // Hammer reports the total scaling. We need the incremental amount
+      const zoomPercent = 1 / state.scale * e.scale;
+      const rect = e.target.getBoundingClientRect();
+      const pinch = pinchAxes(pointers[0], pointers[1]);
+      const mode = state.options.zoom.mode;
+      const amount = {
+        x: pinch.x && directionEnabled(mode, 'x', chart) ? zoomPercent : 1,
+        y: pinch.y && directionEnabled(mode, 'y', chart) ? zoomPercent : 1,
+        focalPoint: {
+          x: center.x - rect.left,
+          y: center.y - rect.top
+        }
+      };
+
+      zoom(chart, amount);
+
+      // Keep track of overall scale
+      state.scale = e.scale;
+    }
+  }
+
+  function startPinch(chart, state) {
+    if (state.options.zoom.pinch.enabled) {
+      state.scale = 1;
+    }
+  }
+
+  function endPinch(chart, state, e) {
+    if (state.scale) {
+      handlePinch(chart, state, e);
+      state.scale = null; // reset
+      callback(state.options.zoom.onZoomComplete, [{chart}]);
+    }
+  }
+
+  function handlePan(chart, state, e) {
+    const delta = state.delta;
+    if (delta) {
+      state.panning = true;
+      pan(chart, {x: e.deltaX - delta.x, y: e.deltaY - delta.y}, state.panScales);
+      state.delta = {x: e.deltaX, y: e.deltaY};
+    }
+  }
+
+  function startPan(chart, state, event) {
+    const {enabled, overScaleMode, onPanStart, onPanRejected} = state.options.pan;
+    if (!enabled) {
+      return;
+    }
+    const rect = event.target.getBoundingClientRect();
+    const point = {
+      x: event.center.x - rect.left,
+      y: event.center.y - rect.top
+    };
+
+    if (callback(onPanStart, [{chart, event, point}]) === false) {
+      return callback(onPanRejected, [{chart, event}]);
+    }
+
+    state.panScales = overScaleMode && getEnabledScalesByPoint(overScaleMode, point, chart);
+    state.delta = {x: 0, y: 0};
+    clearTimeout(state.panEndTimeout);
+    handlePan(chart, state, event);
+  }
+
+  function endPan(chart, state) {
+    state.delta = null;
+    if (state.panning) {
+      state.panEndTimeout = setTimeout(() => (state.panning = false), 500);
+      callback(state.options.pan.onPanComplete, [{chart}]);
+    }
+  }
+
+  const hammers = new WeakMap();
+  function startHammer(chart, options) {
+    const state = getState(chart);
+    const canvas = chart.canvas;
+    const {pan: panOptions, zoom: zoomOptions} = options;
+
+    const mc = new Hammer.Manager(canvas);
+    if (zoomOptions && zoomOptions.pinch.enabled) {
+      mc.add(new Hammer.Pinch());
+      mc.on('pinchstart', () => startPinch(chart, state));
+      mc.on('pinch', (e) => handlePinch(chart, state, e));
+      mc.on('pinchend', (e) => endPinch(chart, state, e));
+    }
+
+    if (panOptions && panOptions.enabled) {
+      mc.add(new Hammer.Pan({
+        threshold: panOptions.threshold,
+        enable: createEnabler(chart, state)
+      }));
+      mc.on('panstart', (e) => startPan(chart, state, e));
+      mc.on('panmove', (e) => handlePan(chart, state, e));
+      mc.on('panend', () => endPan(chart, state));
+    }
+
+    hammers.set(chart, mc);
+  }
+
+  function stopHammer(chart) {
+    const mc = hammers.get(chart);
+    if (mc) {
+      mc.remove('pinchstart');
+      mc.remove('pinch');
+      mc.remove('pinchend');
+      mc.remove('panstart');
+      mc.remove('pan');
+      mc.remove('panend');
+      mc.destroy();
+      hammers.delete(chart);
+    }
+  }
+
+  var version$1 = "1.2.0";
+
+  var plugin = {
+    id: 'zoom',
+
+    version: version$1,
+
+    defaults: {
+      pan: {
+        enabled: false,
+        mode: 'xy',
+        threshold: 10,
+        modifierKey: null,
+      },
+      zoom: {
+        wheel: {
+          enabled: false,
+          speed: 0.1,
+          modifierKey: null
+        },
+        drag: {
+          enabled: false,
+          modifierKey: null
+        },
+        pinch: {
+          enabled: false
+        },
+        mode: 'xy',
+      }
+    },
+
+    start: function(chart, _args, options) {
+      const state = getState(chart);
+      state.options = options;
+
+      if (Object.prototype.hasOwnProperty.call(options.zoom, 'enabled')) {
+        console.warn('The option `zoom.enabled` is no longer supported. Please use `zoom.wheel.enabled`, `zoom.drag.enabled`, or `zoom.pinch.enabled`.');
+      }
+
+      if (Hammer) {
+        startHammer(chart, options);
+      }
+
+      chart.pan = (delta, panScales, transition) => pan(chart, delta, panScales, transition);
+      chart.zoom = (args, transition) => zoom(chart, args, transition);
+      chart.zoomScale = (id, range, transition) => zoomScale(chart, id, range, transition);
+      chart.resetZoom = (transition) => resetZoom(chart, transition);
+      chart.getZoomLevel = () => getZoomLevel(chart);
+      chart.getInitialScaleBounds = () => getInitialScaleBounds(chart);
+      chart.isZoomedOrPanned = () => isZoomedOrPanned(chart);
+    },
+
+    beforeEvent(chart) {
+      const state = getState(chart);
+      if (state.panning || state.dragging) {
+        // cancel any event handling while panning or dragging
+        return false;
+      }
+    },
+
+    beforeUpdate: function(chart, args, options) {
+      const state = getState(chart);
+      state.options = options;
+      addListeners(chart, options);
+    },
+
+    beforeDatasetsDraw: function(chart, args, options) {
+      const {dragStart, dragEnd} = getState(chart);
+
+      if (dragEnd) {
+        const {left, top, width, height} = computeDragRect(chart, options.zoom.mode, dragStart, dragEnd);
+
+        const dragOptions = options.zoom.drag;
+        const ctx = chart.ctx;
+
+        ctx.save();
+        ctx.beginPath();
+        ctx.fillStyle = dragOptions.backgroundColor || 'rgba(225,225,225,0.3)';
+        ctx.fillRect(left, top, width, height);
+
+        if (dragOptions.borderWidth > 0) {
+          ctx.lineWidth = dragOptions.borderWidth;
+          ctx.strokeStyle = dragOptions.borderColor || 'rgba(225,225,225)';
+          ctx.strokeRect(left, top, width, height);
+        }
+        ctx.restore();
+      }
+    },
+
+    stop: function(chart) {
+      removeListeners(chart);
+
+      if (Hammer) {
+        stopHammer(chart);
+      }
+      removeState(chart);
+    },
+
+    panFunctions,
+
+    zoomFunctions
+  };
+
+  /*!
+  * chartjs-plugin-annotation v1.2.2
+  * https://www.chartjs.org/chartjs-plugin-annotation/index
+   * (c) 2021 chartjs-plugin-annotation Contributors
+   * Released under the MIT License
+   */
+
+  const clickHooks = ['click', 'dblclick'];
+  const moveHooks = ['enter', 'leave'];
+  const hooks = clickHooks.concat(moveHooks);
+
+  function updateListeners(chart, state, options) {
+    const annotations = state.annotations || [];
+    state.listened = false;
+    state.moveListened = false;
+
+    hooks.forEach(hook => {
+      if (typeof options[hook] === 'function') {
+        state.listened = true;
+        state.listeners[hook] = options[hook];
+      } else if (defined(state.listeners[hook])) {
+        delete state.listeners[hook];
+      }
+    });
+    moveHooks.forEach(hook => {
+      if (typeof options[hook] === 'function') {
+        state.moveListened = true;
+      }
+    });
+
+    if (!state.listened || !state.moveListened) {
+      annotations.forEach(scope => {
+        if (!state.listened) {
+          clickHooks.forEach(hook => {
+            if (typeof scope[hook] === 'function') {
+              state.listened = true;
+            }
+          });
+        }
+        if (!state.moveListened) {
+          moveHooks.forEach(hook => {
+            if (typeof scope[hook] === 'function') {
+              state.listened = true;
+              state.moveListened = true;
+            }
+          });
+        }
+      });
+    }
+  }
+
+  function handleEvent(state, event, options) {
+    if (state.listened) {
+      switch (event.type) {
+      case 'mousemove':
+      case 'mouseout':
+        handleMoveEvents(state, event);
+        break;
+      case 'click':
+        handleClickEvents(state, event, options);
+        break;
+      }
+    }
+  }
+
+  function handleMoveEvents(state, event) {
+    if (!state.moveListened) {
+      return;
+    }
+
+    let element;
+
+    if (event.type === 'mousemove') {
+      element = getNearestItem(state.elements, event);
+    }
+
+    const previous = state.hovered;
+    state.hovered = element;
+
+    dispatchMoveEvents(state, {previous, element}, event);
+  }
+
+  function dispatchMoveEvents(state, elements, event) {
+    const {previous, element} = elements;
+    if (previous && previous !== element) {
+      dispatchEvent(previous.options.leave || state.listeners.leave, previous, event);
+    }
+    if (element && element !== previous) {
+      dispatchEvent(element.options.enter || state.listeners.enter, element, event);
+    }
+  }
+
+  function handleClickEvents(state, event, options) {
+    const listeners = state.listeners;
+    const element = getNearestItem(state.elements, event);
+    if (element) {
+      const elOpts = element.options;
+      const dblclick = elOpts.dblclick || listeners.dblclick;
+      const click = elOpts.click || listeners.click;
+      if (element.clickTimeout) {
+        // 2nd click before timeout, so its a double click
+        clearTimeout(element.clickTimeout);
+        delete element.clickTimeout;
+        dispatchEvent(dblclick, element, event);
+      } else if (dblclick) {
+        // if there is a dblclick handler, wait for dblClickSpeed ms before deciding its a click
+        element.clickTimeout = setTimeout(() => {
+          delete element.clickTimeout;
+          dispatchEvent(click, element, event);
+        }, options.dblClickSpeed);
+      } else {
+        // no double click handler, just call the click handler directly
+        dispatchEvent(click, element, event);
+      }
+    }
+  }
+
+  function dispatchEvent(handler, element, event) {
+    callback(handler, [element.$context, event]);
+  }
+
+  function getNearestItem(elements, position) {
+    let minDistance = Number.POSITIVE_INFINITY;
+
+    return elements
+      .filter((element) => element.options.display && element.inRange(position.x, position.y))
+      .reduce((nearestItems, element) => {
+        const center = element.getCenterPoint();
+        const distance = distanceBetweenPoints(position, center);
+
+        if (distance < minDistance) {
+          nearestItems = [element];
+          minDistance = distance;
+        } else if (distance === minDistance) {
+          // Can have multiple items at the same distance in which case we sort by size
+          nearestItems.push(element);
+        }
+
+        return nearestItems;
+      }, [])
+      .sort((a, b) => a._index - b._index)
+      .slice(0, 1)[0]; // return only the top item
+  }
+
+  function adjustScaleRange(chart, scale, annotations) {
+    const range = getScaleLimits(scale, annotations);
+    let changed = changeScaleLimit(scale, range, 'min', 'suggestedMin');
+    changed = changeScaleLimit(scale, range, 'max', 'suggestedMax') || changed;
+    if (changed && typeof scale.handleTickRangeOptions === 'function') {
+      scale.handleTickRangeOptions();
+    }
+  }
+
+  function verifyScaleOptions(annotations, scales) {
+    for (const annotation of annotations) {
+      verifyScaleIDs(annotation, scales);
+    }
+  }
+
+  function changeScaleLimit(scale, range, limit, suggestedLimit) {
+    if (isNumberFinite(range[limit]) && !scaleLimitDefined(scale.options, limit, suggestedLimit)) {
+      const changed = scale[limit] !== range[limit];
+      scale[limit] = range[limit];
+      return changed;
+    }
+  }
+
+  function scaleLimitDefined(scaleOptions, limit, suggestedLimit) {
+    return defined(scaleOptions[limit]) || defined(scaleOptions[suggestedLimit]);
+  }
+
+  function verifyScaleIDs(annotation, scales) {
+    for (const key of ['scaleID', 'xScaleID', 'yScaleID']) {
+      if (annotation[key] && !scales[annotation[key]]) {
+        console.warn(`No scale found with id '${annotation[key]}' for annotation '${annotation.id}'`);
+      }
+    }
+  }
+
+  function getScaleLimits(scale, annotations) {
+    const axis = scale.axis;
+    const scaleID = scale.id;
+    const scaleIDOption = axis + 'ScaleID';
+    const limits = {
+      min: valueOrDefault(scale.min, Number.NEGATIVE_INFINITY),
+      max: valueOrDefault(scale.max, Number.POSITIVE_INFINITY)
+    };
+    for (const annotation of annotations) {
+      if (annotation.scaleID === scaleID) {
+        updateLimits(annotation, scale, ['value', 'endValue'], limits);
+      } else if (annotation[scaleIDOption] === scaleID) {
+        updateLimits(annotation, scale, [axis + 'Min', axis + 'Max', axis + 'Value'], limits);
+      }
+    }
+    return limits;
+  }
+
+  function updateLimits(annotation, scale, props, limits) {
+    for (const prop of props) {
+      const raw = annotation[prop];
+      if (raw) {
+        const value = scale.parse(raw);
+        limits.min = Math.min(limits.min, value);
+        limits.max = Math.max(limits.max, value);
+      }
+    }
+  }
+
+  const clamp = (x, from, to) => Math.min(to, Math.max(from, x));
+
+  function clampAll(obj, from, to) {
+    for (const key of Object.keys(obj)) {
+      obj[key] = clamp(obj[key], from, to);
+    }
+    return obj;
+  }
+
+  function inPointRange(point, center, radius) {
+    if (!point || !center || radius <= 0) {
+      return false;
+    }
+    return (Math.pow(point.x - center.x, 2) + Math.pow(point.y - center.y, 2)) <= Math.pow(radius, 2);
+  }
+
+  function inBoxRange(mouseX, mouseY, {x, y, width, height}) {
+    return mouseX >= x &&
+           mouseX <= x + width &&
+           mouseY >= y &&
+           mouseY <= y + height;
+  }
+
+  function getElementCenterPoint(element, useFinalPosition) {
+    const {x, y} = element.getProps(['x', 'y'], useFinalPosition);
+    return {x, y};
+  }
+
+  const isPercentString = (s) => typeof s === 'string' && s.endsWith('%');
+  const toPercent = (s) => clamp(parseFloat(s) / 100, 0, 1);
+
+  function getRelativePosition(size, positionOption) {
+    if (positionOption === 'start') {
+      return 0;
+    }
+    if (positionOption === 'end') {
+      return size;
+    }
+    if (isPercentString(positionOption)) {
+      return toPercent(positionOption) * size;
+    }
+    return size / 2;
+  }
+
+  function getSize(size, value) {
+    if (typeof value === 'number') {
+      return value;
+    } else if (isPercentString(value)) {
+      return toPercent(value) * size;
+    }
+    return size;
+  }
+
+  function calculateTextAlignment(size, options) {
+    const {x, width} = size;
+    const textAlign = options.textAlign;
+    if (textAlign === 'center') {
+      return x + width / 2;
+    } else if (textAlign === 'end' || textAlign === 'right') {
+      return x + width;
+    }
+    return x;
+  }
+
+  function readValueToProps(value, props, defValue) {
+    const ret = {};
+    const objProps = isObject(props);
+    const keys = objProps ? Object.keys(props) : props;
+    const read = isObject(value)
+      ? objProps
+        ? prop => valueOrDefault(value[prop], value[props[prop]])
+        : prop => value[prop]
+      : () => value;
+
+    for (const prop of keys) {
+      ret[prop] = valueOrDefault(read(prop), defValue);
+    }
+    return ret;
+  }
+
+  function toPosition(value) {
+    return readValueToProps(value, ['x', 'y'], 'center');
+  }
+
+  function isBoundToPoint(options) {
+    return options && (defined(options.xValue) || defined(options.yValue));
+  }
+
+  const widthCache = new Map();
+
+  function isImageOrCanvas(content) {
+    return content instanceof Image || content instanceof HTMLCanvasElement;
+  }
+
+  /**
+   * Apply border options to the canvas context before drawing a box
+   * @param {CanvasRenderingContext2D} ctx - chart canvas context
+   * @param {Object} options - options with border configuration
+   * @returns {boolean} true is the border options have been applied
+   */
+  function setBorderStyle(ctx, options) {
+    if (options && options.borderWidth) {
+      ctx.lineCap = options.borderCapStyle;
+      ctx.setLineDash(options.borderDash);
+      ctx.lineDashOffset = options.borderDashOffset;
+      ctx.lineJoin = options.borderJoinStyle;
+      ctx.lineWidth = options.borderWidth;
+      ctx.strokeStyle = options.borderColor;
+      return true;
+    }
+  }
+
+  /**
+   * Measure the label size using the label options.
+   * @param {CanvasRenderingContext2D} ctx - chart canvas context
+   * @param {Object} options - options to configure the label
+   * @returns {{width: number, height: number}} the measured size of the label
+   */
+  function measureLabelSize(ctx, options) {
+    const content = options.content;
+    if (isImageOrCanvas(content)) {
+      return {
+        width: getSize(content.width, options.width),
+        height: getSize(content.height, options.height)
+      };
+    }
+    const font = toFont(options.font);
+    const lines = isArray(content) ? content : [content];
+    const mapKey = lines.join() + font.string + (ctx._measureText ? '-spriting' : '');
+    if (!widthCache.has(mapKey)) {
+      ctx.save();
+      ctx.font = font.string;
+      const count = lines.length;
+      let width = 0;
+      for (let i = 0; i < count; i++) {
+        const text = lines[i];
+        width = Math.max(width, ctx.measureText(text).width);
+      }
+      ctx.restore();
+      const height = count * font.lineHeight;
+      widthCache.set(mapKey, {width, height});
+    }
+    return widthCache.get(mapKey);
+  }
+
+  /**
+   * Draw a box with the size and the styling options.
+   * @param {CanvasRenderingContext2D} ctx - chart canvas context
+   * @param {{x: number, y: number, width: number, height: number}} rect - rect to draw
+   * @param {Object} options - options to style the box
+   * @returns {undefined}
+   */
+  function drawBox(ctx, rect, options) {
+    const {x, y, width, height} = rect;
+    ctx.save();
+    const stroke = setBorderStyle(ctx, options);
+    ctx.fillStyle = options.backgroundColor;
+    ctx.beginPath();
+    addRoundedRectPath(ctx, {
+      x, y, w: width, h: height,
+      // TODO: v2 remove support for cornerRadius
+      radius: clampAll(toTRBLCorners(valueOrDefault(options.cornerRadius, options.borderRadius)), 0, Math.min(width, height) / 2)
+    });
+    ctx.closePath();
+    ctx.fill();
+    if (stroke) {
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  function drawLabel(ctx, rect, options) {
+    const content = options.content;
+    if (isImageOrCanvas(content)) {
+      ctx.drawImage(content, rect.x, rect.y, rect.width, rect.height);
+      return;
+    }
+    const labels = isArray(content) ? content : [content];
+    const font = toFont(options.font);
+    const lh = font.lineHeight;
+    const x = calculateTextAlignment(rect, options);
+    const y = rect.y + (lh / 2);
+    ctx.font = font.string;
+    ctx.textBaseline = 'middle';
+    ctx.textAlign = options.textAlign;
+    ctx.fillStyle = options.color;
+    labels.forEach((l, i) => ctx.fillText(l, x, y + (i * lh)));
+  }
+
+  function getRectCenterPoint(rect) {
+    const {x, y, width, height} = rect;
+    return {
+      x: x + width / 2,
+      y: y + height / 2
+    };
+  }
+
+  /**
+   * Rotate a `point` relative to `center` point by `angle`
+   * @param {{x: number, y: number}} point - the point to rotate
+   * @param {{x: number, y: number}} center - center point for rotation
+   * @param {number} angle - angle for rotation, in radians
+   * @returns {{x: number, y: number}} rotated point
+   */
+  function rotated(point, center, angle) {
+    var cos = Math.cos(angle);
+    var sin = Math.sin(angle);
+    var cx = center.x;
+    var cy = center.y;
+
+    return {
+      x: cx + cos * (point.x - cx) - sin * (point.y - cy),
+      y: cy + sin * (point.x - cx) + cos * (point.y - cy)
+    };
+  }
+
+  function scaleValue(scale, value, fallback) {
+    value = typeof value === 'number' ? value : scale.parse(value);
+    return isNumberFinite(value) ? scale.getPixelForValue(value) : fallback;
+  }
+
+  function getChartDimensionByScale(scale, options) {
+    if (scale) {
+      const min = scaleValue(scale, options.min, options.start);
+      const max = scaleValue(scale, options.max, options.end);
+      return {
+        start: Math.min(min, max),
+        end: Math.max(min, max)
+      };
+    }
+    return {
+      start: options.start,
+      end: options.end
+    };
+  }
+
+  function getChartPoint(chart, options) {
+    const {chartArea, scales} = chart;
+    const xScale = scales[options.xScaleID];
+    const yScale = scales[options.yScaleID];
+    let x = chartArea.width / 2;
+    let y = chartArea.height / 2;
+
+    if (xScale) {
+      x = scaleValue(xScale, options.xValue, x);
+    }
+
+    if (yScale) {
+      y = scaleValue(yScale, options.yValue, y);
+    }
+    return {x, y};
+  }
+
+  function getChartRect(chart, options) {
+    const xScale = chart.scales[options.xScaleID];
+    const yScale = chart.scales[options.yScaleID];
+    let {top: y, left: x, bottom: y2, right: x2} = chart.chartArea;
+
+    if (!xScale && !yScale) {
+      return {options: {}};
+    }
+
+    const xDim = getChartDimensionByScale(xScale, {min: options.xMin, max: options.xMax, start: x, end: x2});
+    x = xDim.start;
+    x2 = xDim.end;
+    const yDim = getChartDimensionByScale(yScale, {min: options.yMin, max: options.yMax, start: y, end: y2});
+    y = yDim.start;
+    y2 = yDim.end;
+
+    return {
+      x,
+      y,
+      x2,
+      y2,
+      width: x2 - x,
+      height: y2 - y
+    };
+  }
+
+  function getChartCircle(chart, options) {
+    const point = getChartPoint(chart, options);
+    return {
+      x: point.x + options.xAdjust,
+      y: point.y + options.yAdjust,
+      width: options.radius * 2,
+      height: options.radius * 2
+    };
+  }
+
+  function resolvePointPosition(chart, options) {
+    if (!isBoundToPoint(options)) {
+      const box = getChartRect(chart, options);
+      const point = getRectCenterPoint(box);
+      let radius = options.radius;
+      if (!radius || isNaN(radius)) {
+        radius = Math.min(box.width, box.height) / 2;
+        options.radius = radius;
+      }
+      return {
+        x: point.x + options.xAdjust,
+        y: point.y + options.yAdjust,
+        width: radius * 2,
+        height: radius * 2
+      };
+    }
+    return getChartCircle(chart, options);
+  }
+
+  class BoxAnnotation extends Element {
+    inRange(mouseX, mouseY, useFinalPosition) {
+      return inBoxRange(mouseX, mouseY, this.getProps(['x', 'y', 'width', 'height'], useFinalPosition));
+    }
+
+    getCenterPoint(useFinalPosition) {
+      return getRectCenterPoint(this.getProps(['x', 'y', 'width', 'height'], useFinalPosition));
+    }
+
+    draw(ctx) {
+      ctx.save();
+      drawBox(ctx, this, this.options);
+      ctx.restore();
+    }
+
+    drawLabel(ctx) {
+      const {x, y, width, height, options} = this;
+      const labelOpts = options.label;
+      labelOpts.borderWidth = options.borderWidth;
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(x + labelOpts.borderWidth / 2, y + labelOpts.borderWidth / 2, width - labelOpts.borderWidth, height - labelOpts.borderWidth);
+      ctx.clip();
+      const position = toPosition(labelOpts.position);
+      const padding = toPadding(labelOpts.padding);
+      const labelSize = measureLabelSize(ctx, labelOpts);
+      const labelRect = {
+        x: calculateX(this, labelSize, position, padding),
+        y: calculateY(this, labelSize, position, padding),
+        width: labelSize.width,
+        height: labelSize.height
+      };
+      drawLabel(ctx, labelRect, labelOpts);
+      ctx.restore();
+    }
+
+    resolveElementProperties(chart, options) {
+      return getChartRect(chart, options);
+    }
+  }
+
+  BoxAnnotation.id = 'boxAnnotation';
+
+  BoxAnnotation.defaults = {
+    adjustScaleRange: true,
+    borderCapStyle: 'butt',
+    borderDash: [],
+    borderDashOffset: 0,
+    borderJoinStyle: 'miter',
+    borderRadius: 0,
+    borderWidth: 1,
+    cornerRadius: undefined, // TODO: v2 remove support for cornerRadius
+    display: true,
+    label: {
+      color: 'black',
+      content: null,
+      drawTime: undefined,
+      enabled: false,
+      font: {
+        family: undefined,
+        lineHeight: undefined,
+        size: undefined,
+        style: undefined,
+        weight: 'bold'
+      },
+      height: undefined,
+      padding: 6,
+      position: 'center',
+      textAlign: 'start',
+      xAdjust: 0,
+      yAdjust: 0,
+      width: undefined
+    },
+    xMax: undefined,
+    xMin: undefined,
+    xScaleID: 'x',
+    yMax: undefined,
+    yMin: undefined,
+    yScaleID: 'y'
+  };
+
+  BoxAnnotation.defaultRoutes = {
+    borderColor: 'color',
+    backgroundColor: 'color'
+  };
+
+  function calculateX(box, labelSize, position, padding) {
+    const {x: start, x2: end, width: size, options} = box;
+    const {xAdjust: adjust, borderWidth} = options.label;
+    return calculatePosition$1({start, end, size}, {
+      position: position.x,
+      padding: {start: padding.left, end: padding.right},
+      adjust, borderWidth,
+      size: labelSize.width
+    });
+  }
+
+  function calculateY(box, labelSize, position, padding) {
+    const {y: start, y2: end, height: size, options} = box;
+    const {yAdjust: adjust, borderWidth} = options.label;
+    return calculatePosition$1({start, end, size}, {
+      position: position.y,
+      padding: {start: padding.top, end: padding.bottom},
+      adjust, borderWidth,
+      size: labelSize.height
+    });
+  }
+
+  function calculatePosition$1(boxOpts, labelOpts) {
+    const {start, end} = boxOpts;
+    const {position, padding: {start: padStart, end: padEnd}, adjust, borderWidth} = labelOpts;
+    const availableSize = end - borderWidth - start - padStart - padEnd - labelOpts.size;
+    return start + borderWidth / 2 + adjust + padStart + getRelativePosition(availableSize, position);
+  }
+
+  const PI = Math.PI;
+  const pointInLine = (p1, p2, t) => ({x: p1.x + t * (p2.x - p1.x), y: p1.y + t * (p2.y - p1.y)});
+  const interpolateX = (y, p1, p2) => pointInLine(p1, p2, Math.abs((y - p1.y) / (p2.y - p1.y))).x;
+  const interpolateY = (x, p1, p2) => pointInLine(p1, p2, Math.abs((x - p1.x) / (p2.x - p1.x))).y;
+  const sqr = v => v * v;
+
+  function isLineInArea({x, y, x2, y2}, {top, right, bottom, left}) {
+    return !(
+      (x < left && x2 < left) ||
+      (x > right && x2 > right) ||
+      (y < top && y2 < top) ||
+      (y > bottom && y2 > bottom)
+    );
+  }
+
+  function limitPointToArea({x, y}, p2, {top, right, bottom, left}) {
+    if (x < left) {
+      y = interpolateY(left, {x, y}, p2);
+      x = left;
+    }
+    if (x > right) {
+      y = interpolateY(right, {x, y}, p2);
+      x = right;
+    }
+    if (y < top) {
+      x = interpolateX(top, {x, y}, p2);
+      y = top;
+    }
+    if (y > bottom) {
+      x = interpolateX(bottom, {x, y}, p2);
+      y = bottom;
+    }
+    return {x, y};
+  }
+
+  function limitLineToArea(p1, p2, area) {
+    const {x, y} = limitPointToArea(p1, p2, area);
+    const {x: x2, y: y2} = limitPointToArea(p2, p1, area);
+    return {x, y, x2, y2, width: Math.abs(x2 - x), height: Math.abs(y2 - y)};
+  }
+
+  class LineAnnotation extends Element {
+    intersects(x, y, epsilon = 0.001, useFinalPosition) {
+      // Adapted from https://stackoverflow.com/a/6853926/25507
+      const {x: x1, y: y1, x2, y2} = this.getProps(['x', 'y', 'x2', 'y2'], useFinalPosition);
+      const dx = x2 - x1;
+      const dy = y2 - y1;
+      const lenSq = sqr(dx) + sqr(dy);
+      const t = lenSq === 0 ? -1 : ((x - x1) * dx + (y - y1) * dy) / lenSq;
+      let xx, yy;
+      if (t < 0) {
+        xx = x1;
+        yy = y1;
+      } else if (t > 1) {
+        xx = x2;
+        yy = y2;
+      } else {
+        xx = x1 + t * dx;
+        yy = y1 + t * dy;
+      }
+      return (sqr(x - xx) + sqr(y - yy)) < epsilon;
+    }
+
+    // TODO: make private in v2
+    labelIsVisible(useFinalPosition, chartArea) {
+      const labelOpts = this.options.label;
+      if (!chartArea || !labelOpts || !labelOpts.enabled) {
+        return false;
+      }
+      return isLineInArea(this.getProps(['x', 'y', 'x2', 'y2'], useFinalPosition), chartArea);
+    }
+
+    // TODO: make private in v2
+    isOnLabel(mouseX, mouseY, useFinalPosition) {
+      if (!this.labelIsVisible(useFinalPosition)) {
+        return false;
+      }
+      const {labelX, labelY, labelWidth, labelHeight, labelRotation} = this.getProps(['labelX', 'labelY', 'labelWidth', 'labelHeight', 'labelRotation'], useFinalPosition);
+      const {x, y} = rotated({x: mouseX, y: mouseY}, {x: labelX, y: labelY}, -labelRotation);
+      const w2 = labelWidth / 2;
+      const h2 = labelHeight / 2;
+      return x >= labelX - w2 && x <= labelX + w2 &&
+        y >= labelY - h2 && y <= labelY + h2;
+    }
+
+    inRange(mouseX, mouseY, useFinalPosition) {
+      const epsilon = sqr(this.options.borderWidth / 2);
+      return this.intersects(mouseX, mouseY, epsilon, useFinalPosition) || this.isOnLabel(mouseX, mouseY, useFinalPosition);
+    }
+
+    getCenterPoint() {
+      return {
+        x: (this.x2 + this.x) / 2,
+        y: (this.y2 + this.y) / 2
+      };
+    }
+
+    draw(ctx) {
+      const {x, y, x2, y2, options} = this;
+      ctx.save();
+
+      ctx.lineWidth = options.borderWidth;
+      ctx.strokeStyle = options.borderColor;
+      ctx.setLineDash(options.borderDash);
+      ctx.lineDashOffset = options.borderDashOffset;
+
+      // Draw
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
+    drawLabel(ctx, chartArea) {
+      if (!this.labelIsVisible(false, chartArea)) {
+        return;
+      }
+      const {labelX, labelY, labelWidth, labelHeight, labelRotation, labelPadding, labelTextSize, options: {label}} = this;
+
+      ctx.save();
+      ctx.translate(labelX, labelY);
+      ctx.rotate(labelRotation);
+
+      const boxRect = {
+        x: -(labelWidth / 2),
+        y: -(labelHeight / 2),
+        width: labelWidth,
+        height: labelHeight
+      };
+      drawBox(ctx, boxRect, label);
+
+      const labelTextRect = {
+        x: -(labelWidth / 2) + labelPadding.left + label.borderWidth / 2,
+        y: -(labelHeight / 2) + labelPadding.top + label.borderWidth / 2,
+        width: labelTextSize.width,
+        height: labelTextSize.height
+      };
+      drawLabel(ctx, labelTextRect, label);
+      ctx.restore();
+    }
+
+    resolveElementProperties(chart, options) {
+      const scale = chart.scales[options.scaleID];
+      let {top: y, left: x, bottom: y2, right: x2} = chart.chartArea;
+      let min, max;
+
+      if (scale) {
+        min = scaleValue(scale, options.value, NaN);
+        max = scaleValue(scale, options.endValue, min);
+        if (scale.isHorizontal()) {
+          x = min;
+          x2 = max;
+        } else {
+          y = min;
+          y2 = max;
+        }
+      } else {
+        const xScale = chart.scales[options.xScaleID];
+        const yScale = chart.scales[options.yScaleID];
+
+        if (xScale) {
+          x = scaleValue(xScale, options.xMin, x);
+          x2 = scaleValue(xScale, options.xMax, x2);
+        }
+
+        if (yScale) {
+          y = scaleValue(yScale, options.yMin, y);
+          y2 = scaleValue(yScale, options.yMax, y2);
+        }
+      }
+      const inside = isLineInArea({x, y, x2, y2}, chart.chartArea);
+      const properties = inside
+        ? limitLineToArea({x, y}, {x: x2, y: y2}, chart.chartArea)
+        : {x, y, x2, y2, width: Math.abs(x2 - x), height: Math.abs(y2 - y)};
+
+      const label = options.label;
+      if (label && label.content) {
+        return loadLabelRect(properties, chart, label);
+      }
+      return properties;
+    }
+  }
+
+  LineAnnotation.id = 'lineAnnotation';
+  LineAnnotation.defaults = {
+    adjustScaleRange: true,
+    borderDash: [],
+    borderDashOffset: 0,
+    borderWidth: 2,
+    display: true,
+    endValue: undefined,
+    label: {
+      backgroundColor: 'rgba(0,0,0,0.8)',
+      borderCapStyle: 'butt',
+      borderColor: 'black',
+      borderDash: [],
+      borderDashOffset: 0,
+      borderJoinStyle: 'miter',
+      borderRadius: 6,
+      borderWidth: 0,
+      color: '#fff',
+      content: null,
+      cornerRadius: undefined, // TODO: v2 remove support for cornerRadius
+      drawTime: undefined,
+      enabled: false,
+      font: {
+        family: undefined,
+        lineHeight: undefined,
+        size: undefined,
+        style: undefined,
+        weight: 'bold'
+      },
+      height: undefined,
+      padding: 6,
+      position: 'center',
+      rotation: 0,
+      textAlign: 'center',
+      width: undefined,
+      xAdjust: 0,
+      xPadding: undefined, // TODO: v2 remove support for xPadding
+      yAdjust: 0,
+      yPadding: undefined, // TODO: v2 remove support for yPadding
+    },
+    scaleID: undefined,
+    value: undefined,
+    xMax: undefined,
+    xMin: undefined,
+    xScaleID: 'x',
+    yMax: undefined,
+    yMin: undefined,
+    yScaleID: 'y'
+  };
+
+  LineAnnotation.defaultRoutes = {
+    borderColor: 'color'
+  };
+
+  function loadLabelRect(line, chart, options) {
+    // TODO: v2 remove support for xPadding and yPadding
+    const {padding: lblPadding, xPadding, yPadding, borderWidth} = options;
+    const padding = getPadding(lblPadding, xPadding, yPadding);
+    const textSize = measureLabelSize(chart.ctx, options);
+    const width = textSize.width + padding.width + borderWidth;
+    const height = textSize.height + padding.height + borderWidth;
+    const labelRect = calculateLabelPosition(line, options, {width, height, padding}, chart.chartArea);
+    line.labelX = labelRect.x;
+    line.labelY = labelRect.y;
+    line.labelWidth = labelRect.width;
+    line.labelHeight = labelRect.height;
+    line.labelRotation = labelRect.rotation;
+    line.labelPadding = padding;
+    line.labelTextSize = textSize;
+    return line;
+  }
+
+  function calculateAutoRotation(line) {
+    const {x, y, x2, y2} = line;
+    const rotation = Math.atan2(y2 - y, x2 - x);
+    // Flip the rotation if it goes > PI/2 or < -PI/2, so label stays upright
+    return rotation > PI / 2 ? rotation - PI : rotation < PI / -2 ? rotation + PI : rotation;
+  }
+
+  // TODO: v2 remove support for xPadding and yPadding
+  function getPadding(padding, xPadding, yPadding) {
+    let tempPadding = padding;
+    if (xPadding || yPadding) {
+      tempPadding = {x: xPadding || 6, y: yPadding || 6};
+    }
+    return toPadding(tempPadding);
+  }
+
+  function calculateLabelPosition(line, label, sizes, chartArea) {
+    const {width, height, padding} = sizes;
+    const {xAdjust, yAdjust} = label;
+    const p1 = {x: line.x, y: line.y};
+    const p2 = {x: line.x2, y: line.y2};
+    const rotation = label.rotation === 'auto' ? calculateAutoRotation(line) : toRadians(label.rotation);
+    const size = rotatedSize(width, height, rotation);
+    const t = calculateT(line, label, {labelSize: size, padding}, chartArea);
+    const pt = pointInLine(p1, p2, t);
+    const xCoordinateSizes = {size: size.w, min: chartArea.left, max: chartArea.right, padding: padding.left};
+    const yCoordinateSizes = {size: size.h, min: chartArea.top, max: chartArea.bottom, padding: padding.top};
+
+    return {
+      x: adjustLabelCoordinate(pt.x, xCoordinateSizes) + xAdjust,
+      y: adjustLabelCoordinate(pt.y, yCoordinateSizes) + yAdjust,
+      width,
+      height,
+      rotation
+    };
+  }
+
+  function rotatedSize(width, height, rotation) {
+    const cos = Math.cos(rotation);
+    const sin = Math.sin(rotation);
+    return {
+      w: Math.abs(width * cos) + Math.abs(height * sin),
+      h: Math.abs(width * sin) + Math.abs(height * cos)
+    };
+  }
+
+  function calculateT(line, label, sizes, chartArea) {
+    let t;
+    const space = spaceAround(line, chartArea);
+    if (label.position === 'start') {
+      t = calculateTAdjust({w: line.x2 - line.x, h: line.y2 - line.y}, sizes, label, space);
+    } else if (label.position === 'end') {
+      t = 1 - calculateTAdjust({w: line.x - line.x2, h: line.y - line.y2}, sizes, label, space);
+    } else {
+      t = getRelativePosition(1, label.position);
+    }
+    return t;
+  }
+
+  function calculateTAdjust(lineSize, sizes, label, space) {
+    const {labelSize, padding} = sizes;
+    const lineW = lineSize.w * space.dx;
+    const lineH = lineSize.h * space.dy;
+    const x = (lineW > 0) && ((labelSize.w / 2 + padding.left - space.x) / lineW);
+    const y = (lineH > 0) && ((labelSize.h / 2 + padding.top - space.y) / lineH);
+    return clamp(Math.max(x, y), 0, 0.25);
+  }
+
+  function spaceAround(line, chartArea) {
+    const {x, x2, y, y2} = line;
+    const t = Math.min(y, y2) - chartArea.top;
+    const l = Math.min(x, x2) - chartArea.left;
+    const b = chartArea.bottom - Math.max(y, y2);
+    const r = chartArea.right - Math.max(x, x2);
+    return {
+      x: Math.min(l, r),
+      y: Math.min(t, b),
+      dx: l <= r ? 1 : -1,
+      dy: t <= b ? 1 : -1
+    };
+  }
+
+  function adjustLabelCoordinate(coordinate, labelSizes) {
+    const {size, min, max, padding} = labelSizes;
+    const halfSize = size / 2;
+    if (size > max - min) {
+      // if it does not fit, display as much as possible
+      return (max + min) / 2;
+    }
+    if (min >= (coordinate - padding - halfSize)) {
+      coordinate = min + padding + halfSize;
+    }
+    if (max <= (coordinate + padding + halfSize)) {
+      coordinate = max - padding - halfSize;
+    }
+    return coordinate;
+  }
+
+  class EllipseAnnotation extends Element {
+
+    inRange(mouseX, mouseY, useFinalPosition) {
+      return pointInEllipse({x: mouseX, y: mouseY}, this.getProps(['x', 'y', 'width', 'height'], useFinalPosition), this.options.rotation);
+    }
+
+    getCenterPoint(useFinalPosition) {
+      return getRectCenterPoint(this.getProps(['x', 'y', 'width', 'height'], useFinalPosition));
+    }
+
+    draw(ctx) {
+      const {width, height, options} = this;
+      const center = this.getCenterPoint();
+
+      ctx.save();
+
+      ctx.translate(center.x, center.y);
+      if (options.rotation) {
+        ctx.rotate(toRadians(options.rotation));
+      }
+
+      ctx.beginPath();
+
+      ctx.lineWidth = options.borderWidth;
+      ctx.strokeStyle = options.borderColor;
+      ctx.fillStyle = options.backgroundColor;
+
+      ctx.setLineDash(options.borderDash);
+      ctx.lineDashOffset = options.borderDashOffset;
+
+      ctx.ellipse(0, 0, height / 2, width / 2, Math.PI / 2, 0, 2 * Math.PI);
+
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
+    resolveElementProperties(chart, options) {
+      return getChartRect(chart, options);
+    }
+
+  }
+
+  EllipseAnnotation.id = 'ellipseAnnotation';
+
+  EllipseAnnotation.defaults = {
+    adjustScaleRange: true,
+    borderDash: [],
+    borderDashOffset: 0,
+    borderWidth: 1,
+    display: true,
+    rotation: 0,
+    xMax: undefined,
+    xMin: undefined,
+    xScaleID: 'x',
+    yMax: undefined,
+    yMin: undefined,
+    yScaleID: 'y'
+  };
+
+  EllipseAnnotation.defaultRoutes = {
+    borderColor: 'color',
+    backgroundColor: 'color'
+  };
+
+  function pointInEllipse(p, ellipse, rotation) {
+    const {width, height} = ellipse;
+    const center = ellipse.getCenterPoint(true);
+    const xRadius = width / 2;
+    const yRadius = height / 2;
+
+    if (xRadius <= 0 || yRadius <= 0) {
+      return false;
+    }
+    // https://stackoverflow.com/questions/7946187/point-and-ellipse-rotated-position-test-algorithm
+    const angle = toRadians(rotation || 0);
+    const cosAngle = Math.cos(angle);
+    const sinAngle = Math.sin(angle);
+    const a = Math.pow(cosAngle * (p.x - center.x) + sinAngle * (p.y - center.y), 2);
+    const b = Math.pow(sinAngle * (p.x - center.x) - cosAngle * (p.y - center.y), 2);
+    return (a / Math.pow(xRadius, 2)) + (b / Math.pow(yRadius, 2)) <= 1;
+  }
+
+  class LabelAnnotation extends Element {
+
+    inRange(mouseX, mouseY, useFinalPosition) {
+      return inBoxRange(mouseX, mouseY, this.getProps(['x', 'y', 'width', 'height'], useFinalPosition));
+    }
+
+    getCenterPoint(useFinalPosition) {
+      return getRectCenterPoint(this.getProps(['x', 'y', 'width', 'height'], useFinalPosition));
+    }
+
+    draw(ctx) {
+      if (!this.options.content) {
+        return;
+      }
+      const {labelX, labelY, labelWidth, labelHeight, options} = this;
+      drawCallout(ctx, this);
+      if (this.boxVisible) {
+        drawBox(ctx, this, options);
+      }
+      drawLabel(ctx, {x: labelX, y: labelY, width: labelWidth, height: labelHeight}, options);
+    }
+
+    // TODO: make private in v2
+    resolveElementProperties(chart, options) {
+      const point = !isBoundToPoint(options) ? getRectCenterPoint(getChartRect(chart, options)) : getChartPoint(chart, options);
+      const padding = toPadding(options.padding);
+      const labelSize = measureLabelSize(chart.ctx, options);
+      const boxSize = measureRect(point, labelSize, options, padding);
+      const bgColor = color(options.backgroundColor);
+      const boxVisible = options.borderWidth > 0 || (bgColor && bgColor.valid && bgColor.rgb.a > 0);
+
+      const properties = {
+        boxVisible,
+        pointX: point.x,
+        pointY: point.y,
+        ...boxSize,
+        labelX: boxSize.x + padding.left + (options.borderWidth / 2),
+        labelY: boxSize.y + padding.top + (options.borderWidth / 2),
+        labelWidth: labelSize.width,
+        labelHeight: labelSize.height
+      };
+      properties.calloutPosition = options.callout.enabled && resolveCalloutPosition(properties, options.callout);
+      return properties;
+    }
+  }
+
+  LabelAnnotation.id = 'labelAnnotation';
+
+  LabelAnnotation.defaults = {
+    adjustScaleRange: true,
+    backgroundColor: 'transparent',
+    borderCapStyle: 'butt',
+    borderDash: [],
+    borderDashOffset: 0,
+    borderJoinStyle: 'miter',
+    borderRadius: 0,
+    borderWidth: 0,
+    callout: {
+      borderCapStyle: 'butt',
+      borderColor: undefined,
+      borderDash: [],
+      borderDashOffset: 0,
+      borderJoinStyle: 'miter',
+      borderWidth: 1,
+      enabled: false,
+      margin: 5,
+      position: 'auto',
+      side: 5,
+      start: '50%',
+    },
+    color: 'black',
+    content: null,
+    display: true,
+    font: {
+      family: undefined,
+      lineHeight: undefined,
+      size: undefined,
+      style: undefined,
+      weight: undefined
+    },
+    height: undefined,
+    padding: 6,
+    position: 'center',
+    textAlign: 'center',
+    width: undefined,
+    xAdjust: 0,
+    xMax: undefined,
+    xMin: undefined,
+    xScaleID: 'x',
+    xValue: undefined,
+    yAdjust: 0,
+    yMax: undefined,
+    yMin: undefined,
+    yScaleID: 'y',
+    yValue: undefined
+  };
+
+  LabelAnnotation.defaultRoutes = {
+    borderColor: 'color',
+    backgroundColor: 'color',
+  };
+
+  function measureRect(point, size, options, padding) {
+    const width = size.width + padding.width + options.borderWidth;
+    const height = size.height + padding.height + options.borderWidth;
+    const position = toPosition(options.position);
+
+    return {
+      x: calculatePosition(point.x, width, options.xAdjust, position.x),
+      y: calculatePosition(point.y, height, options.yAdjust, position.y),
+      width,
+      height
+    };
+  }
+
+  function calculatePosition(start, size, adjust = 0, position) {
+    return start - getRelativePosition(size, position) + adjust;
+  }
+
+  function drawCallout(ctx, element) {
+    const {pointX, pointY, calloutPosition, options} = element;
+    if (!calloutPosition) {
+      return;
+    }
+    const callout = options.callout;
+    const {separatorStart, separatorEnd} = getCalloutSeparatorCoord(element, calloutPosition);
+    const {sideStart, sideEnd} = getCalloutSideCoord(element, calloutPosition, separatorStart);
+    ctx.save();
+    ctx.beginPath();
+    const stroke = setBorderStyle(ctx, callout);
+    if (callout.margin > 0 || options.borderWidth === 0) {
+      ctx.moveTo(separatorStart.x, separatorStart.y);
+      ctx.lineTo(separatorEnd.x, separatorEnd.y);
+    }
+    ctx.moveTo(sideStart.x, sideStart.y);
+    ctx.lineTo(sideEnd.x, sideEnd.y);
+    ctx.lineTo(pointX, pointY);
+    if (stroke) {
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  function getCalloutSeparatorCoord(element, position) {
+    const {x, y, width, height} = element;
+    const adjust = getCalloutSeparatorAdjust(element, position);
+    let separatorStart, separatorEnd;
+    if (position === 'left' || position === 'right') {
+      separatorStart = {x: x + adjust, y};
+      separatorEnd = {x: separatorStart.x, y: separatorStart.y + height};
+    } else if (position === 'top' || position === 'bottom') {
+      separatorStart = {x, y: y + adjust};
+      separatorEnd = {x: separatorStart.x + width, y: separatorStart.y};
+    }
+    return {separatorStart, separatorEnd};
+  }
+
+  function getCalloutSeparatorAdjust(element, position) {
+    const {width, height, options} = element;
+    const adjust = options.callout.margin + options.borderWidth / 2;
+    if (position === 'right') {
+      return width + adjust;
+    } else if (position === 'bottom') {
+      return height + adjust;
+    }
+    return -adjust;
+  }
+
+  function getCalloutSideCoord(element, position, separatorStart) {
+    const {y, width, height, options} = element;
+    const start = options.callout.start;
+    const side = getCalloutSideAdjust(position, options.callout);
+    let sideStart, sideEnd;
+    if (position === 'left' || position === 'right') {
+      sideStart = {x: separatorStart.x, y: y + getSize(height, start)};
+      sideEnd = {x: sideStart.x + side, y: sideStart.y};
+    } else if (position === 'top' || position === 'bottom') {
+      sideStart = {x: separatorStart.x + getSize(width, start), y: separatorStart.y};
+      sideEnd = {x: sideStart.x, y: sideStart.y + side};
+    }
+    return {sideStart, sideEnd};
+  }
+
+  function getCalloutSideAdjust(position, options) {
+    const side = options.side;
+    if (position === 'left' || position === 'top') {
+      return -side;
+    }
+    return side;
+  }
+
+  function resolveCalloutPosition(element, options) {
+    const position = options.position;
+    if (position === 'left' || position === 'right' || position === 'top' || position === 'bottom') {
+      return position;
+    }
+    return resolveCalloutAutoPosition(element, options);
+  }
+
+  function resolveCalloutAutoPosition(element, options) {
+    const {x, y, width, height, pointX, pointY} = element;
+    const {margin, side} = options;
+    const adjust = margin + side;
+    if (pointX < (x - adjust)) {
+      return 'left';
+    } else if (pointX > (x + width + adjust)) {
+      return 'right';
+    } else if (pointY < (y + height + adjust)) {
+      return 'top';
+    } else if (pointY > (y - adjust)) {
+      return 'bottom';
+    }
+  }
+
+  class PointAnnotation extends Element {
+
+    inRange(mouseX, mouseY, useFinalPosition) {
+      const {width} = this.getProps(['width'], useFinalPosition);
+      return inPointRange({x: mouseX, y: mouseY}, this.getCenterPoint(useFinalPosition), width / 2 + this.options.borderWidth);
+    }
+
+    getCenterPoint(useFinalPosition) {
+      return getElementCenterPoint(this, useFinalPosition);
+    }
+
+    draw(ctx) {
+      const options = this.options;
+      ctx.save();
+      ctx.fillStyle = options.backgroundColor;
+      setBorderStyle(ctx, options);
+      drawPoint(ctx, options, this.x, this.y);
+      ctx.restore();
+    }
+
+    resolveElementProperties(chart, options) {
+      return resolvePointPosition(chart, options);
+    }
+  }
+
+  PointAnnotation.id = 'pointAnnotation';
+
+  PointAnnotation.defaults = {
+    adjustScaleRange: true,
+    borderDash: [],
+    borderDashOffset: 0,
+    borderWidth: 1,
+    display: true,
+    pointStyle: 'circle',
+    radius: 10,
+    rotation: 0,
+    xAdjust: 0,
+    xMax: undefined,
+    xMin: undefined,
+    xScaleID: 'x',
+    xValue: undefined,
+    yAdjust: 0,
+    yMax: undefined,
+    yMin: undefined,
+    yScaleID: 'y',
+    yValue: undefined
+  };
+
+  PointAnnotation.defaultRoutes = {
+    borderColor: 'color',
+    backgroundColor: 'color'
+  };
+
+  class PolygonAnnotation extends Element {
+
+    inRange(mouseX, mouseY, useFinalPosition) {
+      const vertices = getVertices(this.getProps(['x', 'y'], useFinalPosition), this.options);
+      return vertices && vertices.length > 0 && pointIsInPolygon(vertices, mouseX, mouseY);
+    }
+
+    getCenterPoint(useFinalPosition) {
+      return getElementCenterPoint(this, useFinalPosition);
+    }
+
+    draw(ctx) {
+      const {x, y, options} = this;
+      const vertices = getVertices({x, y}, options);
+      let vertex = vertices[0];
+      ctx.save();
+      ctx.beginPath();
+      ctx.fillStyle = options.backgroundColor;
+      const stroke = setBorderStyle(ctx, options);
+      ctx.moveTo(vertex.x, vertex.y);
+      for (let i = 1; i < vertices.length; i++) {
+        vertex = vertices[i];
+        ctx.lineTo(vertex.x, vertex.y);
+      }
+      ctx.closePath();
+      ctx.fill();
+      // If no border, don't draw it
+      if (stroke) {
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    resolveElementProperties(chart, options) {
+      if (isNumber(options.sides) && options.sides >= 1) {
+        return resolvePointPosition(chart, options);
+      }
+      return {options: {}};
+    }
+
+  }
+
+  PolygonAnnotation.id = 'polygonAnnotation';
+
+  PolygonAnnotation.defaults = {
+    adjustScaleRange: true,
+    borderCapStyle: 'butt',
+    borderDash: [],
+    borderDashOffset: 0,
+    borderJoinStyle: 'miter',
+    borderWidth: 1,
+    display: true,
+    radius: 10,
+    rotation: 0,
+    sides: 3,
+    xAdjust: 0,
+    xMax: undefined,
+    xMin: undefined,
+    xScaleID: 'x',
+    xValue: undefined,
+    yAdjust: 0,
+    yMax: undefined,
+    yMin: undefined,
+    yScaleID: 'y',
+    yValue: undefined
+  };
+
+  PolygonAnnotation.defaultRoutes = {
+    borderColor: 'color',
+    backgroundColor: 'color'
+  };
+
+  function getVertices(point, options) {
+    const {sides, radius} = options;
+    let angle = (2 * PI$1) / sides;
+    let rad = options.rotation * RAD_PER_DEG;
+    const vertices = new Array();
+    addVertex(vertices, point, rad, radius);
+    for (let i = 0; i < sides; i++) {
+      rad += angle;
+      addVertex(vertices, point, rad, radius);
+    }
+    return vertices;
+  }
+
+  function addVertex(array, point, rad, radius) {
+    array.push({
+      x: point.x + Math.sin(rad) * radius,
+      y: point.y - Math.cos(rad) * radius
+    });
+  }
+
+  function pointIsInPolygon(vertices, x, y) {
+    let isInside = false;
+    let i = 0;
+    let j = vertices.length - 1;
+    for (j; i < vertices.length; j = i++) {
+      if ((vertices[i].y > y) !== (vertices[j].y > y) &&
+           x < (vertices[j].x - vertices[i].x) * (y - vertices[i].y) / (vertices[j].y - vertices[i].y) + vertices[i].x) {
+        isInside = !isInside;
+      }
+    }
+    return isInside;
+  }
+
+  const annotationTypes = {
+    box: BoxAnnotation,
+    ellipse: EllipseAnnotation,
+    label: LabelAnnotation,
+    line: LineAnnotation,
+    point: PointAnnotation,
+    polygon: PolygonAnnotation
+  };
+
+  /**
+   * Register fallback for annotation elements
+   * For example lineAnnotation options would be looked through:
+   * - the annotation object (options.plugins.annotation.annotations[id])
+   * - element options (options.elements.lineAnnotation)
+   * - element defaults (defaults.elements.lineAnnotation)
+   * - annotation plugin defaults (defaults.plugins.annotation, this is what we are registering here)
+   */
+  Object.keys(annotationTypes).forEach(key => {
+    defaults.describe(`elements.${annotationTypes[key].id}`, {
+      _fallback: 'plugins.annotation'
+    });
+  });
+
+  var version = "1.2.2";
+
+  const chartStates = new Map();
+  const versionParts = Chart.version.split('.');
+
+  var annotation = {
+    id: 'annotation',
+
+    version,
+
+    afterRegister() {
+      Chart.register(annotationTypes);
+
+      // TODO: Remove this workaround when strictly requiring Chart.js v3.7 or newer
+      if (versionParts[0] === '3' && parseInt(versionParts[1], 10) <= 6) {
+        // Workaround for https://github.com/chartjs/chartjs-plugin-annotation/issues/572
+        Chart.defaults.set('elements.lineAnnotation', {
+          callout: {},
+          font: {},
+          padding: 6
+        });
+      }
+    },
+
+    afterUnregister() {
+      Chart.unregister(annotationTypes);
+    },
+
+    beforeInit(chart) {
+      chartStates.set(chart, {
+        annotations: [],
+        elements: [],
+        visibleElements: [],
+        listeners: {},
+        listened: false,
+        moveListened: false
+      });
+    },
+
+    beforeUpdate(chart, args, options) {
+      const state = chartStates.get(chart);
+      const annotations = state.annotations = [];
+
+      let annotationOptions = options.annotations;
+      if (isObject(annotationOptions)) {
+        Object.keys(annotationOptions).forEach(key => {
+          const value = annotationOptions[key];
+          if (isObject(value)) {
+            value.id = key;
+            annotations.push(value);
+          }
+        });
+      } else if (isArray(annotationOptions)) {
+        annotations.push(...annotationOptions);
+      }
+      verifyScaleOptions(annotations, chart.scales);
+    },
+
+    afterDataLimits(chart, args) {
+      const state = chartStates.get(chart);
+      adjustScaleRange(chart, args.scale, state.annotations.filter(a => a.display && a.adjustScaleRange));
+    },
+
+    afterUpdate(chart, args, options) {
+      const state = chartStates.get(chart);
+      updateListeners(chart, state, options);
+      updateElements(chart, state, options, args.mode);
+      state.visibleElements = state.elements.filter(el => !el.skip && el.options.display);
+    },
+
+    beforeDatasetsDraw(chart, _args, options) {
+      draw(chart, 'beforeDatasetsDraw', options.clip);
+    },
+
+    afterDatasetsDraw(chart, _args, options) {
+      draw(chart, 'afterDatasetsDraw', options.clip);
+    },
+
+    beforeDraw(chart, _args, options) {
+      draw(chart, 'beforeDraw', options.clip);
+    },
+
+    afterDraw(chart, _args, options) {
+      draw(chart, 'afterDraw', options.clip);
+    },
+
+    beforeEvent(chart, args, options) {
+      const state = chartStates.get(chart);
+      handleEvent(state, args.event, options);
+    },
+
+    destroy(chart) {
+      chartStates.delete(chart);
+    },
+
+    _getState(chart) {
+      return chartStates.get(chart);
+    },
+
+    defaults: {
+      animations: {
+        numbers: {
+          properties: ['x', 'y', 'x2', 'y2', 'width', 'height', 'pointX', 'pointY', 'labelX', 'labelY', 'labelWidth', 'labelHeight', 'radius'],
+          type: 'number'
+        },
+      },
+      clip: true,
+      dblClickSpeed: 350, // ms
+      drawTime: 'afterDatasetsDraw',
+      label: {
+        drawTime: null
+      }
+    },
+
+    descriptors: {
+      _indexable: false,
+      _scriptable: (prop) => !hooks.includes(prop),
+      annotations: {
+        _allKeys: false,
+        _fallback: (prop, opts) => `elements.${annotationTypes[resolveType(opts.type)].id}`,
+      },
+    },
+
+    additionalOptionScopes: ['']
+  };
+
+  const directUpdater = {
+    update: Object.assign
+  };
+
+  function resolveAnimations(chart, animOpts, mode) {
+    if (mode === 'reset' || mode === 'none' || mode === 'resize') {
+      return directUpdater;
+    }
+    return new Animations(chart, animOpts);
+  }
+
+  function resolveType(type = 'line') {
+    if (annotationTypes[type]) {
+      return type;
+    }
+    console.warn(`Unknown annotation type: '${type}', defaulting to 'line'`);
+    return 'line';
+  }
+
+  function updateElements(chart, state, options, mode) {
+    const animations = resolveAnimations(chart, options.animations, mode);
+
+    const annotations = state.annotations;
+    const elements = resyncElements(state.elements, annotations);
+
+    for (let i = 0; i < annotations.length; i++) {
+      const annotation = annotations[i];
+      let el = elements[i];
+      const elementClass = annotationTypes[resolveType(annotation.type)];
+      if (!el || !(el instanceof elementClass)) {
+        el = elements[i] = new elementClass();
+      }
+      const opts = resolveAnnotationOptions(annotation.setContext(getContext(chart, el, annotation)));
+      const properties = el.resolveElementProperties(chart, opts);
+      properties.skip = isNaN(properties.x) || isNaN(properties.y);
+      properties.options = opts;
+      animations.update(el, properties);
+    }
+  }
+
+  function resolveAnnotationOptions(resolver) {
+    const elementClass = annotationTypes[resolveType(resolver.type)];
+    const result = {};
+    result.id = resolver.id;
+    result.type = resolver.type;
+    result.drawTime = resolver.drawTime;
+    Object.assign(result, resolveObj(resolver, elementClass.defaults), resolveObj(resolver, elementClass.defaultRoutes));
+    for (const hook of hooks) {
+      result[hook] = resolver[hook];
+    }
+    return result;
+  }
+
+  function resolveObj(resolver, defs) {
+    const result = {};
+    for (const name of Object.keys(defs)) {
+      const optDefs = defs[name];
+      const value = resolver[name];
+      result[name] = isObject(optDefs) ? resolveObj(value, optDefs) : value;
+    }
+    return result;
+  }
+
+  function getContext(chart, element, annotation) {
+    return element.$context || (element.$context = Object.assign(Object.create(chart.getContext()), {
+      element,
+      id: annotation.id,
+      type: 'annotation'
+    }));
+  }
+
+  function resyncElements(elements, annotations) {
+    const count = annotations.length;
+    const start = elements.length;
+
+    if (start < count) {
+      const add = count - start;
+      elements.splice(start, 0, ...new Array(add));
+    } else if (start > count) {
+      elements.splice(count, start - count);
+    }
+    return elements;
+  }
+
+  function draw(chart, caller, clip) {
+    const {ctx, chartArea} = chart;
+    const state = chartStates.get(chart);
+
+    if (clip) {
+      clipArea(ctx, chartArea);
+    }
+    state.visibleElements.forEach(el => {
+      if (el.options.drawTime === caller) {
+        el.draw(ctx);
+      }
+    });
+    if (clip) {
+      unclipArea(ctx);
+    }
+
+    state.visibleElements.forEach(el => {
+      if (!('drawLabel' in el)) {
+        return;
+      }
+      const label = el.options.label;
+      if (label && label.enabled && label.content && (label.drawTime || el.options.drawTime) === caller) {
+        el.drawLabel(ctx, chartArea);
+      }
+    });
+  }
+
   class Card extends s {
     static get properties() {
       return {
@@ -30443,6 +35754,16 @@
     }
 
     _initialize() {
+      // Register zoom plugin
+      if (Array.isArray(this._config.register_plugins)) {
+        if (this._config.register_plugins.includes('zoom')) {
+          Chart.register(plugin);
+        }
+        if (this._config.register_plugins.includes('annotation')) {
+          Chart.register(annotation);
+        }
+      }
+
       if (this._initialized) this.chart.destroy();
       this.chartConfig = this._generateChartConfig(this._config);
       const ctx = this.renderRoot.querySelector('canvas').getContext('2d');
