@@ -26,6 +26,7 @@ To do that just follow these steps: **HACS -> Frontend -> 3 dots (upper right co
 | plugins        |         |         | just like chart.js documentation                                   |
 | entitiy_row    | boolean | false   | if is entity row or not                                            |
 | custom_options | object  |         | TODO                                                               |
+| register_plugins | array  |         | registers plugins to be added to graph                            |
 
 ## Templating
 
@@ -56,6 +57,23 @@ ${'[12, 14, 2, 4]'}
 ```
 
 can be useful when you grab a lot of data from the DB and want to display all in the graph
+
+## Additional plugins
+
+Some plugins can be added to the graph
+
+| Name | Link |
+|--|--|
+| zoom | [https://www.chartjs.org/chartjs-plugin-zoom/latest/](https://www.chartjs.org/chartjs-plugin-zoom/latest/) |
+| annotation | [https://www.chartjs.org/chartjs-plugin-annotation/latest/](https://www.chartjs.org/chartjs-plugin-annotation/latest/) |
+
+To use the plugins you need to register before using, to do that add the name into `register_plugins` like so:
+
+```yaml
+register_plugins:
+  - zoom
+  - annotation
+```
 
 ## Examples
 
