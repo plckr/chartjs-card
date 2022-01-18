@@ -1,6 +1,6 @@
 import pkg from '../package.json'
 import Chart from 'chart.js/auto'
-import { LitElement, html } from 'lit-element'
+import { LitElement, html } from 'lit'
 import _ from 'lodash'
 
 import zoomPlugin from 'chartjs-plugin-zoom'
