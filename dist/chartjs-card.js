@@ -4,7 +4,7 @@
 })((function () { 'use strict';
 
   const name = "chartjs-card";
-  const version$3 = "1.1.0";
+  const version$3 = "1.1.1";
   const description = "Chart.js card to Home Assistant";
   const main = "src/index.js";
   const keywords = [
