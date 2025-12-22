@@ -27,10 +27,11 @@
     "typescript": "^5.9.3"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npm run rollup",
-    "rollup": "rollup -c",
-    "start": "rollup -c --watch"
+    "build": "rollup -c",
+    "watch": "rollup -c --watch",
+    "start": "npm run watch",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "author": "Ricardo Reis",
   "license": "ISC"
