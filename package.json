@@ -19,11 +19,14 @@
     "@rollup/plugin-commonjs": "^29.0.0",
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^16.0.3",
+    "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^12.3.0",
     "@trivago/prettier-plugin-sort-imports": "^6.0.0",
+    "@types/lodash": "^4.17.21",
     "prettier": "^3.7.4",
     "rollup": "^4.54.0",
     "rollup-plugin-serve": "^3.0.0",
+    "tslib": "^2.8.1",
     "typescript": "^5.9.3"
   },
   "scripts": {

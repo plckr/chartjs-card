@@ -1,18 +1,48 @@
-import Chart from 'chart.js/auto';
+import Chart, {
+  ChartConfiguration,
+  ChartData,
+  ChartOptions,
+  ChartTypeRegistry,
+  PluginOptionsByType,
+} from 'chart.js/auto';
 import annotationPlugin from 'chartjs-plugin-annotation';
 import zoomPlugin from 'chartjs-plugin-zoom';
-import { LitElement, html } from 'lit';
+import { LitElement, PropertyValues, html } from 'lit';
+import { customElement, property, state } from 'lit/decorators.js';
 import _ from 'lodash';
 
 import pkg from '../package.json';
+import { HomeAssistant } from './types/homeassistant';
+import { evaluateCssVariable } from './utils/css-variable';
+import { evaluateTemplate } from './utils/evaluate-template';
 
-class Card extends LitElement {
-  static get properties() {
-    return {
-      hass: { type: Object },
-      _config: { type: Object },
-    };
-  }
+type CardConfig = {
+  chart: string;
+  data: ChartData<keyof ChartTypeRegistry>;
+  options?: Partial<ChartOptions<keyof ChartTypeRegistry>>;
+  plugins?: PluginOptionsByType<keyof ChartTypeRegistry>;
+  custom_options?: Partial<{
+    showLegend: boolean;
+  }>;
+  entity_row?: boolean;
+  register_plugins?: string[];
+};
+
+@customElement(pkg.name)
+export default class Card extends LitElement {
+  @property({ attribute: false })
+  public hass!: HomeAssistant;
+
+  private _initialized: boolean;
+
+  private chart: Chart<keyof ChartTypeRegistry>;
+
+  private _updateFromEntities: string[];
+
+  private chartConfig: Partial<ChartConfiguration>;
+
+  @state()
+  private _config!: CardConfig;
 
   constructor() {
     super();
@@ -22,7 +52,7 @@ class Card extends LitElement {
     this.chartConfig = {};
 
     // Set chart defaults
-    Chart.defaults.color = this._evaluateCssVariable('var(--primary-text-color)');
+    Chart.defaults.color = evaluateCssVariable('var(--primary-text-color)');
     Chart.defaults.title = {
       fontSize: 14,
       fontStyle: 'normal',
@@ -55,8 +85,8 @@ class Card extends LitElement {
     this._initialize();
   }
 
-  updated(changedProps) {
-    super.updated();
+  updated(changedProps: PropertyValues) {
+    super.updated(changedProps);
 
     if (this._initialized && changedProps.has('_config')) {
       this._initialize();
@@ -66,7 +96,7 @@ class Card extends LitElement {
     this._updateChart();
   }
 
-  _initialize() {
+  private _initialize() {
     // Register zoom plugin
     if (Array.isArray(this._config.register_plugins)) {
       if (this._config.register_plugins.includes('zoom')) {
@@ -79,12 +109,12 @@ class Card extends LitElement {
 
     if (this._initialized) this.chart.destroy();
     this.chartConfig = this._generateChartConfig(this._config);
-    const ctx = this.renderRoot.querySelector('canvas').getContext('2d');
+    const ctx = this.renderRoot.querySelector('canvas')!.getContext('2d')!;
     this.chart = new Chart(ctx, this.chartConfig);
     this._initialized = true;
   }
 
-  _updateChart() {
+  private _updateChart() {
     if (!this._initialized) return;
     const chartConfig = this._generateChartConfig(this._config);
     this.chart.data = chartConfig.data;
@@ -93,7 +123,7 @@ class Card extends LitElement {
     this.chart.update('none');
   }
 
-  _generateChartConfig(config) {
+  private _generateChartConfig(config: CardConfig) {
     // Reset dependency entities
     this._updateFromEntities = [];
 
@@ -114,12 +144,12 @@ class Card extends LitElement {
     return chartconfig;
   }
 
-  _evaluateConfig(config) {
+  private _evaluateConfig(config: object) {
     // Only allow Object as input
     if (typeof config === 'object') {
-      let newObj = _.cloneDeepWith(config, (v) => {
+      const newObj = _.cloneDeepWith(config, (v) => {
         if (!_.isObject(v)) {
-          if (this._evaluateTemplate(v) !== v) {
+          if (evaluateTemplate(v, this.hass) !== v) {
             // Search for entities inputs
             const regexEntity = /states\[["|'](.+?)["|']\]/g;
             const matches = v.trim().matchAll(regexEntity);
@@ -129,10 +159,10 @@ class Card extends LitElement {
               }
             }
 
-            return this._evaluateTemplate(v);
+            return evaluateTemplate(v, this.hass);
           }
-          if (this._evaluateCssVariable(v) !== v) {
-            return this._evaluateCssVariable(v);
+          if (evaluateCssVariable(v) !== v) {
+            return evaluateCssVariable(v);
           }
           return v;
         }
@@ -143,53 +173,7 @@ class Card extends LitElement {
     }
   }
 
-  _evaluateCssVariable(variable) {
-    if (typeof variable !== 'string') return variable;
-
-    const regexCssVar = /var[(](--[^-].+)[)]/;
-    var r = _.words(variable, regexCssVar)[1];
-
-    if (!r) {
-      return variable;
-    }
-
-    return getComputedStyle(document.documentElement).getPropertyValue(r);
-  }
-
-  _evaluateTemplate(template) {
-    if (typeof template === 'string') {
-      const regexTemplate = /^\${(.+)}$/g;
-      if (_.includes(template, '${') && template.match(regexTemplate)) {
-        ('use strict');
-
-        const user = this.hass?.user;
-        const states = this.hass?.states;
-        const hass = this.hass;
-
-        // Workaround to avoid rollup to remove above variables
-        if (!user || !states || !hass) console.log('this never executes');
-
-        const evaluated = eval(template.trim().substring(2, template.length - 1));
-
-        if (Array.isArray(evaluated)) {
-          return evaluated.map((r) => this._evaluateCssVariable(r));
-        }
-
-        const regexArray = /^\[[^\]]+\]$/g;
-        if (typeof evaluated === 'string' && evaluated.match(regexArray)) {
-          try {
-            return eval(evaluated).map((r) => this._evaluateCssVariable(r));
-          } catch (e) {
-            return evaluated;
-          }
-        }
-        return evaluated;
-      }
-    }
-    return template;
-  }
-
-  setConfig(config) {
+  setConfig(config: CardConfig) {
     // Deep clone
     this._config = JSON.parse(JSON.stringify(config));
 
@@ -231,9 +215,3 @@ class Card extends LitElement {
     `;
   }
 }
-customElements.define(pkg.name, Card);
-console.info(
-  `%c ${pkg.name} ${pkg.version} \n%c chart.js ${pkg.dependencies['chart.js']}`,
-  'color: white; font-weight: bold; background: #ff6384',
-  'color: #ff6384; font-weight: bold'
-);
