@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 import { HomeAssistant } from '../types/homeassistant';
 import { evaluateCssVariable } from './css-variable';
 
@@ -10,7 +8,7 @@ export function evaluateTemplate(template: string, hass: HomeAssistant) {
   if (!user || !states) return template;
 
   const regexTemplate = /^\${(.+)}$/g;
-  if (_.includes(template, '${') && template.match(regexTemplate)) {
+  if (template.includes('${') && template.match(regexTemplate)) {
     ('use strict');
 
     const evaluated = eval(template.trim().substring(2, template.length - 1));

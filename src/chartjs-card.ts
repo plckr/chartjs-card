@@ -15,6 +15,7 @@ import pkg from '../package.json';
 import { HomeAssistant } from './types/homeassistant';
 import { evaluateCssVariable } from './utils/css-variable';
 import { evaluateTemplate } from './utils/evaluate-template';
+import { isObject, setPath } from './utils/object';
 
 type CardConfig = {
   chart: string;
@@ -137,7 +138,7 @@ export default class Card extends LitElement {
     if (typeof config.custom_options === 'object') {
       if (typeof config.custom_options.showLegend === 'boolean') {
         // chartconfig.options.legend.display = config.options.showLegend; // Defaults to True
-        _.set(chartconfig, 'options.plugins.legend.display', config.custom_options.showLegend);
+        setPath(chartconfig, 'options.plugins.legend.display', config.custom_options.showLegend);
       }
     }
 
@@ -145,10 +146,9 @@ export default class Card extends LitElement {
   }
 
   private _evaluateConfig(config: object) {
-    // Only allow Object as input
-    if (typeof config === 'object') {
+    if (isObject(config)) {
       const newObj = _.cloneDeepWith(config, (v) => {
-        if (!_.isObject(v)) {
+        if (!isObject(v)) {
           if (evaluateTemplate(v, this.hass) !== v) {
             // Search for entities inputs
             const regexEntity = /states\[["|'](.+?)["|']\]/g;
