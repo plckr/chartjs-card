@@ -14,13 +14,25 @@ export function evaluateTemplate(template: string, hass: HomeAssistant) {
     const evaluated = eval(template.trim().substring(2, template.length - 1));
 
     if (Array.isArray(evaluated)) {
-      return evaluated.map((r) => evaluateCssVariable(r));
+      return evaluated.map((r) => {
+        if (typeof r === 'string') {
+          return evaluateCssVariable(r);
+        }
+
+        return r;
+      });
     }
 
     const regexArray = /^\[[^\]]+\]$/g;
     if (typeof evaluated === 'string' && evaluated.match(regexArray)) {
       try {
-        return eval(evaluated).map((r: string) => evaluateCssVariable(r));
+        return eval(evaluated).map((r: string) => {
+          if (typeof r === 'string') {
+            return evaluateCssVariable(r);
+          }
+
+          return r;
+        });
       } catch {
         return evaluated;
       }

@@ -50,13 +50,6 @@ export default class Card extends LitElement {
     this.chart = {};
     this._updateFromEntities = [];
     this.chartConfig = {};
-
-    // Set chart defaults
-    Chart.defaults.color = evaluateCssVariable('var(--primary-text-color)');
-    Chart.defaults.title = {
-      fontSize: 14,
-      fontStyle: 'normal',
-    };
   }
 
   shouldUpdate(changedProps) {
@@ -82,6 +75,10 @@ export default class Card extends LitElement {
   }
 
   firstUpdated() {
+    Chart.defaults.color = evaluateCssVariable('var(--ha-color-green-50, #e1f)');
+    Chart.defaults.font.size = 14;
+    Chart.defaults.font.style = 'normal';
+
     this._initialize();
   }
 
@@ -160,9 +157,11 @@ export default class Card extends LitElement {
 
             return evaluateTemplate(v, this.hass);
           }
-          if (evaluateCssVariable(v) !== v) {
+
+          if (typeof v === 'string') {
             return evaluateCssVariable(v);
           }
+
           return v;
         }
       });

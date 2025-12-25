@@ -1,10 +1,13 @@
-export function evaluateCssVariable(variable: string | number): string | number {
-  if (typeof variable !== 'string') return variable;
+export function evaluateCssVariable(variable: string): string {
+  if (typeof variable !== 'string' || variable.trim() === '') return variable;
 
-  const regexCssVar = /var[(](--[^-].+)[)]/;
+  const regexCssVar = /var\((--[^,)]+)(?:,\s*(.*))?\)/;
 
-  const r = variable.match(regexCssVar)?.[1];
-  if (!r) return variable;
+  const match = variable.match(regexCssVar);
+  if (!match) return variable;
 
-  return window.getComputedStyle(document.documentElement).getPropertyValue(r);
+  const [, varName, fallback] = match;
+  const value = window.getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+
+  return variable.replace(regexCssVar, value || evaluateCssVariable(fallback));
 }
