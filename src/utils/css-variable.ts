@@ -1,13 +1,21 @@
 export function evaluateCssVariable(variable: string): string {
   if (typeof variable !== 'string' || variable.trim() === '') return variable;
 
-  const regexCssVar = /var\((--[^,)]+)(?:,\s*(.*))?\)/;
+  const regexCssVar = /var\((--[^,)]+)(?:,\s*(.*))?\)/g;
 
-  const match = variable.match(regexCssVar);
-  if (!match) return variable;
+  let result = variable;
+  let match;
 
-  const [, varName, fallback] = match;
-  const value = window.getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+  while ((match = regexCssVar.exec(variable)) !== null) {
+    const [fullMatch, varName, fallback] = match;
+    const value = window
+      .getComputedStyle(document.documentElement)
+      .getPropertyValue(varName)
+      .trim();
 
-  return variable.replace(regexCssVar, value || evaluateCssVariable(fallback));
+    const resolvedValue = value || (fallback ? evaluateCssVariable(fallback.trim()) : '');
+    result = result.replace(fullMatch, resolvedValue);
+  }
+
+  return result;
 }

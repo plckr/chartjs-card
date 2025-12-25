@@ -21,16 +21,21 @@
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^12.3.0",
     "@trivago/prettier-plugin-sort-imports": "^6.0.0",
+    "jsdom": "^26.0.0",
     "prettier": "^3.7.4",
     "rollup": "^4.54.0",
     "rollup-plugin-serve": "^3.0.0",
     "tslib": "^2.8.1",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^2.1.8"
   },
   "scripts": {
     "build": "rollup -c",
     "watch": "rollup -c --watch",
     "start": "npm run watch",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "start:hass-stable": "docker run --rm -p8123:8123 -v ./.hass_dev:/config homeassistant/home-assistant:stable",
