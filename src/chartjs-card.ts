@@ -9,13 +9,12 @@ import annotationPlugin from 'chartjs-plugin-annotation';
 import zoomPlugin from 'chartjs-plugin-zoom';
 import { LitElement, PropertyValues, html } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import _ from 'lodash';
 
 import pkg from '../package.json';
 import { HomeAssistant } from './types/homeassistant';
 import { evaluateCssVariable } from './utils/css-variable';
 import { evaluateTemplate } from './utils/evaluate-template';
-import { isObject, setPath } from './utils/object';
+import { cloneDeepWith, isObject, setPath } from './utils/object';
 
 type CardConfig = {
   chart: string;
@@ -147,8 +146,8 @@ export default class Card extends LitElement {
 
   private _evaluateConfig(config: object) {
     if (isObject(config)) {
-      const newObj = _.cloneDeepWith(config, (v) => {
-        if (!isObject(v)) {
+      const newObj = cloneDeepWith(config, (v) => {
+        if (typeof v === 'string') {
           if (evaluateTemplate(v, this.hass) !== v) {
             // Search for entities inputs
             const regexEntity = /states\[["|'](.+?)["|']\]/g;
