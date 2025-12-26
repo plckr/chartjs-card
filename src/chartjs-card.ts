@@ -33,50 +33,37 @@ export default class Card extends LitElement {
   @property({ attribute: false })
   public hass!: HomeAssistant;
 
-  private _initialized: boolean;
+  private _initialized: boolean = false;
 
-  private chart: Chart<keyof ChartTypeRegistry>;
+  @state()
+  private chart!: Chart<keyof ChartTypeRegistry>;
 
-  private _updateFromEntities: string[];
+  private _updateFromEntities: string[] = [];
 
-  private chartConfig: Partial<ChartConfiguration>;
+  private chartConfig!: ChartConfiguration;
 
   @state()
   private _config!: CardConfig;
 
-  constructor() {
-    super();
-    this._initialized = false;
-    this.chart = {};
-    this._updateFromEntities = [];
-    this.chartConfig = {};
-  }
-
-  shouldUpdate(changedProps) {
+  shouldUpdate(changedProps: PropertyValues) {
     if (changedProps.has('_config')) {
       return true;
     }
 
-    if (this._config) {
-      const oldHass = changedProps.get('hass') || undefined;
+    const oldHass = changedProps.get('hass');
 
-      if (oldHass) {
-        let changed = false;
-        this._updateFromEntities.forEach((entity) => {
-          changed =
-            changed || Boolean(this.hass && oldHass.states[entity] !== this.hass.states[entity]);
-        });
-
-        return changed;
-      }
+    if (this._config && oldHass) {
+      return this._updateFromEntities.some((entity) => {
+        return oldHass.states[entity] !== this.hass.states[entity];
+      });
     }
 
     return false;
   }
 
   firstUpdated() {
-    Chart.defaults.color = evaluateCssVariable('var(--ha-color-green-50, #e1f)');
-    Chart.defaults.font.size = 14;
+    Chart.defaults.color = evaluateCssVariable('var(--primary-text-color)');
+    Chart.defaults.font.size = 12;
     Chart.defaults.font.style = 'normal';
 
     this._initialize();
@@ -120,11 +107,11 @@ export default class Card extends LitElement {
     this.chart.update('none');
   }
 
-  private _generateChartConfig(config: CardConfig) {
+  private _generateChartConfig(config: CardConfig): ChartConfiguration {
     // Reset dependency entities
     this._updateFromEntities = [];
 
-    let chartconfig = {
+    const chartconfig = {
       type: config.chart,
       data: this._evaluateConfig(config.data),
       options: this._evaluateConfig(config.options),
@@ -172,9 +159,6 @@ export default class Card extends LitElement {
   }
 
   setConfig(config: CardConfig) {
-    // Deep clone
-    this._config = JSON.parse(JSON.stringify(config));
-
     const availableTypes = [
       'line',
       'bar',
@@ -185,9 +169,10 @@ export default class Card extends LitElement {
       'bubble',
       'scatter',
     ];
-    if (!this._config.chart) {
+
+    if (!config.chart) {
       throw new Error('You need to define type of chart');
-    } else if (!availableTypes.includes(this._config.chart)) {
+    } else if (!availableTypes.includes(config.chart)) {
       throw new Error(
         "Invalid config for 'chart'. Available options are: " + availableTypes.join(', ')
       );
@@ -195,10 +180,12 @@ export default class Card extends LitElement {
 
     // Entity row
     if (typeof config.entity_row === 'undefined') {
-      this._config.entity_row = false;
-    } else if (typeof this._config.entity_row !== 'boolean') {
+      config.entity_row = false;
+    } else if (typeof config.entity_row !== 'boolean') {
       throw new Error('entity_row must be true or false');
     }
+
+    this._config = config;
   }
 
   getCardSize() {
