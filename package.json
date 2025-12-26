@@ -9,10 +9,10 @@
     "home-assistant"
   ],
   "dependencies": {
-    "chart.js": "^3.7.0",
-    "chartjs-plugin-annotation": "^1.2.2",
-    "chartjs-plugin-zoom": "^1.2.0",
-    "lit": "^3.3.1"
+    "chart.js": "^4.5.1",
+    "chartjs-plugin-annotation": "^3.1.0",
+    "chartjs-plugin-zoom": "^2.2.0",
+    "lit": "^3.3.2"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^29.0.0",

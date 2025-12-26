@@ -1,5 +1,4 @@
 import Chart, {
-  ChartConfiguration,
   ChartData,
   ChartOptions,
   ChartTypeRegistry,
@@ -7,16 +6,16 @@ import Chart, {
 } from 'chart.js/auto';
 import annotationPlugin from 'chartjs-plugin-annotation';
 import zoomPlugin from 'chartjs-plugin-zoom';
-import { LitElement, PropertyValues, html } from 'lit';
+import { LitElement, PropertyValues, css, html } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
+import { createRef, ref } from 'lit/directives/ref.js';
 
 import pkg from '../package.json';
 import { HomeAssistant } from './types/homeassistant';
+import { parseChartConfig } from './utils/chart-config';
 import { evaluateCssVariable } from './utils/css-variable';
-import { evaluateTemplate } from './utils/evaluate-template';
-import { cloneDeepWith, isObject, setPath } from './utils/object';
 
-type CardConfig = {
+export type CardConfig = {
   chart: string;
   data: ChartData<keyof ChartTypeRegistry>;
   options?: Partial<ChartOptions<keyof ChartTypeRegistry>>;
@@ -33,130 +32,15 @@ export default class Card extends LitElement {
   @property({ attribute: false })
   public hass!: HomeAssistant;
 
-  private _initialized: boolean = false;
+  private canvasRef = createRef<HTMLCanvasElement>();
 
   @state()
-  private chart!: Chart<keyof ChartTypeRegistry>;
+  private chart: Chart<keyof ChartTypeRegistry> | null = null;
 
   private _updateFromEntities: string[] = [];
 
-  private chartConfig!: ChartConfiguration;
-
   @state()
   private _config!: CardConfig;
-
-  shouldUpdate(changedProps: PropertyValues) {
-    if (changedProps.has('_config')) {
-      return true;
-    }
-
-    const oldHass = changedProps.get('hass');
-
-    if (this._config && oldHass) {
-      return this._updateFromEntities.some((entity) => {
-        return oldHass.states[entity] !== this.hass.states[entity];
-      });
-    }
-
-    return false;
-  }
-
-  firstUpdated() {
-    Chart.defaults.color = evaluateCssVariable('var(--primary-text-color)');
-    Chart.defaults.font.size = 12;
-    Chart.defaults.font.style = 'normal';
-
-    this._initialize();
-  }
-
-  updated(changedProps: PropertyValues) {
-    super.updated(changedProps);
-
-    if (this._initialized && changedProps.has('_config')) {
-      this._initialize();
-      return;
-    }
-
-    this._updateChart();
-  }
-
-  private _initialize() {
-    // Register zoom plugin
-    if (Array.isArray(this._config.register_plugins)) {
-      if (this._config.register_plugins.includes('zoom')) {
-        Chart.register(zoomPlugin);
-      }
-      if (this._config.register_plugins.includes('annotation')) {
-        Chart.register(annotationPlugin);
-      }
-    }
-
-    if (this._initialized) this.chart.destroy();
-    this.chartConfig = this._generateChartConfig(this._config);
-    const ctx = this.renderRoot.querySelector('canvas')!.getContext('2d')!;
-    this.chart = new Chart(ctx, this.chartConfig);
-    this._initialized = true;
-  }
-
-  private _updateChart() {
-    if (!this._initialized) return;
-    const chartConfig = this._generateChartConfig(this._config);
-    this.chart.data = chartConfig.data;
-    this.chart.options = chartConfig.options;
-    this.chart.plugins = chartConfig.plugins;
-    this.chart.update('none');
-  }
-
-  private _generateChartConfig(config: CardConfig): ChartConfiguration {
-    // Reset dependency entities
-    this._updateFromEntities = [];
-
-    const chartconfig = {
-      type: config.chart,
-      data: this._evaluateConfig(config.data),
-      options: this._evaluateConfig(config.options),
-      plugins: this._evaluateConfig(config.plugins),
-    };
-
-    if (typeof config.custom_options === 'object') {
-      if (typeof config.custom_options.showLegend === 'boolean') {
-        // chartconfig.options.legend.display = config.options.showLegend; // Defaults to True
-        setPath(chartconfig, 'options.plugins.legend.display', config.custom_options.showLegend);
-      }
-    }
-
-    return chartconfig;
-  }
-
-  private _evaluateConfig(config: object) {
-    if (isObject(config)) {
-      const newObj = cloneDeepWith(config, (v) => {
-        if (typeof v === 'string') {
-          if (evaluateTemplate(v, this.hass) !== v) {
-            // Search for entities inputs
-            const regexEntity = /states\[["|'](.+?)["|']\]/g;
-            const matches = v.trim().matchAll(regexEntity);
-            for (const match of matches) {
-              if (!this._updateFromEntities.includes(match[1])) {
-                this._updateFromEntities.push(match[1]);
-              }
-            }
-
-            return evaluateTemplate(v, this.hass);
-          }
-
-          if (typeof v === 'string') {
-            return evaluateCssVariable(v);
-          }
-
-          return v;
-        }
-      });
-      return newObj;
-    } else {
-      return config;
-    }
-  }
 
   setConfig(config: CardConfig) {
     const availableTypes = [
@@ -185,17 +69,86 @@ export default class Card extends LitElement {
       throw new Error('entity_row must be true or false');
     }
 
+    Chart.defaults.color = evaluateCssVariable('var(--primary-text-color)');
+    Chart.defaults.font.size = 12;
+    Chart.defaults.font.style = 'normal';
+
+    const availablePlugins = {
+      zoom: zoomPlugin,
+      annotation: annotationPlugin,
+    };
+
+    // Register plugins
+    for (const key in availablePlugins) {
+      const pluginKey = key as keyof typeof availablePlugins;
+
+      if (Array.isArray(config.register_plugins) && config.register_plugins.includes(pluginKey)) {
+        Chart.register(availablePlugins[pluginKey]);
+      } else if (Chart.registry.plugins.get(pluginKey)) {
+        Chart.unregister(availablePlugins[pluginKey]);
+      }
+    }
+
+    if (this.chart) {
+      this.chart.destroy();
+      this.chart = null;
+    }
+
     this._config = config;
+  }
+
+  shouldUpdate(changedProps: PropertyValues) {
+    if (changedProps.has('_config')) {
+      return true;
+    }
+
+    const oldHass = changedProps.get('hass');
+
+    if (this._config && oldHass) {
+      return this._updateFromEntities.some((entity) => {
+        return oldHass.states[entity] !== this.hass.states[entity];
+      });
+    }
+
+    return false;
+  }
+
+  update(changedProps: PropertyValues) {
+    super.update(changedProps);
+
+    const parsedConfig = parseChartConfig(this._config, this.hass);
+    this._updateFromEntities = parsedConfig.entities;
+
+    if (!this.chart) {
+      const ctx = this.canvasRef.value!.getContext('2d')!;
+      this.chart = new Chart(ctx, parsedConfig.config);
+    } else {
+      this.chart.data = parsedConfig.config.data;
+      this.chart.options = parsedConfig.config.options;
+      this.chart.plugins = parsedConfig.config.plugins;
+      this.chart.update('none');
+    }
   }
 
   getCardSize() {
     return 4;
   }
 
+  static styles = css`
+    ha-card {
+      padding: var(--ha-space-4);
+    }
+
+    ha-card[data-entity-row='true'] {
+      padding: 0px;
+      box-shadow: none;
+    }
+  `;
+
   render() {
     return html`
-      <ha-card style="padding: ${this._config.entity_row ? '0px; box-shadow: none;' : '16px;'}">
-        <canvas>Your browser does not support the canvas element.</canvas>
+      <ha-card data-entity-row=${this._config.entity_row}>
+        <canvas ${ref(this.canvasRef)}> Your browser does not support the canvas element. </canvas>
       </ha-card>
     `;
   }
