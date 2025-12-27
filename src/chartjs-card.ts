@@ -42,6 +42,11 @@ export default class Card extends LitElement {
   @state()
   private _config!: CardConfig;
 
+  public static async getConfigElement() {
+    await import('./chartjs-card-editor');
+    return document.createElement('chartjs-card-editor');
+  }
+
   setConfig(config: CardConfig) {
     const availableTypes = [
       'line',
