@@ -14,6 +14,7 @@ import pkg from '../package.json';
 import { HomeAssistant } from './types/homeassistant';
 import { parseChartConfig } from './utils/chart-config';
 import { evaluateCssVariable } from './utils/css-variable';
+import { ResizeController } from './utils/resize-controller';
 
 export type CardConfig = {
   chart: string;
@@ -41,6 +42,14 @@ export default class Card extends LitElement {
 
   @state()
   private _config!: CardConfig;
+
+  constructor() {
+    super();
+
+    new ResizeController(this, () => {
+      this.chart?.resize();
+    });
+  }
 
   setConfig(config: CardConfig) {
     const availableTypes = [
@@ -135,6 +144,10 @@ export default class Card extends LitElement {
   }
 
   static styles = css`
+    :host {
+      display: block;
+    }
+
     ha-card {
       padding: var(--ha-space-4);
     }
