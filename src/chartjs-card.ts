@@ -14,7 +14,6 @@ import pkg from '../package.json';
 import { HomeAssistant } from './types/homeassistant';
 import { parseChartConfig } from './utils/chart-config';
 import { evaluateCssVariable } from './utils/css-variable';
-import { ResizeController } from './utils/resize-controller';
 
 export type CardConfig = {
   chart: string;
@@ -42,14 +41,6 @@ export default class Card extends LitElement {
 
   @state()
   private _config!: CardConfig;
-
-  constructor() {
-    super();
-
-    new ResizeController(this, () => {
-      this.chart?.resize();
-    });
-  }
 
   setConfig(config: CardConfig) {
     const availableTypes = [
@@ -81,6 +72,7 @@ export default class Card extends LitElement {
     Chart.defaults.color = evaluateCssVariable('var(--primary-text-color)');
     Chart.defaults.font.size = 12;
     Chart.defaults.font.style = 'normal';
+    Chart.defaults.maintainAspectRatio = false;
 
     const availablePlugins = {
       zoom: zoomPlugin,
@@ -149,6 +141,9 @@ export default class Card extends LitElement {
     }
 
     ha-card {
+      position: relative;
+      width: 100%;
+      height: 100%;
       padding: var(--ha-space-4);
     }
 
