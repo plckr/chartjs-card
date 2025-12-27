@@ -10,6 +10,7 @@ import { createRef, ref } from 'lit/directives/ref.js';
 
 import { CARD_EDITOR_NAME, CARD_NAME, CHART_PLUGINS, CHART_TYPES } from './const';
 import { HomeAssistant } from './types/homeassistant';
+import { isArray } from './utils/array';
 import { parseChartConfig } from './utils/chart-config';
 import { evaluateCssVariable } from './utils/css-variable';
 
@@ -70,7 +71,7 @@ export default class Card extends LitElement {
 
     // Register plugins
     for (const plugin of CHART_PLUGINS) {
-      if (Array.isArray(config.register_plugins) && config.register_plugins.includes(plugin.key)) {
+      if (isArray(config.register_plugins) && config.register_plugins.includes(plugin.key)) {
         Chart.register(plugin.import);
       } else if (Chart.registry.plugins.get(plugin.key)) {
         Chart.unregister(plugin.import);

@@ -1,45 +1,38 @@
 import { HomeAssistant } from '../types/homeassistant';
+import { isArray } from './array';
 import { evaluateCssVariable } from './css-variable';
 
 export function evaluateTemplate(template: string, hass: HomeAssistant) {
-  if (typeof template !== 'string') return template;
+  ('use strict');
 
   const { user, states } = hass;
   if (!user || !states) return template;
 
-  const regexTemplate = /^\${(.+)}$/g;
-  if (template.includes('${') && template.match(regexTemplate)) {
-    ('use strict');
+  let evaluated = eval(`\`${template.replaceAll('`', '\\`')}\``);
 
-    const evaluated = eval(template.trim().substring(2, template.length - 1));
-
-    if (Array.isArray(evaluated)) {
-      return evaluated.map((r) => {
-        if (typeof r === 'string') {
-          return evaluateCssVariable(r);
-        }
-
-        return r;
-      });
+  if (typeof evaluated === 'string' && stringMatchesArray(evaluated)) {
+    try {
+      ('use strict');
+      evaluated = eval(evaluated);
+    } catch {
+      // no-op
     }
-
-    const regexArray = /^\[[^\]]+\]$/g;
-    if (typeof evaluated === 'string' && evaluated.match(regexArray)) {
-      try {
-        return eval(evaluated).map((r: string) => {
-          if (typeof r === 'string') {
-            return evaluateCssVariable(r);
-          }
-
-          return r;
-        });
-      } catch {
-        return evaluated;
-      }
-    }
-
-    return evaluated;
   }
 
-  return template;
+  if (isArray(evaluated)) {
+    return evaluated.map((r) => {
+      if (typeof r === 'string') {
+        return evaluateCssVariable(r);
+      }
+
+      return r;
+    });
+  }
+
+  return evaluated;
+}
+
+function stringMatchesArray(value: string): boolean {
+  const regexArray = /^\[[^\]]+\]$/g;
+  return value.match(regexArray) !== null;
 }

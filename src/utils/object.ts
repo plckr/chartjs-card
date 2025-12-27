@@ -1,3 +1,5 @@
+import { isArray } from './array';
+
 export function isObject(value: unknown): value is object {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
@@ -8,7 +10,7 @@ export function cloneDeepWith<T>(value: T, customizer: (value: unknown) => unkno
     return customResult as T;
   }
 
-  if (Array.isArray(value)) {
+  if (isArray(value)) {
     return value.map((item) => cloneDeepWith(item, customizer)) as T;
   }
 
