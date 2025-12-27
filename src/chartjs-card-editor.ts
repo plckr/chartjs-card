@@ -71,17 +71,6 @@ export class ChartjsCardEditor extends LitElement {
     }
   }
 
-  private _handlePluginsChange(ev: CustomEvent): void {
-    const value = ev.detail.value;
-    try {
-      const parsed = JSON.parse(value);
-      const newConfig = { ...this._config, plugins: parsed };
-      this._dispatchConfigChanged(newConfig);
-    } catch {
-      // Invalid JSON, don't update
-    }
-  }
-
   private _handleShowLegendChange(ev: Event): void {
     const target = ev.target as HTMLInputElement;
     const newConfig = {
@@ -195,16 +184,6 @@ export class ChartjsCardEditor extends LitElement {
             mode="yaml"
             .value=${JSON.stringify(this._config.options || {}, null, 2)}
             @value-changed=${this._handleOptionsChange}
-          ></ha-code-editor>
-        </div>
-
-        <!-- Plugins Editor -->
-        <div class="section">
-          <h2>Plugins</h2>
-          <ha-code-editor
-            mode="yaml"
-            .value=${JSON.stringify(this._config.plugins || {}, null, 2)}
-            @value-changed=${this._handlePluginsChange}
           ></ha-code-editor>
         </div>
 

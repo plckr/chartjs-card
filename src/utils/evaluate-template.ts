@@ -2,11 +2,29 @@ import { HomeAssistant } from '../types/homeassistant';
 import { isArray } from './array';
 import { evaluateCssVariable } from './css-variable';
 
-export function evaluateTemplate(template: string, hass: HomeAssistant) {
-  ('use strict');
+export function evaluateTemplate(
+  template: string,
+  hassProp: HomeAssistant
+): { result: any; accessedEntities: string[] } {
+  const accessedEntities = new Set<string>();
 
+  ('use strict');
+  const hass = {
+    ...hassProp,
+    states: new Proxy(hassProp.states, {
+      get(target, prop) {
+        if (typeof prop === 'string') {
+          accessedEntities.add(prop);
+        }
+        return target[prop];
+      },
+    }),
+  };
   const { user, states } = hass;
-  if (!user || !states) return template;
+  if (!user && !states) {
+    // used for eval, so that Rollup doesn't remove the variables definition
+    console.info('Should never happen');
+  }
 
   let evaluated = eval(`\`${template.replaceAll('`', '\\`')}\``);
 
@@ -20,7 +38,7 @@ export function evaluateTemplate(template: string, hass: HomeAssistant) {
   }
 
   if (isArray(evaluated)) {
-    return evaluated.map((r) => {
+    evaluated = evaluated.map((r) => {
       if (typeof r === 'string') {
         return evaluateCssVariable(r);
       }
@@ -29,7 +47,10 @@ export function evaluateTemplate(template: string, hass: HomeAssistant) {
     });
   }
 
-  return evaluated;
+  return {
+    result: evaluated,
+    accessedEntities: Array.from(accessedEntities),
+  };
 }
 
 function stringMatchesArray(value: string): boolean {

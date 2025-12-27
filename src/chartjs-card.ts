@@ -1,9 +1,4 @@
-import Chart, {
-  ChartData,
-  ChartOptions,
-  ChartTypeRegistry,
-  PluginOptionsByType,
-} from 'chart.js/auto';
+import Chart, { ChartData, ChartOptions, ChartTypeRegistry } from 'chart.js/auto';
 import { LitElement, PropertyValues, css, html } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { createRef, ref } from 'lit/directives/ref.js';
@@ -18,7 +13,6 @@ export type CardConfig = {
   chart: string;
   data: ChartData<keyof ChartTypeRegistry>;
   options?: Partial<ChartOptions<keyof ChartTypeRegistry>>;
-  plugins?: PluginOptionsByType<keyof ChartTypeRegistry>;
   custom_options?: Partial<{
     showLegend: boolean;
   }>;
@@ -106,7 +100,7 @@ export default class Card extends LitElement {
     super.update(changedProps);
 
     const parsedConfig = parseChartConfig(this._config, this.hass);
-    this._updateFromEntities = parsedConfig.entities;
+    this._updateFromEntities = parsedConfig.accessedEntities;
 
     if (!this.chart) {
       const ctx = this.canvasRef.value!.getContext('2d')!;
@@ -114,7 +108,6 @@ export default class Card extends LitElement {
     } else {
       this.chart.data = parsedConfig.config.data;
       this.chart.options = parsedConfig.config.options;
-      this.chart.plugins = parsedConfig.config.plugins;
       this.chart.update('none');
     }
   }
