@@ -4,13 +4,11 @@ import Chart, {
   ChartTypeRegistry,
   PluginOptionsByType,
 } from 'chart.js/auto';
-import annotationPlugin from 'chartjs-plugin-annotation';
-import zoomPlugin from 'chartjs-plugin-zoom';
 import { LitElement, PropertyValues, css, html } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { createRef, ref } from 'lit/directives/ref.js';
 
-import pkg from '../package.json';
+import { CARD_EDITOR_NAME, CARD_NAME, CHART_PLUGINS, CHART_TYPES } from './const';
 import { HomeAssistant } from './types/homeassistant';
 import { parseChartConfig } from './utils/chart-config';
 import { evaluateCssVariable } from './utils/css-variable';
@@ -27,7 +25,7 @@ export type CardConfig = {
   register_plugins?: string[];
 };
 
-@customElement(pkg.name)
+@customElement(CARD_NAME)
 export default class Card extends LitElement {
   @property({ attribute: false })
   public hass!: HomeAssistant;
@@ -44,20 +42,11 @@ export default class Card extends LitElement {
 
   public static async getConfigElement() {
     await import('./chartjs-card-editor');
-    return document.createElement('chartjs-card-editor');
+    return document.createElement(CARD_EDITOR_NAME);
   }
 
   setConfig(config: CardConfig) {
-    const availableTypes = [
-      'line',
-      'bar',
-      'radar',
-      'doughnut',
-      'pie',
-      'polarArea',
-      'bubble',
-      'scatter',
-    ];
+    const availableTypes = CHART_TYPES.map((type) => type.value);
 
     if (!config.chart) {
       throw new Error('You need to define type of chart');
@@ -79,19 +68,12 @@ export default class Card extends LitElement {
     Chart.defaults.font.style = 'normal';
     Chart.defaults.maintainAspectRatio = false;
 
-    const availablePlugins = {
-      zoom: zoomPlugin,
-      annotation: annotationPlugin,
-    };
-
     // Register plugins
-    for (const key in availablePlugins) {
-      const pluginKey = key as keyof typeof availablePlugins;
-
-      if (Array.isArray(config.register_plugins) && config.register_plugins.includes(pluginKey)) {
-        Chart.register(availablePlugins[pluginKey]);
-      } else if (Chart.registry.plugins.get(pluginKey)) {
-        Chart.unregister(availablePlugins[pluginKey]);
+    for (const plugin of CHART_PLUGINS) {
+      if (Array.isArray(config.register_plugins) && config.register_plugins.includes(plugin.key)) {
+        Chart.register(plugin.import);
+      } else if (Chart.registry.plugins.get(plugin.key)) {
+        Chart.unregister(plugin.import);
       }
     }
 
@@ -151,18 +133,17 @@ export default class Card extends LitElement {
       height: 100%;
       padding: var(--ha-space-4);
     }
-
-    ha-card[data-entity-row='true'] {
-      padding: 0px;
-      box-shadow: none;
-    }
   `;
 
   render() {
-    return html`
-      <ha-card data-entity-row=${this._config.entity_row}>
-        <canvas ${ref(this.canvasRef)}> Your browser does not support the canvas element. </canvas>
-      </ha-card>
-    `;
+    const canvasHtml = html`<canvas ${ref(this.canvasRef)}>
+      Your browser does not support the canvas element.
+    </canvas>`;
+
+    if (this._config.entity_row) {
+      return canvasHtml;
+    }
+
+    return html` <ha-card> ${canvasHtml} </ha-card> `;
   }
 }

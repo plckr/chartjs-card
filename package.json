@@ -8,6 +8,10 @@
     "homeassistant",
     "home-assistant"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/plckr/chartjs-card"
+  },
   "dependencies": {
     "chart.js": "^4.5.1",
     "chartjs-plugin-annotation": "^3.1.0",

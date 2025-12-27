@@ -2,6 +2,7 @@ import { LitElement, css, html, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 
 import { CardConfig } from './chartjs-card';
+import { CARD_EDITOR_NAME } from './const';
 import { HomeAssistant } from './types/homeassistant';
 
 const CHART_TYPES = [
@@ -20,7 +21,7 @@ const AVAILABLE_PLUGINS = [
   { value: 'annotation', label: 'Annotation' },
 ];
 
-@customElement('chartjs-card-editor')
+@customElement(CARD_EDITOR_NAME)
 export class ChartjsCardEditor extends LitElement {
   @property({ attribute: false })
   public hass!: HomeAssistant;
