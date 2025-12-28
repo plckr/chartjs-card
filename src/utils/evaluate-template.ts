@@ -26,13 +26,13 @@ export function evaluateTemplate(
     console.info('Should never happen');
   }
 
-  const parsedTemplate = template.replaceAll('`', '\\`');
-  const evaluated: unknown[] = eval(`__tagFn\`${parsedTemplate}\``);
+  const escapedTemplate = template.replaceAll('`', '\\`');
+  const evaluated: unknown[] = eval(`__tagFn\`${escapedTemplate}\``);
   if (evaluated.length === 1) {
     return evaluated[0];
   }
 
-  return evaluated?.join('');
+  return evaluated.join('');
 }
 
 function stringMatchesArray(value: string): boolean {
