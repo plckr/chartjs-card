@@ -1,6 +1,5 @@
 import { CardConfig } from '../chartjs-card';
 import { HomeAssistant } from '../types/homeassistant';
-import { evaluateCssVariable } from './css-variable';
 import { evaluateTemplate } from './evaluate-template';
 import { cloneDeepWith, isObject, setPath } from './object';
 
@@ -31,15 +30,14 @@ export function parseChartConfig(
   };
 }
 
-function evaluateConfig(config: object, entities: Set<string>, hass: HomeAssistant) {
+function evaluateConfig(config: unknown, entities: Set<string>, hass: HomeAssistant) {
   if (!isObject(config)) return config;
 
   return cloneDeepWith(config, (v) => {
     if (!(typeof v === 'string')) return;
 
-    const evaluated = evaluateTemplate(v, hass);
-    evaluated.accessedEntities.forEach((entity) => entities.add(entity));
-
-    return evaluateCssVariable(evaluated.result);
+    return evaluateTemplate(v, hass, (entity) => {
+      entities.add(entity);
+    });
   });
 }

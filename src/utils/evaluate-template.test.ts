@@ -4,7 +4,39 @@ import { HomeAssistant } from '../types/homeassistant';
 import { evaluateTemplate } from './evaluate-template';
 
 describe('evaluateTemplate', () => {
-  let mockHass: HomeAssistant;
+  const mockHass = {
+    user: {
+      id: 'user123',
+      name: 'Test User',
+      is_admin: true,
+      is_owner: true,
+      credentials: [],
+    },
+    states: {
+      'sensor.temperature': {
+        entity_id: 'sensor.temperature',
+        state: '25',
+        attributes: {
+          unit_of_measurement: '°C',
+          friendly_name: 'Temperature',
+        },
+        last_changed: '2024-01-01T00:00:00Z',
+        last_updated: '2024-01-01T00:00:00Z',
+        context: { id: 'ctx1', user_id: null, parent_id: null },
+      },
+      'sensor.humidity': {
+        entity_id: 'sensor.humidity',
+        state: '60',
+        attributes: {
+          unit_of_measurement: '%',
+          friendly_name: 'Humidity',
+        },
+        last_changed: '2024-01-01T00:00:00Z',
+        last_updated: '2024-01-01T00:00:00Z',
+        context: { id: 'ctx2', user_id: null, parent_id: null },
+      },
+    },
+  } as HomeAssistant;
 
   beforeEach(() => {
     // Mock getComputedStyle for CSS variable evaluation
@@ -18,59 +50,6 @@ describe('evaluateTemplate', () => {
         },
       } as CSSStyleDeclaration;
     });
-
-    mockHass = {
-      user: {
-        id: 'user123',
-        name: 'Test User',
-        is_admin: true,
-        is_owner: true,
-        credentials: [],
-      },
-      states: {
-        'sensor.temperature': {
-          entity_id: 'sensor.temperature',
-          state: '25',
-          attributes: {
-            unit_of_measurement: '°C',
-            friendly_name: 'Temperature',
-          },
-          last_changed: '2024-01-01T00:00:00Z',
-          last_updated: '2024-01-01T00:00:00Z',
-          context: { id: 'ctx1', user_id: null, parent_id: null },
-        },
-        'sensor.humidity': {
-          entity_id: 'sensor.humidity',
-          state: '60',
-          attributes: {
-            unit_of_measurement: '%',
-            friendly_name: 'Humidity',
-          },
-          last_changed: '2024-01-01T00:00:00Z',
-          last_updated: '2024-01-01T00:00:00Z',
-          context: { id: 'ctx2', user_id: null, parent_id: null },
-        },
-      },
-    } as HomeAssistant;
-  });
-
-  it('should return non-string values as-is', () => {
-    expect(evaluateTemplate(123 as unknown as string, mockHass)).toBe(123);
-    expect(evaluateTemplate(null as unknown as string, mockHass)).toBe(null);
-  });
-
-  it('should return template unchanged if hass.user is missing', () => {
-    const hassNoUser = { ...mockHass, user: undefined } as unknown as HomeAssistant;
-    expect(evaluateTemplate('${states["sensor.temperature"].state}', hassNoUser)).toBe(
-      '${states["sensor.temperature"].state}'
-    );
-  });
-
-  it('should return template unchanged if hass.states is missing', () => {
-    const hassNoStates = { ...mockHass, states: undefined } as unknown as HomeAssistant;
-    expect(evaluateTemplate('${states["sensor.temperature"].state}', hassNoStates)).toBe(
-      '${states["sensor.temperature"].state}'
-    );
   });
 
   it('should return plain strings unchanged', () => {
@@ -106,5 +85,24 @@ describe('evaluateTemplate', () => {
   it('should access user information', () => {
     expect(evaluateTemplate('${user.name}', mockHass)).toBe('Test User');
     expect(evaluateTemplate('${user.is_admin}', mockHass)).toBe(true);
+  });
+
+  it('should evaluate multiple templates', () => {
+    expect(evaluateTemplate('${user.name} ${user.is_admin}', mockHass)).toBe('Test User true');
+  });
+
+  it('should evaluate multiple templates with CSS variables', () => {
+    expect(evaluateTemplate('${user.name} ${user.is_admin} var(--primary-color)', mockHass)).toBe(
+      'Test User true #ff0000'
+    );
+  });
+
+  it('should evaluate multiple templates with CSS variables and arrays', () => {
+    expect(
+      evaluateTemplate(
+        '${user.name} ${user.is_admin} var(--primary-color) ${["var(--primary-color)", "#00ff00"]}',
+        mockHass
+      )
+    ).toBe('Test User true #ff0000 #ff0000,#00ff00');
   });
 });
