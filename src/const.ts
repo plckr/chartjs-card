@@ -1,4 +1,4 @@
-import { Plugin } from 'chart.js';
+import { ChartType, Plugin } from 'chart.js';
 
 import pkg from '../package.json';
 
@@ -10,7 +10,7 @@ export const CARD_AUTHOR = pkg.author;
 export const CARD_DESCRIPTION = pkg.description;
 export const CARD_REPOSITORY_URL = pkg.repository.url;
 
-export const CHART_TYPES = [
+export const CHART_TYPES: { value: ChartType; label: string }[] = [
   { value: 'line', label: 'Line' },
   { value: 'bar', label: 'Bar' },
   { value: 'radar', label: 'Radar' },
