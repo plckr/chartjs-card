@@ -15,7 +15,6 @@ export function parseChartConfig(
     type: config.chart,
     data: evaluateConfig(config.data, accessedEntities, hass),
     options: evaluateConfig(config.options, accessedEntities, hass),
-    plugins: evaluateConfig(config.plugins, accessedEntities, hass),
   };
 
   if (isObject(config.custom_options)) {
