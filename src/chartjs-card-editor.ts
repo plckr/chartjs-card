@@ -2,24 +2,8 @@ import { LitElement, css, html, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 
 import { CardConfig } from './chartjs-card';
-import { CARD_EDITOR_NAME } from './const';
+import { CARD_EDITOR_NAME, CHART_PLUGINS, CHART_TYPES } from './const';
 import { HomeAssistant } from './types/homeassistant';
-
-const CHART_TYPES = [
-  { value: 'line', label: 'Line' },
-  { value: 'bar', label: 'Bar' },
-  { value: 'radar', label: 'Radar' },
-  { value: 'doughnut', label: 'Doughnut' },
-  { value: 'pie', label: 'Pie' },
-  { value: 'polarArea', label: 'Polar Area' },
-  { value: 'bubble', label: 'Bubble' },
-  { value: 'scatter', label: 'Scatter' },
-];
-
-const AVAILABLE_PLUGINS = [
-  { value: 'zoom', label: 'Zoom' },
-  { value: 'annotation', label: 'Annotation' },
-];
 
 @customElement(CARD_EDITOR_NAME)
 export class ChartjsCardEditor extends LitElement {
@@ -204,16 +188,13 @@ export class ChartjsCardEditor extends LitElement {
         <div class="section">
           <h2>Register Plugins</h2>
           <div class="checkbox-group">
-            ${AVAILABLE_PLUGINS.map(
+            ${CHART_PLUGINS.map(
               (plugin) => html`
                 <ha-formfield .label=${plugin.label}>
                   <ha-checkbox
-                    .checked=${this._config.register_plugins?.includes(plugin.value) ?? false}
+                    .checked=${this._config.register_plugins?.includes(plugin.key) ?? false}
                     @change=${(ev: Event) =>
-                      this._handlePluginToggle(
-                        plugin.value,
-                        (ev.target as HTMLInputElement).checked
-                      )}
+                      this._handlePluginToggle(plugin.key, (ev.target as HTMLInputElement).checked)}
                   ></ha-checkbox>
                 </ha-formfield>
               `
