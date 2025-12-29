@@ -45,7 +45,7 @@ export default class Card extends LitElement {
 
     if (!config.chart) {
       throw new Error('You need to define type of chart');
-    } else if (!availableTypes.includes(config.chart)) {
+    } else if (!availableTypes.some((type) => type === config.chart)) {
       throw new Error(
         "Invalid config for 'chart'. Available options are: " + availableTypes.join(', ')
       );
