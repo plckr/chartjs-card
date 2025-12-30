@@ -1,6 +1,5 @@
 {
   "name": "Chart.js Card",
-  "description": "Allows to create highly customized graphs with support for templating",
   "render_readme": false,
   "filename": "chartjs-card.js"
 }
