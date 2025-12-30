@@ -46,7 +46,9 @@
     "start:hass": "docker run --rm -p8123:8123 -v ./.hass_dev:/config homeassistant/home-assistant:beta",
     "start:hass-dev": "docker run --rm -p8123:8123 -v ./.hass_dev:/config homeassistant/home-assistant:dev",
     "stop:hass": "docker compose down",
-    "logs:hass": "docker compose logs -f"
+    "logs:hass": "docker compose logs -f",
+    "check-types": "tsc --noEmit",
+    "validate": "npm run format:check && npm run check-types && npm run test:run"
   },
   "author": "Ricardo Reis",
   "license": "ISC"
