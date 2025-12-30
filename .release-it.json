@@ -1,0 +1,22 @@
+{
+  "git": {
+    "commitMessage": "Release v${version}",
+    "tagName": "v${version}",
+    "tagAnnotation": "Release v${version}",
+    "requireCleanWorkingDir": true,
+    "requireUpstream": true
+  },
+  "github": {
+    "release": true,
+    "releaseName": "v${version}",
+    "autoGenerate": true,
+    "draft": true,
+    "assets": ["dist/chartjs-card.js"]
+  },
+  "npm": {
+    "publish": false
+  },
+  "hooks": {
+    "before:init": ["npm run validate", "npm run build"]
+  }
+}

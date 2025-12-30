@@ -1,2 +1,47 @@
-/node_modules/
-yarn-error.log
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# IDE
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Coverage
+coverage/
+
+# Temporary files
+tmp/
+temp/
+
+# Home Assistant dev instance data (keep config files)
+.hass_dev/*
+!.hass_dev/configuration.yaml
+!.hass_dev/lovelace.yaml
+!.hass_dev/lovelace-showcase.yaml
+!.hass_dev/card_entities.yaml
+!.hass_dev/automations.yaml
+!.hass_dev/scripts.yaml
+!.hass_dev/scenes.yaml
+!.hass_dev/views
+!.hass_dev/www
+!.hass_dev/packages

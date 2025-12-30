@@ -1,0 +1,126 @@
+title: Card Dev
+views:
+  - title: Card Testing
+    path: testing
+    icon: mdi:airplane
+    cards:
+      - type: custom:chartjs-card
+        chart: bar
+        custom_options:
+          showLegend: false
+        data:
+          datasets:
+            - backgroundColor: '#2fabe0'
+              borderWidth: 1
+              data:
+                - 10
+                - 11
+                - 10
+                - 9
+                - 9.6
+                - 9
+                - 11
+              label: Lavar roupa
+            - backgroundColor: '#fcba03'
+              borderWidth: 1
+              data:
+                - 2
+                - 3
+                - 5
+                - 2
+                - 3
+                - 3
+                - 5
+              label: Frigorífico
+            - backgroundColor: '#c8ed11'
+              borderWidth: 1
+              data:
+                - 5
+                - 6
+                - 5
+                - 7
+                - 3
+                - 4
+                - 5
+              label: Placa
+          labels:
+            - >-
+              ${new Date(new Date().setDate(new
+              Date().getDate()-6)).toLocaleString("pt-PT", {weekday: "short"})}
+            - >-
+              ${new Date(new Date().setDate(new
+              Date().getDate()-5)).toLocaleString("pt-PT", {weekday: "short"})}
+            - >-
+              ${new Date(new Date().setDate(new
+              Date().getDate()-4)).toLocaleString("pt-PT", {weekday: "short"})}
+            - >-
+              ${new Date(new Date().setDate(new
+              Date().getDate()-3)).toLocaleString("pt-PT", {weekday: "short"})}
+            - >-
+              ${new Date(new Date().setDate(new
+              Date().getDate()-2)).toLocaleString("pt-PT", {weekday: "short"})}
+            - >-
+              ${new Date(new Date().setDate(new
+              Date().getDate()-1)).toLocaleString("pt-PT", {weekday: "short"})}
+            - '${new Date().toLocaleString("pt-PT", {weekday: "short"})}'
+        entity_row: false
+        options:
+          scales:
+            x:
+              scaleLabel:
+                display: true
+                fontStyle: initial
+                labelString: Dias
+            'y':
+              scaleLabel:
+                display: true
+                fontStyle: initial
+                labelString: Horas
+              ticks:
+                beginAtZero: true
+          plugins:
+            title:
+              display: true
+              text: |
+                Consumo por semana
+
+      - type: custom:chartjs-card
+        chart: doughnut
+        custom_options:
+          showLegend: true
+        data:
+          datasets:
+            - backgroundColor:
+                - '#32a852'
+                - '#3271a8'
+                - '#9044db'
+                - '#dbbd44'
+                - '#6533ab'
+                - '#364534'
+                - '#db330d'
+              borderColor: var(--paper-card-background-color)
+              borderWidth: 1
+              data:
+                - ${states["sensor.energy_daily_placa"].state}
+                - ${states["sensor.energy_daily_fridge"].state}
+                - ${states["sensor.energy_daily_oven"].state}
+                - ${states["sensor.energy_daily_microwave"].state}
+                - ${states["sensor.energy_daily_dishwasher"].state}
+                - ${states["sensor.energy_daily_washing_machine"].state}
+                - ${states["sensor.energy_daily_drying_machine"].state}
+              hoverBorderColor: var(--paper-card-background-color)
+          labels:
+            - Placa
+            - Frigorifico
+            - Forno
+            - Micro-ondas
+            - Máq. lavar loiça
+            - Máq. lavar roupa
+            - Máq. secar roupa
+        options:
+          plugins:
+            legend:
+              position: left
+            title:
+              display: true
+              text: Consumo energético (hoje)

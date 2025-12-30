@@ -1,0 +1,21 @@
+config:
+history:
+
+homeassistant:
+  packages:
+    card_entities: !include card_entities.yaml
+
+# Enable frontend
+frontend:
+  extra_module_url:
+    - http://localhost:4000/chartjs-card.js
+
+lovelace:
+  mode: storage
+  dashboards:
+    lovelace-showcase:
+      mode: yaml
+      title: Showcase
+      icon: mdi:mushroom
+      show_in_sidebar: true
+      filename: lovelace-showcase.yaml
