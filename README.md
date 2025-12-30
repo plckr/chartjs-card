@@ -3,71 +3,90 @@
 [![](https://img.shields.io/github/v/release/ricreis394/chartjs-card.svg?style=flat)](https://github.com/ricreis394/chartjs-card/releases/latest)
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://github.com/hacs/integration)
 
-Chart.js card for Home Assistant
-Allows to create highly customized graphs with support for templating
-
-## [Chart.js 3.7.0 documentation](https://www.chartjs.org/docs/3.7.0/)
+A Chart.js card for Home Assistant that allows you to create highly customizable graphs with templating support.
 
 ![](./img/example1.png)
 
-## Instalation through HACS
+## Installation
 
-This card isn't in HACS, but you can add it manually through `Custom repositories`
+### HACS (recommended)
 
-To do that just follow these steps: **HACS -> Frontend -> 3 dots (upper right corner) -> Custom repositories -> (Paste this github page url)**
+This card is not in the default HACS repository, but you can add it as a custom repository:
 
-## Config
+1. Open HACS in Home Assistant
+2. Go to **Frontend**
+3. Click the three dots in the upper right corner
+4. Select **Custom repositories**
+5. Paste this repository URL and select **Lovelace** as the category
 
-| Name             | Type    | Default | Description                                                        |
-| ---------------- | ------- | ------- | ------------------------------------------------------------------ |
-| chart            | string  |         | chart type                                                         |
-| data             |         |         | just like chart.js documentation, accepts Templates for all fields |
-| options          |         |         | just like chart.js documentation                                   |
-| plugins          |         |         | just like chart.js documentation                                   |
-| entitiy_row      | boolean | false   | if is entity row or not                                            |
-| custom_options   | object  |         | TODO                                                               |
-| register_plugins | array   |         | registers plugins to be added to graph                             |
+## Configuration
+
+| Name               | Type    | Required | Default | Description                                                                                                                                        |
+| ------------------ | ------- | -------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `type`             | string  | **Yes**  |         | Must be `custom:chartjs-card`                                                                                                                      |
+| `chart`            | string  | **Yes**  |         | Chart type (`bar`, `line`, `doughnut`, `pie`, etc.)                                                                                                |
+| `data`             | object  | **Yes**  |         | Chart data configuration. Follows [Chart.js data structure](https://www.chartjs.org/docs/4.5.1/general/data-structures.html). Supports templating. |
+| `options`          | object  | No       |         | Chart options. Follows [Chart.js options](https://www.chartjs.org/docs/4.5.1/configuration/).                                                      |
+| `entity_row`       | boolean | No       | `false` | Render as an entity row instead of a standalone card.                                                                                              |
+| `custom_options`   | object  | No       |         | Card-specific options (see below).                                                                                                                 |
+| `register_plugins` | array   | No       |         | List of additional plugins to register (see [Plugins](#plugins)).                                                                                  |
+
+For full Chart.js configuration options, see the [Chart.js 4.5.1 documentation](https://www.chartjs.org/docs/4.5.1/configuration/).
+
+### Custom Options
+
+| Name         | Type    | Default | Description                    |
+| ------------ | ------- | ------- | ------------------------------ |
+| `showLegend` | boolean | `true`  | Show or hide the chart legend. |
 
 ## Templating
 
-Everything between Curly braces and started with a Dollar sign, will be evaluated as Javascript code
+Values wrapped in `${...}` are evaluated as JavaScript expressions. This allows dynamic data binding.
 
-You can easily access states through:
+### Available variables
+
+| Variable | Description                                   |
+| -------- | --------------------------------------------- |
+| `hass`   | The Home Assistant object                     |
+| `states` | Shortcut to `hass.states` (all entity states) |
+| `user`   | Shortcut to `hass.user` (current user info)   |
+
+### Accessing entity states
 
 ```js
 ${states["sensor.example"].state}
 ```
 
-or you can convert a Date to a week day label:
+### Accessing entity attributes
 
 ```js
-${new Date(new Date().setDate(new Date().getDate()-2)).toLocaleString("pt-PT", {weekday: "short"})}
+${states["sensor.example"].attributes.data}
 ```
 
-or more simple for today
+### Parsing arrays
 
-```js
-${new Date().toLocaleString("pt-PT", {weekday: "short"})}
-```
-
-and you can convert array string to a real array like so
+Convert a string to an array (useful when you have Array data as string):
 
 ```js
 ${'[12, 14, 2, 4]'}
 ```
 
-can be useful when you grab a lot of data from the DB and want to display all in the graph
+Arrays can also be used directly:
 
-## Additional plugins
+```js
+${[12, 14, 2, 4]}
+```
 
-Some plugins can be added to the graph
+## Plugins
 
-| Name       | Link                                                                                                                   |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------- |
-| zoom       | [https://www.chartjs.org/chartjs-plugin-zoom/latest/](https://www.chartjs.org/chartjs-plugin-zoom/latest/)             |
-| annotation | [https://www.chartjs.org/chartjs-plugin-annotation/latest/](https://www.chartjs.org/chartjs-plugin-annotation/latest/) |
+The following Chart.js plugins are bundled and can be enabled:
 
-To use the plugins you need to register before using, to do that add the name into `register_plugins` like so:
+| Plugin       | Documentation                                                                          |
+| ------------ | -------------------------------------------------------------------------------------- |
+| `zoom`       | [chartjs-plugin-zoom](https://www.chartjs.org/chartjs-plugin-zoom/latest/)             |
+| `annotation` | [chartjs-plugin-annotation](https://www.chartjs.org/chartjs-plugin-annotation/latest/) |
+
+To use a plugin, register it in your card configuration:
 
 ```yaml
 register_plugins:
@@ -77,11 +96,12 @@ register_plugins:
 
 ## Examples
 
-### example 1
+### Bar chart with dynamic data
 
 ![](./img/example1.png)
 
 ```yaml
+type: custom:chartjs-card
 chart: bar
 data:
   datasets:
@@ -98,10 +118,9 @@ options:
       display: true
       text: Consumo energético (últimos 30 dias)
 entity_row: false
-type: custom:chartjs-card
 ```
 
-### example 2
+### Stacked bar chart with multiple datasets
 
 ![](./img/example2.png)
 
@@ -187,11 +206,12 @@ options:
         Consumo por semana
 ```
 
-### example 3
+### Doughnut chart with entity data
 
 ![](./img/example3.png)
 
 ```yaml
+type: custom:chartjs-card
 chart: doughnut
 custom_options:
   showLegend: true
@@ -231,5 +251,4 @@ options:
     title:
       display: true
       text: Consumo energético (hoje)
-type: custom:chartjs-card
 ```
